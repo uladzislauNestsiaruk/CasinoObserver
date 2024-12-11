@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/CasinoObserver.dir/main.cpp.o"
-  "CMakeFiles/CasinoObserver.dir/main.cpp.o.d"
+  "CMakeFiles/CasinoObserver.dir/game_loop.cpp.o"
+  "CMakeFiles/CasinoObserver.dir/game_loop.cpp.o.d"
+  "CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o"
+  "CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o.d"
   "CasinoObserver"
   "CasinoObserver.pdb"
 )

@@ -69,31 +69,47 @@ include CMakeFiles/CasinoObserver.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/CasinoObserver.dir/flags.make
 
-CMakeFiles/CasinoObserver.dir/main.cpp.o: CMakeFiles/CasinoObserver.dir/flags.make
-CMakeFiles/CasinoObserver.dir/main.cpp.o: /Users/uladzislaunestsiaruk/Projects/CasinoObserver/main.cpp
-CMakeFiles/CasinoObserver.dir/main.cpp.o: CMakeFiles/CasinoObserver.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/CasinoObserver.dir/main.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CasinoObserver.dir/main.cpp.o -MF CMakeFiles/CasinoObserver.dir/main.cpp.o.d -o CMakeFiles/CasinoObserver.dir/main.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/main.cpp
+CMakeFiles/CasinoObserver.dir/game_loop.cpp.o: CMakeFiles/CasinoObserver.dir/flags.make
+CMakeFiles/CasinoObserver.dir/game_loop.cpp.o: /Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp
+CMakeFiles/CasinoObserver.dir/game_loop.cpp.o: CMakeFiles/CasinoObserver.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/CasinoObserver.dir/game_loop.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CasinoObserver.dir/game_loop.cpp.o -MF CMakeFiles/CasinoObserver.dir/game_loop.cpp.o.d -o CMakeFiles/CasinoObserver.dir/game_loop.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp
 
-CMakeFiles/CasinoObserver.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/CasinoObserver.dir/main.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/uladzislaunestsiaruk/Projects/CasinoObserver/main.cpp > CMakeFiles/CasinoObserver.dir/main.cpp.i
+CMakeFiles/CasinoObserver.dir/game_loop.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/CasinoObserver.dir/game_loop.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp > CMakeFiles/CasinoObserver.dir/game_loop.cpp.i
 
-CMakeFiles/CasinoObserver.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/CasinoObserver.dir/main.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/uladzislaunestsiaruk/Projects/CasinoObserver/main.cpp -o CMakeFiles/CasinoObserver.dir/main.cpp.s
+CMakeFiles/CasinoObserver.dir/game_loop.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/CasinoObserver.dir/game_loop.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp -o CMakeFiles/CasinoObserver.dir/game_loop.cpp.s
+
+CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o: CMakeFiles/CasinoObserver.dir/flags.make
+CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o: /Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp
+CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o: CMakeFiles/CasinoObserver.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o -MF CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o.d -o CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp
+
+CMakeFiles/CasinoObserver.dir/textures_loader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/CasinoObserver.dir/textures_loader.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp > CMakeFiles/CasinoObserver.dir/textures_loader.cpp.i
+
+CMakeFiles/CasinoObserver.dir/textures_loader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/CasinoObserver.dir/textures_loader.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp -o CMakeFiles/CasinoObserver.dir/textures_loader.cpp.s
 
 # Object files for target CasinoObserver
 CasinoObserver_OBJECTS = \
-"CMakeFiles/CasinoObserver.dir/main.cpp.o"
+"CMakeFiles/CasinoObserver.dir/game_loop.cpp.o" \
+"CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o"
 
 # External object files for target CasinoObserver
 CasinoObserver_EXTERNAL_OBJECTS =
 
-CasinoObserver: CMakeFiles/CasinoObserver.dir/main.cpp.o
+CasinoObserver: CMakeFiles/CasinoObserver.dir/game_loop.cpp.o
+CasinoObserver: CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o
 CasinoObserver: CMakeFiles/CasinoObserver.dir/build.make
 CasinoObserver: CMakeFiles/CasinoObserver.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable CasinoObserver"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable CasinoObserver"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/CasinoObserver.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

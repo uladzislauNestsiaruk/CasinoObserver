@@ -129,29 +129,53 @@ CasinoObserver/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/build
 .PHONY : CasinoObserver/fast
 
-main.o: main.cpp.o
-.PHONY : main.o
+game_loop.o: game_loop.cpp.o
+.PHONY : game_loop.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/main.cpp.o
-.PHONY : main.cpp.o
+game_loop.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/game_loop.cpp.o
+.PHONY : game_loop.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+game_loop.i: game_loop.cpp.i
+.PHONY : game_loop.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/main.cpp.i
-.PHONY : main.cpp.i
+game_loop.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/game_loop.cpp.i
+.PHONY : game_loop.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+game_loop.s: game_loop.cpp.s
+.PHONY : game_loop.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/main.cpp.s
-.PHONY : main.cpp.s
+game_loop.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/game_loop.cpp.s
+.PHONY : game_loop.cpp.s
+
+textures_loader.o: textures_loader.cpp.o
+.PHONY : textures_loader.o
+
+# target to build an object file
+textures_loader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o
+.PHONY : textures_loader.cpp.o
+
+textures_loader.i: textures_loader.cpp.i
+.PHONY : textures_loader.i
+
+# target to preprocess a source file
+textures_loader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/textures_loader.cpp.i
+.PHONY : textures_loader.cpp.i
+
+textures_loader.s: textures_loader.cpp.s
+.PHONY : textures_loader.s
+
+# target to generate assembly for a file
+textures_loader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/textures_loader.cpp.s
+.PHONY : textures_loader.cpp.s
 
 # Help Target
 help:
@@ -162,9 +186,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... CasinoObserver"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... game_loop.o"
+	@echo "... game_loop.i"
+	@echo "... game_loop.s"
+	@echo "... textures_loader.o"
+	@echo "... textures_loader.i"
+	@echo "... textures_loader.s"
 .PHONY : help
 
 

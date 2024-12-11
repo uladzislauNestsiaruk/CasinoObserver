@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/main.cpp" "CMakeFiles/CasinoObserver.dir/main.cpp.o" "gcc" "CMakeFiles/CasinoObserver.dir/main.cpp.o.d"
+  "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp" "CMakeFiles/CasinoObserver.dir/game_loop.cpp.o" "gcc" "CMakeFiles/CasinoObserver.dir/game_loop.cpp.o.d"
+  "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp" "CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o" "gcc" "CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

@@ -81,12 +81,12 @@ clean: CMakeFiles/CasinoObserver.dir/clean
 CMakeFiles/CasinoObserver.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CasinoObserver.dir/build.make CMakeFiles/CasinoObserver.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=1,2 "Built target CasinoObserver"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles --progress-num=1,2,3 "Built target CasinoObserver"
 .PHONY : CMakeFiles/CasinoObserver.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/CasinoObserver.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/CasinoObserver.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles 0
 .PHONY : CMakeFiles/CasinoObserver.dir/rule

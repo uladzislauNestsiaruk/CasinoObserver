@@ -1,0 +1,3 @@
+/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles/CasinoObserver.dir
+/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles/edit_cache.dir
+/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/CMakeFiles/rebuild_cache.dir

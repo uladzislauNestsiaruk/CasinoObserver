@@ -3,7 +3,6 @@
 #define CASINOOBSERVER_GAME_SATE_H
 
 #include "SFML/Window/Event.hpp"
-#include <memory>
 
 class StateManager;
 

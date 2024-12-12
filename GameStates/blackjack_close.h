@@ -17,6 +17,7 @@ class BlackjackClose : public GameState {
     ~BlackjackClose() override {}
 
   private:
+    sf::Sprite dealer_sprite_;
     sf::Sprite table_sprite_;
 };
 

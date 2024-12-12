@@ -1,3 +1,4 @@
+// "Copyright [2024] Netsiaruk Uladzislau"
 #ifndef CASINOOBSERVER_CARD_H_
 #define CASINOOBSERVER_CARD_H_
 

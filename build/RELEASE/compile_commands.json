@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/uladzislaunestsiaruk/Projects/CasinoObserver/SFML_ARM/include -O3 -DNDEBUG -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -O3 -march=native -Werror -o CMakeFiles/CasinoObserver.dir/game_loop.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp",
+  "file": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/game_loop.cpp",
+  "output": "CMakeFiles/CasinoObserver.dir/game_loop.cpp.o"
+},
+{
+  "directory": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/uladzislaunestsiaruk/Projects/CasinoObserver/SFML_ARM/include -O3 -DNDEBUG -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -O3 -march=native -Werror -o CMakeFiles/CasinoObserver.dir/state_manager.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/state_manager.cpp",
+  "file": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/state_manager.cpp",
+  "output": "CMakeFiles/CasinoObserver.dir/state_manager.cpp.o"
+},
+{
+  "directory": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/uladzislaunestsiaruk/Projects/CasinoObserver/SFML_ARM/include -O3 -DNDEBUG -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -O3 -march=native -Werror -o CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp",
+  "file": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/textures_loader.cpp",
+  "output": "CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o"
+},
+{
+  "directory": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/GameStates",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -I/Users/uladzislaunestsiaruk/Projects/CasinoObserver/SFML_ARM/include -O3 -DNDEBUG -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -Werror -o CMakeFiles/game_states.dir/blackjack_close.cpp.o -c /Users/uladzislaunestsiaruk/Projects/CasinoObserver/GameStates/blackjack_close.cpp",
+  "file": "/Users/uladzislaunestsiaruk/Projects/CasinoObserver/GameStates/blackjack_close.cpp",
+  "output": "GameStates/CMakeFiles/game_states.dir/blackjack_close.cpp.o"
+}
+]

@@ -1,3 +1,4 @@
+// "Copyright [2024] Netsiaruk Uladzislau"
 #include "table.h"
 #include "gambler.h"
 #include <algorithm>

@@ -1,3 +1,4 @@
+// "Copyright [2024] Netsiaruk Uladzislau"
 #ifndef CASINOOBSERVER_BRAINMANAGER_TABLE_H
 #define CASINOOBSERVER_BRAINMANAGER_TABLE_H
 

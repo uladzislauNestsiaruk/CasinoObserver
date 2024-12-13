@@ -1,0 +1,6 @@
+/Users/baidakoukiryl/CasinoObserver/build/CMakeFiles/CasinoObserver.dir
+/Users/baidakoukiryl/CasinoObserver/build/CMakeFiles/edit_cache.dir
+/Users/baidakoukiryl/CasinoObserver/build/CMakeFiles/rebuild_cache.dir
+/Users/baidakoukiryl/CasinoObserver/build/GameStates/CMakeFiles/game_states.dir
+/Users/baidakoukiryl/CasinoObserver/build/GameStates/CMakeFiles/edit_cache.dir
+/Users/baidakoukiryl/CasinoObserver/build/GameStates/CMakeFiles/rebuild_cache.dir

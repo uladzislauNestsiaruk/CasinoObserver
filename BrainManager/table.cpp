@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <memory>
 
-void Table::ReshuffleDeck() {
+void BlackjackTable::ReshuffleDeck() {
     std::shuffle(deck_.begin(), deck_.end(), random_generator_);
 }
 
@@ -69,7 +69,7 @@ void BlackjackTable::OneStep() {
     }
 }
 
-void BlackjackTable::GameItaration() {
+void BlackjackTable::GameIteration() {
     while (start_phase_) {
         OneStep();
     }
@@ -77,4 +77,19 @@ void BlackjackTable::GameItaration() {
     while (!start_phase_) {
         OneStep();
     }
+}
+
+Card BlackjackTable::GetTopCard() {
+    Card top = deck_.back();
+    deck_.pop_back();
+    return top;
+}
+
+std::shared_ptr<Gambler> BlackjackTable::GetNextPlayer() {
+    while (!players_[whose_move_]->GetGameStatus()) {
+        ++whose_move_;
+        whose_move_ %= players_.size();
+    }
+
+    return players_[whose_move_];
 }

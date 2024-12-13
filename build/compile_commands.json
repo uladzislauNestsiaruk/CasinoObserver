@@ -1,25 +1,25 @@
 [
 {
   "directory": "/Users/baidakoukiryl/CasinoObserver/build",
-  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror -o CMakeFiles/CasinoObserver.dir/game_loop.cpp.o -c /Users/baidakoukiryl/CasinoObserver/game_loop.cpp",
+  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror -o CMakeFiles/CasinoObserver.dir/game_loop.cpp.o -c /Users/baidakoukiryl/CasinoObserver/game_loop.cpp",
   "file": "/Users/baidakoukiryl/CasinoObserver/game_loop.cpp",
   "output": "CMakeFiles/CasinoObserver.dir/game_loop.cpp.o"
 },
 {
   "directory": "/Users/baidakoukiryl/CasinoObserver/build",
-  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror -o CMakeFiles/CasinoObserver.dir/state_manager.cpp.o -c /Users/baidakoukiryl/CasinoObserver/state_manager.cpp",
+  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror -o CMakeFiles/CasinoObserver.dir/state_manager.cpp.o -c /Users/baidakoukiryl/CasinoObserver/state_manager.cpp",
   "file": "/Users/baidakoukiryl/CasinoObserver/state_manager.cpp",
   "output": "CMakeFiles/CasinoObserver.dir/state_manager.cpp.o"
 },
 {
   "directory": "/Users/baidakoukiryl/CasinoObserver/build",
-  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror -o CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o -c /Users/baidakoukiryl/CasinoObserver/textures_loader.cpp",
+  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror -o CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o -c /Users/baidakoukiryl/CasinoObserver/textures_loader.cpp",
   "file": "/Users/baidakoukiryl/CasinoObserver/textures_loader.cpp",
   "output": "CMakeFiles/CasinoObserver.dir/textures_loader.cpp.o"
 },
 {
   "directory": "/Users/baidakoukiryl/CasinoObserver/build/GameStates",
-  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -Werror -o CMakeFiles/game_states.dir/blackjack_close.cpp.o -c /Users/baidakoukiryl/CasinoObserver/GameStates/blackjack_close.cpp",
+  "command": "/usr/bin/clang++  -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -Werror -o CMakeFiles/game_states.dir/blackjack_close.cpp.o -c /Users/baidakoukiryl/CasinoObserver/GameStates/blackjack_close.cpp",
   "file": "/Users/baidakoukiryl/CasinoObserver/GameStates/blackjack_close.cpp",
   "output": "GameStates/CMakeFiles/game_states.dir/blackjack_close.cpp.o"
 }

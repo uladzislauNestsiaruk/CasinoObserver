@@ -6,7 +6,7 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/Users/baidakoukiryl/CasinoObserver/SFML_ARM/include
 
-CXX_FLAGSx86_64 = -g -std=gnu++20 -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror
+CXX_FLAGSarm64 = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror
 
-CXX_FLAGS = -g -std=gnu++20 -arch x86_64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror
+CXX_FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.0.sdk -mmacosx-version-min=14.7 -g3 -O0 -Werror
 

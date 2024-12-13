@@ -39,11 +39,11 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel ..."
 				}
 			],
 			"type" : "STRING",
-			"value" : "Debug"
+			"value" : "DEBUG"
 		},
 		{
 			"name" : "CMAKE_CACHEFILE_DIR",
@@ -763,7 +763,7 @@
 				}
 			],
 			"type" : "STRING",
-			"value" : ""
+			"value" : "arm64"
 		},
 		{
 			"name" : "CMAKE_OSX_DEPLOYMENT_TARGET",

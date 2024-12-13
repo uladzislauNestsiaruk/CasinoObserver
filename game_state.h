@@ -6,9 +6,9 @@
 
 class StateManager;
 
-class GameState {
-  public:
-    GameState() {}
+class IGameState {
+public:
+    IGameState() = default;
 
     virtual void HandleEvent(const sf::Event &event) = 0;
     virtual void Update(StateManager *manager) = 0;
@@ -16,7 +16,7 @@ class GameState {
 
     void ChangeState();
 
-    virtual ~GameState() {}
+    virtual ~IGameState() {}
 };
 
 #endif // CASINOOBSERVER_GAME_SATE_H

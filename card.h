@@ -29,8 +29,7 @@ constexpr size_t kCardTypes = 4;
 constexpr size_t kCardValues = 14; // WITH JOKER
 
 class Card {
-
-  public:
+public:
     Card() : value_{0} {}
 
     Card(CardType type, CardValue value) {
@@ -42,7 +41,7 @@ class Card {
 
     CardValue GetValue() { return CardValue(value_ & ((1 << kValueBits) - 1)); }
 
-  private:
+private:
     char value_;
 };
 

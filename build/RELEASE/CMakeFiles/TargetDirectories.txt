@@ -1,6 +1,0 @@
-/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/CMakeFiles/CasinoObserver.dir
-/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/CMakeFiles/edit_cache.dir
-/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/CMakeFiles/rebuild_cache.dir
-/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/GameStates/CMakeFiles/game_states.dir
-/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/GameStates/CMakeFiles/edit_cache.dir
-/Users/uladzislaunestsiaruk/Projects/CasinoObserver/build/RELEASE/GameStates/CMakeFiles/rebuild_cache.dir

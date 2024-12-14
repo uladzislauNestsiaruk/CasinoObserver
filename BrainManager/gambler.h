@@ -6,34 +6,40 @@
 
 // "Copyright [2024] Netsiaruk Uladzislau"
 #include "../card.h"
-#include "constants.h"
+#include "../utils/constants.h"
 
-class Gambler {
-  public:
-    Gambler()
-        : skill_{0}, game_type_{Blackjack}, still_in_game{true}, money_{0} {}
+class IGambler {
+public:
+    IGambler() {}
+
+    virtual ~IGambler() {}
 
     virtual bool BlackjackAction() = 0;
-
     virtual void PokerAction() = 0;
 
-    void GiveCard(Card card) { cards_.emplace_back(card); }
+    virtual bool GetGameStatus() const = 0;
+    virtual void ChangeGameStatus() = 0;
 
-    const std::vector<Card> &ShowCards() { return cards_; }
+    virtual void GetCard(Card card) = 0;
+    virtual const std::vector<Card>& ShowCards() const = 0;
+    virtual std::vector<Card> TakeAllCards() = 0;
 
-    std::vector<Card> TakeAllCards() {
-        std::vector<Card> return_value(cards_);
-        cards_.clear();
-        return return_value;
-    }
+};
 
-    bool GetGameStatus() { return still_in_game; }
+class BaseGambler : public IGambler {
+public:
+    BaseGambler()
+        : skill_{0}, game_type_{GameType::Blackjack}, still_in_game{true},
+          money_{0} {}
 
-    void ChangeGameStatus() { still_in_game ^= 1; }
+    bool GetGameStatus() const override { return still_in_game; }
+    void ChangeGameStatus() override { still_in_game ^= 1; }
+    
+    void GetCard(Card card) override { cards_.emplace_back(card); }
+    const std::vector<Card> &ShowCards() const override { return cards_; }
+    std::vector<Card> TakeAllCards() override;
 
-    virtual ~Gambler() {}
-
-  private:
+private:
     int16_t skill_;
     GameType game_type_;
     bool still_in_game;
@@ -41,13 +47,13 @@ class Gambler {
     std::vector<Card> cards_;
 };
 
-class HumbleGambler : public Gambler {
-  public:
+class HumbleGambler : public BaseGambler {
+public:
 };
 
-class CheaterGambler : public Gambler {
-  public:
-  private:
+class CheaterGambler : public BaseGambler {
+public:
+private:
     std::vector<Card> visible_cards_;
 };
 

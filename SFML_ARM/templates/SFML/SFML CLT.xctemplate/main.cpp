@@ -18,8 +18,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-int main(int argc, char const** argv)
-{
+int main(int argc, char const **argv) {
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
 
@@ -55,19 +54,18 @@ int main(int argc, char const** argv)
     music.play();
 
     // Start the game loop
-    while (window.isOpen())
-    {
+    while (window.isOpen()) {
         // Process events
         sf::Event event;
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             // Close window: exit
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
 
             // Escape pressed: exit
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+            if (event.type == sf::Event::KeyPressed &&
+                event.key.code == sf::Keyboard::Escape) {
                 window.close();
             }
         }

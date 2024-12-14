@@ -1,6 +1,0 @@
-#ifndef CASINOOBSERVER_BRAINMANAGER_CONSTANTS_H
-#define CASINOOBSERVER_BRAINMANAGER_CONSTANTS_H
-
-enum GameType { Blackjack, Poker };
-
-#endif

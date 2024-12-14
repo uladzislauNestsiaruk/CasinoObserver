@@ -1,12 +1,7 @@
 // "Copyright [2024] Netsiaruk Uladzislau"
 #include "table.h"
 #include "gambler.h"
-#include <algorithm>
 #include <memory>
-
-void BlackjackTable::ReshuffleDeck() {
-    std::shuffle(deck_.begin(), deck_.end(), random_generator_);
-}
 
 int RateCard(Card card, int AceValue) {
     int value = static_cast<int>(card.GetValue());
@@ -21,7 +16,7 @@ int RateCard(Card card, int AceValue) {
     return 10;
 }
 
-int GetPlayerScore(std::shared_ptr<Gambler> player) {
+int GetPlayerScore(std::shared_ptr<IGambler> player) {
     int total_score = 0;
     auto cards = player->ShowCards();
     for (auto card : cards) {
@@ -40,13 +35,13 @@ void BlackjackTable::OneStep() {
     auto current_player = GetNextPlayer();
 
     if (start_phase_) {
-        Card top_card = GetTopCard();
-        players_[whose_move_]->GiveCard(top_card);
+        Card top_card = deck_.GetTopCard();
+        players_[whose_move_]->GetCard(top_card);
     } else {
 
         while (current_player->GetGameStatus() &&
                !current_player->BlackjackAction()) {
-            current_player->GiveCard(GetTopCard());
+            current_player->GetCard(deck_.GetTopCard());
             if (GetPlayerScore(current_player) >= 21) {
                 current_player->ChangeGameStatus();
             }
@@ -79,13 +74,7 @@ void BlackjackTable::GameIteration() {
     }
 }
 
-Card BlackjackTable::GetTopCard() {
-    Card top = deck_.back();
-    deck_.pop_back();
-    return top;
-}
-
-std::shared_ptr<Gambler> BlackjackTable::GetNextPlayer() {
+std::shared_ptr<IGambler> BlackjackTable::GetNextPlayer() {
     while (!players_[whose_move_]->GetGameStatus()) {
         ++whose_move_;
         whose_move_ %= players_.size();

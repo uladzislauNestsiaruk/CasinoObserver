@@ -18,7 +18,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-int main(int argc, char const **argv) {
+int main(int argc, char const** argv) {
     // Create the main window
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
 
@@ -64,8 +64,7 @@ int main(int argc, char const **argv) {
             }
 
             // Escape pressed: exit
-            if (event.type == sf::Event::KeyPressed &&
-                event.key.code == sf::Keyboard::Escape) {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                 window.close();
             }
         }

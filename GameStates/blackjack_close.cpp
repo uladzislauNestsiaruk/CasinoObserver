@@ -5,9 +5,8 @@
 #include "../textures_loader.h"
 #include "SFML/Window/Event.hpp"
 
-BlackjackClose::BlackjackClose(StateManager *manager)
-    : dealer_sprite_(GetTextute("male_dealer1")),
-      table_sprite_(GetTextute("blackjack_table")) {
+BlackjackClose::BlackjackClose(StateManager* manager)
+    : dealer_sprite_(GetTextute("male_dealer1")), table_sprite_(GetTextute("blackjack_table")) {
     auto table_size = GetTextute("blackjack_table").getSize();
     auto dealer_size = GetTextute("male_dealer1").getSize();
     auto window_size = manager->GetWindowSize();
@@ -17,15 +16,14 @@ BlackjackClose::BlackjackClose(StateManager *manager)
 
     dealer_sprite_.setOrigin(dealer_size.x / 2.0, dealer_size.y / 2.0);
     dealer_sprite_.setPosition(window_size.x / 2.0 - dealer_size.x / 2.0,
-                               table_sprite_.getPosition().y -
-                                   dealer_size.y / 2.5);
+                               table_sprite_.getPosition().y - dealer_size.y / 2.5);
 }
 
-void BlackjackClose::HandleEvent(const sf::Event &event) {}
+void BlackjackClose::HandleEvent(const sf::Event& event) {}
 
-void BlackjackClose::Update(StateManager *manager) {}
+void BlackjackClose::Update(StateManager* manager) {}
 
-void BlackjackClose::Draw(StateManager *manager) {
+void BlackjackClose::Draw(StateManager* manager) {
     manager->DrawSprite(dealer_sprite_);
     manager->DrawSprite(table_sprite_);
 }

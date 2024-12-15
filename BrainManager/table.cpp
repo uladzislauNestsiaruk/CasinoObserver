@@ -39,8 +39,7 @@ void BlackjackTable::OneStep() {
         players_[whose_move_]->GetCard(top_card);
     } else {
 
-        while (current_player->GetGameStatus() &&
-               !current_player->BlackjackAction()) {
+        while (current_player->GetGameStatus() && !current_player->BlackjackAction()) {
             current_player->GetCard(deck_.GetTopCard());
             if (GetPlayerScore(current_player) >= 21) {
                 current_player->ChangeGameStatus();
@@ -56,8 +55,7 @@ void BlackjackTable::OneStep() {
         return;
     }
 
-    if (start_phase_ && !whose_move_ &&
-        players_[whose_move_]->ShowCards().size() == 2) {
+    if (start_phase_ && !whose_move_ && players_[whose_move_]->ShowCards().size() == 2) {
         start_phase_ ^= 1;
         ++whose_move_;
         whose_move_ %= players_.size();

@@ -19,16 +19,16 @@ public:
     void Init();
     void Clean();
 
-    static StateManager &Instance() {
+    static StateManager& Instance() {
         static StateManager manager;
         return manager;
     }
 
-    StateManager(const StateManager &) = delete;
-    StateManager(const StateManager &&) = delete;
+    StateManager(const StateManager&) = delete;
+    StateManager(const StateManager&&) = delete;
 
-    StateManager &operator=(const StateManager &) = delete;
-    StateManager &operator=(const StateManager &&) = delete;
+    StateManager& operator=(const StateManager&) = delete;
+    StateManager& operator=(const StateManager&&) = delete;
 
     void Push(std::shared_ptr<IGameState> state);
     std::shared_ptr<IGameState> Pop();
@@ -41,7 +41,7 @@ public:
 
     void Quit() { is_running_ = false; }
 
-    void DrawSprite(const sf::Sprite &sprite) { game_window_.draw(sprite); }
+    void DrawSprite(const sf::Sprite& sprite) { game_window_.draw(sprite); }
 
     sf::Vector2u GetWindowSize() { return game_window_.getSize(); }
 

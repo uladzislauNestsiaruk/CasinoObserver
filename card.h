@@ -9,8 +9,7 @@ public:
     Card() : value_{0} {}
 
     Card(CardType type, CardValue value) {
-        value_ =
-            (static_cast<uint8_t>(type) << kValueBits) | static_cast<uint8_t>(value);
+        value_ = (static_cast<uint8_t>(type) << kValueBits) | static_cast<uint8_t>(value);
     }
 
     CardType GetType() { return CardType(value_ >> kValueBits); }

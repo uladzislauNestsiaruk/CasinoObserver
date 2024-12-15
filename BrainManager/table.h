@@ -19,20 +19,19 @@ public:
 
     virtual void OneStep() = 0;
 
-    virtual void AddPlayer(const IGambler &player);
-    virtual void RemovePlayer(const IGambler &player);
+    virtual void AddPlayer(const IGambler& player);
+    virtual void RemovePlayer(const IGambler& player);
 };
 
 class AbstractITable : public ITable {
 public:
-    AbstractITable()
-        : whose_move_{0}, start_phase_{true} {}
+    AbstractITable() : whose_move_{0}, start_phase_{true} {}
 
 protected:
     GameType table_type_;
-    bool start_phase_; // This flag indiactes is game on the table just started,
-                       // it made for convinient card distribution animation
-                       // implementation
+    bool start_phase_;  // This flag indiactes is game on the table just started,
+                        // it made for convinient card distribution animation
+                        // implementation
     size_t whose_move_; // index of the active player
     std::vector<std::shared_ptr<IGambler>> players_;
 };

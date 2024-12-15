@@ -23,20 +23,17 @@ public:
     virtual void GetCard(Card card) = 0;
     virtual const std::vector<Card>& ShowCards() const = 0;
     virtual std::vector<Card> TakeAllCards() = 0;
-
 };
 
 class BaseGambler : public IGambler {
 public:
-    BaseGambler()
-        : skill_{0}, game_type_{GameType::Blackjack}, still_in_game{true},
-          money_{0} {}
+    BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game{true}, money_{0} {}
 
     bool GetGameStatus() const override { return still_in_game; }
     void ChangeGameStatus() override { still_in_game ^= 1; }
-    
+
     void GetCard(Card card) override { cards_.emplace_back(card); }
-    const std::vector<Card> &ShowCards() const override { return cards_; }
+    const std::vector<Card>& ShowCards() const override { return cards_; }
     std::vector<Card> TakeAllCards() override;
 
 private:

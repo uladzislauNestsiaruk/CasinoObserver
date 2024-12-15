@@ -8,11 +8,11 @@
 
 class BlackjackClose : public IGameState {
 public:
-    explicit BlackjackClose(StateManager *manager);
+    explicit BlackjackClose(StateManager* manager);
 
-    void HandleEvent(const sf::Event &event) override;
-    void Update(StateManager *manager) override;
-    void Draw(StateManager *manager) override;
+    void HandleEvent(const sf::Event& event) override;
+    void Update(StateManager* manager) override;
+    void Draw(StateManager* manager) override;
 
     ~BlackjackClose() override {}
 

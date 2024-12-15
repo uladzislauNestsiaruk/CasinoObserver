@@ -10,9 +10,9 @@ class IGameState {
 public:
     IGameState() = default;
 
-    virtual void HandleEvent(const sf::Event &event) = 0;
-    virtual void Update(StateManager *manager) = 0;
-    virtual void Draw(StateManager *manager) = 0;
+    virtual void HandleEvent(const sf::Event& event) = 0;
+    virtual void Update(StateManager* manager) = 0;
+    virtual void Draw(StateManager* manager) = 0;
 
     void ChangeState();
 

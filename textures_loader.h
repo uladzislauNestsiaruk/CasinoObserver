@@ -5,6 +5,6 @@
 
 void Preload();
 
-const sf::Texture &GetTextute(const std::string &texture_name);
+const sf::Texture& GetTextute(const std::string& texture_name);
 
 #endif

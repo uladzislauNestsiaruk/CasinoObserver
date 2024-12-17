@@ -1,0 +1,2 @@
+file(GLOB_RECURSE GAMBLERS_SOURCES "*.cpp")
+add_library(gamblers STATIC ${GAMBLERS_SOURCES})

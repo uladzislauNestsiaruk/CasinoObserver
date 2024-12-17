@@ -10,13 +10,22 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers
 include_directories(${CMAKE_SOURCE_DIR}/SFML_ARM/include)
 link_directories(${CMAKE_SOURCE_DIR}/SFML_ARM/lib)
 
-#GameState parsing
+#add_includes
+include_directories(${CMAKE_SOURCE_DIR}/utils)
+
+#GameStates parsing
 add_subdirectory(GameStates)
+#Tables logic
+add_subdirectory(Tables)
+#Gamblers
+add_subdirectory(Gamblers)
 
 #All libraries and subdirectories of the project
 set(LIBRARIES sfml-graphics sfml-window
               sfml-system sfml-audio
-              game_states)
+              game_states
+              tables
+              gamblers)
 
 #I dont know where i can put them, so since know the called "TOP_LAYER"
 set(TOP_LAYER_SOURCES game_loop.cpp

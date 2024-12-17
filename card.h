@@ -12,9 +12,9 @@ public:
         value_ = (static_cast<uint8_t>(type) << kValueBits) | static_cast<uint8_t>(value);
     }
 
-    CardType GetType() { return CardType(value_ >> kValueBits); }
+    CardType GetType() const { return CardType(value_ >> kValueBits); }
 
-    CardValue GetValue() { return CardValue(value_ & ((1 << kValueBits) - 1)); }
+    CardValue GetValue() const { return CardValue(value_ & ((1 << kValueBits) - 1)); }
 
 private:
     uint8_t value_;

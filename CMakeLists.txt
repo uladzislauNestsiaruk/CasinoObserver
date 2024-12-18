@@ -33,7 +33,7 @@ set(TOP_LAYER_SOURCES game_loop.cpp
                       textures_loader.cpp)
 
 #Release target
-add_executable(${PROJECT_NAME} ${TOP_LAYER_SOURCES}) 
+add_executable(${PROJECT_NAME} ${TOP_LAYER_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 
 #Compilation flags

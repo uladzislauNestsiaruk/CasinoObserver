@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libgame_states.a CMakeFiles/game_states.dir/blackjack_close.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libgame_states.a

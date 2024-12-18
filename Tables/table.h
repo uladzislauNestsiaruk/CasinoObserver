@@ -9,8 +9,6 @@
 #include "constants.h"
 #include "../Gamblers/gambler.h"
 
-// TODO: Разнести столы по файлам
-
 class ITable {
 public:
     virtual ~ITable() {}

@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "GameStates/blackjack_close.h"
+#include "GameStates/work_room.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
@@ -28,7 +29,7 @@ void StateManager::Init() {
     states_.clear();
     states_.reserve(kReserveStatesAmount);
 
-    states_.emplace_back(std::make_shared<BlackjackClose>(this));
+    states_.emplace_back(std::make_shared<WorkRoomState>(this));
 }
 
 void StateManager::Clean() {

@@ -3,6 +3,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include "../deck.h"
 #include "constants.h"
 #include "table.h"
 
@@ -22,6 +23,8 @@ private:
 private:
     Deck deck_;
     std::vector<size_t> bets_;
+    // count scores and account wins and looses
+    void FinalStage();
 
     friend void HitAction(BlackjackTable* table, size_t player_ind);
     friend void StandAction(BlackjackTable* table, size_t player_ind);

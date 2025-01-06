@@ -5,8 +5,6 @@
 #include <memory>
 #include <vector>
 
-#include "../deck.h"
-#include "constants.h"
 #include "../Gamblers/gambler.h"
 
 class ITable {
@@ -27,7 +25,7 @@ public:
 
 protected:
     size_t whose_move_; // index of the active player
-    std::vector<std::shared_ptr<IGambler>> players_;
+   std::vector<std::shared_ptr<IGambler>> players_;
 };
 
 #endif // !CASINOOBSERVER_BRAINMANAGER_TABLE_H

@@ -2,6 +2,7 @@
 #ifndef CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H
 #define CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H
 
+#include "../Tables/blackjack_table.h"
 #include "../game_state.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
@@ -19,6 +20,7 @@ public:
 private:
     sf::Sprite dealer_sprite_;
     sf::Sprite table_sprite_;
+    BlackjackTable table_;
 };
 
 #endif // CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H

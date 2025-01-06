@@ -5,9 +5,8 @@
 #include <memory>
 #include <vector>
 
-#include "../deck.h"
-#include "constants.h"
 #include "../Gamblers/gambler.h"
+#include "../deck.h"
 
 class ITable {
 public:
@@ -21,9 +20,9 @@ public:
     virtual void RemovePlayer(const IGambler& player);
 };
 
-class AbstractITable : public ITable {
+class AbstractTable : public ITable {
 public:
-    AbstractITable() : whose_move_{0} {}
+    AbstractTable() : whose_move_{0} {}
 
 protected:
     size_t whose_move_; // index of the active player

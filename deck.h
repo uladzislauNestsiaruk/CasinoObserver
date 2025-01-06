@@ -7,7 +7,9 @@
 
 class Deck {
 public:
-    Deck();
+    Deck(bool without_jokers = false);
+
+    void RemoveCards(const std::vector<Card>& cards);
 
     void ReshuffleDeck();
 

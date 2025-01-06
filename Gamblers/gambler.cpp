@@ -5,4 +5,3 @@ std::vector<Card> BaseGambler::TakeAllCards() {
     cards_.clear();
     return return_value;
 }
-

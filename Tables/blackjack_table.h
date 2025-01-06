@@ -7,9 +7,9 @@
 #include "table.h"
 
 // Player by zero index is always a dealer
-class BlackjackTable : public AbstractITable {
+class BlackjackTable : public AbstractTable {
 public:
-    BlackjackTable() : AbstractITable(), bets_(8, 0) {}
+    BlackjackTable() : AbstractTable(), bets_(8, 0) {}
 
     void Dealing() override;
 

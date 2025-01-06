@@ -16,6 +16,12 @@ public:
 
     CardValue GetValue() const { return CardValue(value_ & ((1 << kValueBits) - 1)); }
 
+    bool operator==(const Card& other_card) const { return value_ == other_card.value_; }
+
+    bool operator<(const Card& other_card) const { return value_ < other_card.value_; }
+
+    bool operator>(const Card& other_card) const { return value_ > other_card.value_; }
+
 private:
     uint8_t value_;
 };

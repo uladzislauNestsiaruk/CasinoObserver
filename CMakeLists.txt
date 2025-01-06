@@ -19,18 +19,20 @@ add_subdirectory(GameStates)
 add_subdirectory(Tables)
 #Gamblers
 add_subdirectory(Gamblers)
+#Utils
+add_subdirectory(Utils)
 
 #All libraries and subdirectories of the project
 set(LIBRARIES sfml-graphics sfml-window
               sfml-system sfml-audio
               game_states
               tables
-              gamblers)
+              gamblers
+              utils)
 
 #I dont know where i can put them, so since know the called "TOP_LAYER"
 set(TOP_LAYER_SOURCES game_loop.cpp
-                      state_manager.cpp
-                      textures_loader.cpp)
+                      state_manager.cpp)
 
 #Release target
 add_executable(${PROJECT_NAME} ${TOP_LAYER_SOURCES})

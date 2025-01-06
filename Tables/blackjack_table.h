@@ -3,7 +3,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "../deck.h"
+#include "deck.h"
 #include "constants.h"
 #include "table.h"
 

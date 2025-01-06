@@ -2,8 +2,8 @@
 
 #include "blackjack_close.h"
 #include "../state_manager.h"
-#include "../textures_loader.h"
 #include "SFML/Window/Event.hpp"
+#include "textures_loader.h"
 
 BlackjackClose::BlackjackClose(StateManager* manager)
     : dealer_sprite_(GetTextute("male_dealer1")), table_sprite_(GetTextute("blackjack_table")),

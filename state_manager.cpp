@@ -8,6 +8,7 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
+#include "game_state.h"
 #include "state_manager.h"
 #include "textures_loader.h"
 
@@ -31,6 +32,8 @@ void StateManager::Init() {
 
     states_.emplace_back(std::make_shared<WorkRoomState>(this));
 }
+
+void StateManager::Push(std::shared_ptr<IGameState> state) { states_.emplace_back(state); }
 
 void StateManager::Clean() {
     game_window_.close();

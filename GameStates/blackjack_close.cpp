@@ -6,7 +6,8 @@
 #include "SFML/Window/Event.hpp"
 
 BlackjackClose::BlackjackClose(StateManager* manager)
-    : dealer_sprite_(GetTextute("male_dealer1")), table_sprite_(GetTextute("blackjack_table")) {
+    : dealer_sprite_(GetTextute("male_dealer1")), table_sprite_(GetTextute("blackjack_table")),
+      table_() {
     auto table_size = GetTextute("blackjack_table").getSize();
     auto dealer_size = GetTextute("male_dealer1").getSize();
     auto window_size = manager->GetWindowSize();

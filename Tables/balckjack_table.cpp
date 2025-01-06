@@ -28,10 +28,6 @@ BlackjackAction HumbleGambler::BlackjackAction(const std::vector<Card>& state) {
     Card dealer_open = state[0];
     const std::vector<Card>& cards = ShowCards();
 
-    if (cards.size() != 2) {
-        throw std::logic_error("HumbleGambler in blackjack has != 2 cards");
-    }
-
     if (cards[0].GetValue() == cards[1].GetValue()) {
         return kPairSplitTable[RateCard(cards[0])][RateCard(dealer_open)];
     } else if (cards[0].GetValue() == CardValue::Ace || cards[1].GetValue() == CardValue::Ace) {
@@ -92,6 +88,20 @@ void BlackjackTable::Dealing() {
     }
 }
 
+void BlackjackTable::FinalStage() {
+    size_t dealer_score = GetPlayerScore(players_[0]);
+
+    for (size_t player_ind = 1; player_ind < players_.size(); player_ind++) {
+        size_t player_score = GetPlayerScore(players_[player_ind]);
+        if (player_score > 21 || player_score < dealer_score) {
+            continue;
+        }
+
+        players_[player_ind]->GetMoney(bets_[player_ind]);
+        players_[player_ind]->GetMoney(bets_[player_ind] * (player_score > dealer_score));
+    }
+}
+
 void BlackjackTable::GameIteration() {
     std::vector<Card> table_state;
     table_state.resize(players_.size() * 2 - 1);
@@ -108,6 +118,8 @@ void BlackjackTable::GameIteration() {
             kBlackjackActionsTable.at(player_decision)(this, ind);
         }
     }
+
+    FinalStage();
 }
 
 std::shared_ptr<IGambler> BlackjackTable::GetNextPlayer() {

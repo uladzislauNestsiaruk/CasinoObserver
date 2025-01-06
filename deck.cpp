@@ -11,11 +11,14 @@ Deck::Deck(bool without_jokers) : random_generator_{std::random_device{}()} {
 }
 
 void Deck::RemoveCards(const std::vector<Card>& cards) {
-    cards_.erase(std::remove_if(cards_.begin(), cards_.end(), [&](const Card& card) {
-        return std::find_if(cards.begin(), cards.end(), [&](const Card& card_rm) {
-            return card == card_rm;
-        }) != cards.end();
-    }), cards_.end());
+    cards_.erase(std::remove_if(cards_.begin(), cards_.end(),
+                                [&](const Card& card) {
+                                    return std::find_if(cards.begin(), cards.end(),
+                                                        [&](const Card& card_rm) {
+                                                            return card == card_rm;
+                                                        }) != cards.end();
+                                }),
+                 cards_.end());
 }
 
 void Deck::ReshuffleDeck() { std::shuffle(cards_.begin(), cards_.end(), random_generator_); }

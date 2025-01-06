@@ -5,9 +5,8 @@
 #include <memory>
 #include <vector>
 
-#include "../deck.h"
-#include "constants.h"
 #include "../Gamblers/gambler.h"
+#include "../deck.h"
 
 class ITable {
 public:

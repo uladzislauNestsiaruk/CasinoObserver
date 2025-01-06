@@ -4,7 +4,8 @@
 
 class PokerTable : public AbstractTable {
 public:
-    PokerTable() : AbstractTable(), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_) {}
+    PokerTable()
+        : AbstractTable(), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_) {}
 
     void Dealing() override;
 

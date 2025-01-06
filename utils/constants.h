@@ -114,13 +114,7 @@ constexpr std::array<std::array<BlackjackAction, 12>, 12> kPairSplitTable{{
     {D, D, SP, SP, SP, SP, SP, SP, SP, SP, SP, SP}  // 11
 }};
 
-enum class PokerMove : uint8_t {
-    FOLD = 0,
-    CALL,
-    BET,
-    RAISE,
-    ALL_IN
-};
+enum class PokerMove : uint8_t { FOLD = 0, CALL, BET, RAISE, ALL_IN };
 
 struct PokerMoveState {
     PokerMove move;

@@ -15,7 +15,9 @@ public:
     virtual ~IGambler() {}
 
     virtual BlackjackAction BlackjackAction(const std::vector<Card>& cards_) = 0;
-    virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards, const std::vector<Card>& hand, size_t current_bet, size_t min_bet, size_t min_raise, size_t num_raises) = 0;
+    virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
+                                       const std::vector<Card>& hand, size_t current_bet,
+                                       size_t min_bet, size_t min_raise, size_t num_raises) = 0;
 
     virtual bool GetGameStatus() const = 0;
     virtual void ChangeGameStatus() = 0;
@@ -64,7 +66,9 @@ private:
 class HumbleGambler : public BaseGambler {
 public:
     enum BlackjackAction BlackjackAction(const std::vector<Card>&) override;
-    PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards, const std::vector<Card>& hand, size_t current_bet, size_t min_bet, size_t min_raise, size_t num_raises) override;
+    PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
+                               const std::vector<Card>& hand, size_t current_bet, size_t min_bet,
+                               size_t min_raise, size_t num_raises) override;
 };
 
 class CheaterGambler : public BaseGambler {

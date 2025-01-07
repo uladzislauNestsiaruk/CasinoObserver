@@ -2,13 +2,14 @@
 
 #include "../game_state.h"
 #include "SFML/Graphics/Sprite.hpp"
+#include "SFML/System/Time.hpp"
 
 class WorkRoomState : public IGameState {
 public:
     explicit WorkRoomState(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
-    void Update(StateManager* manager) override;
+    void Update(sf::Time delta) override;
     void Draw(StateManager* manager) override;
 
     ~WorkRoomState() override {}

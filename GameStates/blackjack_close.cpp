@@ -2,29 +2,29 @@
 
 #include "blackjack_close.h"
 #include "../state_manager.h"
+#include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "textures_loader.h"
 
 BlackjackClose::BlackjackClose(StateManager* manager)
-    : dealer_sprite_(GetTextute("male_dealer1")), table_sprite_(GetTextute("blackjack_table")),
-      table_() {
-    auto table_size = GetTextute("blackjack_table").getSize();
-    auto dealer_size = GetTextute("male_dealer1").getSize();
-    auto window_size = manager->GetWindowSize();
-
-    table_sprite_.setOrigin(table_size.x / 2.0, table_size.y / 2.0);
-    table_sprite_.setPosition(window_size.x / 2.0, window_size.y / 2.0);
-
-    dealer_sprite_.setOrigin(dealer_size.x / 2.0, dealer_size.y / 2.0);
-    dealer_sprite_.setPosition(window_size.x / 2.0 - dealer_size.x / 2.0,
-                               table_sprite_.getPosition().y - dealer_size.y / 2.5);
-}
+    : table_(), dealing_animation_(GetTextute("blackjack_dealing_animation"), 4, 3),
+      game_state_(State::DEALING) {}
 
 void BlackjackClose::HandleEvent(const sf::Event& event) {}
 
-void BlackjackClose::Update(StateManager* manager) {}
+void BlackjackClose::Update(sf::Time delta) {
+    if (game_state_ == State::DEALING) {
+        dealing_animation_.Update(delta);
+        if (dealing_animation_.IsFinished()) {
+            game_state_ = State::PLAYING;
+            table_.Dealing();
+        }
+        return;
+    }
 
-void BlackjackClose::Draw(StateManager* manager) {
-    manager->DrawSprite(dealer_sprite_);
-    manager->DrawSprite(table_sprite_);
+    if (!table_.IsGameFinished()) {
+        table_.Update(delta);
+    }
 }
+
+void BlackjackClose::Draw(StateManager* manager) { dealing_animation_.Draw(manager); }

@@ -6,21 +6,24 @@
 #include "../game_state.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
+#include "animation.h"
 
 class BlackjackClose : public IGameState {
+    enum class State { DEALING, PLAYING};
+
 public:
     explicit BlackjackClose(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
-    void Update(StateManager* manager) override;
+    void Update(sf::Time delta) override;
     void Draw(StateManager* manager) override;
 
     ~BlackjackClose() override {}
 
 private:
-    sf::Sprite dealer_sprite_;
-    sf::Sprite table_sprite_;
     BlackjackTable table_;
+    Animation dealing_animation_;
+    State game_state_;
 };
 
 #endif // CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H

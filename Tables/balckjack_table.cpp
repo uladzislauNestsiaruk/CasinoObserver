@@ -76,15 +76,19 @@ void DoubleOrStandAction(BlackjackTable* table, size_t player_ind) {
 
 void BlackjackTable::Dealing() {
     // No players at the table
-    if (players_.size() == 1) {
+    if (players_.size() <= 1) {
         return;
     }
 
     deck_.ReshuffleDeck();
+    table_state_.clear();
+    table_state_.resize(players_.size() * 2 - 1);
 
     for (size_t ind = 0; ind < players_.size(); ind++) {
         players_[ind]->GetCard(deck_.GetTopCard());
         players_[ind]->GetCard(deck_.GetTopCard());
+        table_state_[2 * ind - 1] = players_[ind]->ShowCards()[0];
+        table_state_[2 * ind] = players_[ind]->ShowCards()[1];
     }
 }
 
@@ -103,23 +107,15 @@ void BlackjackTable::FinalStage() {
 }
 
 void BlackjackTable::GameIteration() {
-    std::vector<Card> table_state;
-    table_state.resize(players_.size() * 2 - 1);
-    table_state[0] = players_[0]->ShowCards()[0];
-
-    for (size_t ind = 1; ind < players_.size(); ind++) {
-        table_state[2 * ind - 1] = players_[ind]->ShowCards()[0];
-        table_state[2 * ind] = players_[ind]->ShowCards()[1];
-    }
-
-    for (size_t ind = 1; ind < players_.size(); ind++) {
-        while (players_[ind]->GetGameStatus()) {
-            BlackjackAction player_decision = players_[ind]->BlackjackAction(table_state);
-            kBlackjackActionsTable.at(player_decision)(this, ind);
-        }
+    if (whose_move_ < players_.size()) {
+        BlackjackAction player_decision = players_[whose_move_]->BlackjackAction(table_state_);
+        kBlackjackActionsTable.at(player_decision)(this, whose_move_);
+        whose_move_ += !players_[whose_move_]->GetGameStatus();
+        return;
     }
 
     FinalStage();
+    whose_move_ = 0;
 }
 
 std::shared_ptr<IGambler> BlackjackTable::GetNextPlayer() {

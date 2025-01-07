@@ -8,6 +8,6 @@ PokerClose::PokerClose(StateManager* manager) {}
 
 void PokerClose::HandleEvent(const sf::Event& event) {}
 
-void PokerClose::Update(StateManager* manager) {}
+void PokerClose::Update(sf::Time delta) {}
 
 void PokerClose::Draw(StateManager* manager) {}

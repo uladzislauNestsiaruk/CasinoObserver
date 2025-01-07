@@ -2,7 +2,6 @@
 #include <memory>
 #include <stdexcept>
 
-#include "GameStates/blackjack_close.h"
 #include "GameStates/work_room.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Event.hpp"
@@ -52,7 +51,11 @@ void StateManager::HandleEvents() {
     }
 }
 
-void StateManager::Update() { states_.back()->Update(this); }
+void StateManager::Update(sf::Time delta) {
+    for (auto state : states_) {
+        state->Update(delta);
+    }
+}
 
 void StateManager::Draw() {
     game_window_.clear();

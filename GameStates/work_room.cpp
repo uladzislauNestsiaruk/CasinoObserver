@@ -55,7 +55,7 @@ void WorkRoomState::HandleEvent(const sf::Event& event) {
     manager.Push(tables_[table_ind]);
 }
 
-void WorkRoomState::Update(StateManager* manager) {}
+void WorkRoomState::Update(sf::Time delta) {}
 
 void WorkRoomState::Draw(StateManager* manager) {
     for (auto camera : cameras_) {

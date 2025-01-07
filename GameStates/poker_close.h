@@ -9,7 +9,7 @@ public:
     explicit PokerClose(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
-    void Update(StateManager* manager) override;
+    void Update(sf::Time delta) override;
     void Draw(StateManager* manager) override;
 
     ~PokerClose() override {}

@@ -34,7 +34,7 @@ public:
     std::shared_ptr<IGameState> Pop();
 
     void HandleEvents();
-    void Update();
+    void Update(sf::Time delta);
     void Draw();
 
     bool Running() { return is_running_; }

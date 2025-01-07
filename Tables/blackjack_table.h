@@ -3,14 +3,14 @@
 #include <memory>
 #include <unordered_map>
 
-#include "deck.h"
 #include "constants.h"
+#include "deck.h"
 #include "table.h"
 
 // Player by zero index is always a dealer
 class BlackjackTable : public AbstractTable {
 public:
-    BlackjackTable() : AbstractTable(), bets_(8, 0) {}
+    BlackjackTable() : AbstractTable(), bets_(8, 0), table_state_() {}
 
     void Dealing() override;
 
@@ -23,6 +23,8 @@ private:
 private:
     Deck deck_;
     std::vector<size_t> bets_;
+    std::vector<Card> table_state_; // cards of all players [delaer card 1, player 1
+                                    // card 1, player 1 card 2 ...]
     // count scores and account wins and looses
     void FinalStage();
 

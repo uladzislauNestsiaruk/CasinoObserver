@@ -1,9 +1,9 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
 #include "blackjack_close.h"
-#include "../state_manager.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
+#include "state_manager.h"
 #include "textures_loader.h"
 
 BlackjackClose::BlackjackClose(StateManager* manager)

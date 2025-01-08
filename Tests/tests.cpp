@@ -11,9 +11,12 @@ TEST(BasicFunctionality, OnePlayer) {
 
     size_t games = 10000;
     for (size_t ind = 0; ind < games; ind++) {
+        std::cout << ind << "\n";
         table.Dealing();
         while (!table.IsGameFinished()) {
             table.GameIteration();
         }
+        table.RestartGame();
     }
+    table.AddPlayer(player);
 }

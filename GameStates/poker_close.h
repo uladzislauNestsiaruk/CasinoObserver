@@ -2,7 +2,7 @@
 #ifndef CASINOONSERVER_GAMESTATES_POKER_CLOSE_H
 #define CASINOONSERVER_GAMESTATES_POKER_CLOSE_H
 
-#include "../game_state.h"
+#include "game_state.h"
 
 class PokerClose : public IGameState {
 public:

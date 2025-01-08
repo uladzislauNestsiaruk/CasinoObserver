@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../game_state.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Time.hpp"
+#include "game_state.h"
 
 class WorkRoomState : public IGameState {
 public:

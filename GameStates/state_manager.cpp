@@ -2,7 +2,6 @@
 #include <memory>
 #include <stdexcept>
 
-#include "GameStates/work_room.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
@@ -10,6 +9,7 @@
 #include "game_state.h"
 #include "state_manager.h"
 #include "textures_loader.h"
+#include "work_room.h"
 
 const size_t kReserveStatesAmount = 32;
 const size_t kDefaultFrameLimit = 60;

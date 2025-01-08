@@ -2,6 +2,7 @@
 #define CASINOOBSERVER_BRAINMANAGER_GAMBLER_H
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 // "Copyright [2024] Netsiaruk Uladzislau"
@@ -14,7 +15,7 @@ public:
 
     virtual ~IGambler() {}
 
-    virtual BlackjackAction BlackjackAction(const std::vector<Card>& cards_) = 0;
+    virtual BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&) = 0;
     virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                        const std::vector<Card>& hand, size_t current_bet,
                                        size_t min_bet, size_t min_raise, size_t num_raises) = 0;
@@ -76,7 +77,7 @@ public:
     HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
         : BaseGambler(skill, game_type, still_in_game, money) {}
 
-    enum BlackjackAction BlackjackAction(const std::vector<Card>&) override;
+    enum BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&) override;
 
     PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                const std::vector<Card>& hand, size_t current_bet, size_t min_bet,

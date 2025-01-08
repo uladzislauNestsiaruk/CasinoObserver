@@ -1,11 +1,12 @@
 #include "deck.h"
+#include <iterator>
 
 Deck::Deck(bool without_jokers) : random_generator_{std::random_device{}()} {
-    cards_.resize(kDefaultDeckSize);
+    cards_.reserve(kDefaultDeckSize);
     for (size_t value = 0; value < kCardValues - static_cast<size_t>(without_jokers); ++value) {
         for (size_t type = 0;
              type < (static_cast<CardValue>(value) == CardValue::Joker ? 2 : kCardTypes); ++type) {
-            cards_.push_back(Card(static_cast<CardType>(type), static_cast<CardValue>(value)));
+            cards_.emplace_back(Card(static_cast<CardType>(type), static_cast<CardValue>(value)));
         }
     }
 }
@@ -27,4 +28,9 @@ Card Deck::GetTopCard() {
     Card top = cards_.back();
     cards_.pop_back();
     return top;
+}
+
+void Deck::ReturnCards(std::vector<Card>& cards) {
+    cards_.insert(cards_.end(), std::make_move_iterator(cards.begin()),
+                  std::make_move_iterator(cards.end()));
 }

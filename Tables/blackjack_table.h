@@ -10,23 +10,19 @@
 // Player by zero index is always a dealer
 class BlackjackTable : public AbstractTable {
 public:
-    BlackjackTable() : AbstractTable(), bets_(8, 0), table_state_() {}
+    BlackjackTable() : AbstractTable(GameType::Blackjack), deck_(true), bets_(8, 0) {}
 
     void Dealing() override;
 
     void GameIteration() override;
 
-private:
-    // returns first player in the order that still in game
-    std::shared_ptr<IGambler> GetNextPlayer();
+    void RestartGame() override;
 
 private:
     Deck deck_;
     std::vector<size_t> bets_;
-    std::vector<Card> table_state_; // cards of all players [delaer card 1, player 1
-                                    // card 1, player 1 card 2 ...]
-    // count scores and account wins and looses
-    void FinalStage();
+    // returns first player in the order that still in game
+    std::shared_ptr<IGambler> GetNextPlayer();
 
     friend void HitAction(BlackjackTable* table, size_t player_ind);
     friend void StandAction(BlackjackTable* table, size_t player_ind);
@@ -48,5 +44,7 @@ const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, size_t playe
     kBlackjackActionsTable{{{BlackjackAction::DUMMY, DummyAction},
                             {BlackjackAction::HIT, HitAction},
                             {BlackjackAction::STAND, StandAction},
+                            {BlackjackAction::SPLIT, HitAction}, // TODO
+                            {BlackjackAction::SPLIT, HitAction}, // TODO
                             {BlackjackAction::DOUBLE_OR_HIT, DoubleOrHitAction},
                             {BlackjackAction::DOUBLE_OR_STAND, DoubleOrStandAction}}};

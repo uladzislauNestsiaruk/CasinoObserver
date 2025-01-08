@@ -8,12 +8,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers
 
 include(FetchContent)
 
+#All Sources
+set(SOURCES "")
+#All include headers
+set(HEADERS "")
+#All libraries
+set(LIBRARIES "")
+
 #SFML linkage
-include_directories(${CMAKE_SOURCE_DIR}/SFML_ARM/include)
+set(HEADERS ${HEADERS} ${CMAKE_SOURCE_DIR}/SFML_ARM/include)
 link_directories(${CMAKE_SOURCE_DIR}/SFML_ARM/lib)
 
 #add_includes
-include_directories(${CMAKE_SOURCE_DIR}/utils)
+set(HEADERS ${HEADERS} ${CMAKE_SOURCE_DIR}/utils)
 
 #GameStates parsing
 add_subdirectory(GameStates)
@@ -25,12 +32,8 @@ add_subdirectory(Gamblers)
 add_subdirectory(Utils)
 
 #All libraries and subdirectories of the project
-set(LIBRARIES sfml-graphics sfml-window
-              sfml-system sfml-audio 
-              game_states
-              tables
-              gamblers
-              utils)
+set(LIBRARIES ${LIBRARIES} sfml-graphics sfml-window
+              sfml-system sfml-audio)
 
 if(CMAKE_BUILD_TYPE MATCHES "TESTING")
     #setup googletest
@@ -39,23 +42,25 @@ if(CMAKE_BUILD_TYPE MATCHES "TESTING")
     enable_testing() 
     #Tests
     add_subdirectory(Tests)
-    add_executable(${PROJECT_NAME} ${TESTS_SOURCES})
     #link and include
     set(LIBRARIES ${LIBRARIES} gtest_main gmock_main)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${gtest_SOURCE_DIR}/include ${gtest_BINARY_DIR})
+    set(HEADERS ${HEADERS} ${gtest_SOURCE_DIR}/include ${gtest_BINARY_DIR})
+    #Compile flags
+    add_compile_options(-g3 -O0)
 else()
     #I dont know where i can put them, so since know the called "TOP_LAYER"
-    set(TOP_LAYER_SOURCES game_loop.cpp
-                      state_manager.cpp)
+    set(SOURCES ${SOURCES} game_loop.cpp)
     #Release/Debug target
-    add_executable(${PROJECT_NAME} ${TOP_LAYER_SOURCES})
+    #Compilation flags
+    target_compile_options(${PROJECT_NAME} PRIVATE
+        $<$<CONFIG:DEBUG>:-g3 -O0>
+        $<$<CONFIG:RELEASE>:-O3 -march=native>
+    )
 endif()
 
+#Compile sources
+add_executable(${PROJECT_NAME} ${SOURCES})
+#Include headers
+target_include_directories(${PROJECT_NAME} PRIVATE ${HEADERS})
+#Link all
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
-
-#Compilation flags
-target_compile_options(${PROJECT_NAME} PRIVATE
-    $<$<CONFIG:DEBUG>:-g3 -O0>
-    $<$<CONFIG:TESTING>:-g3 -O0>
-    $<$<CONFIG:RELEASE>:-O3 -march=native>
-)

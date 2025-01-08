@@ -33,10 +33,14 @@ public:
 
 class BaseGambler : public IGambler {
 public:
-    BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game{true}, money_{0} {}
+    BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game_{true}, money_{0} {}
 
-    bool GetGameStatus() const override { return still_in_game; }
-    void ChangeGameStatus() override { still_in_game ^= 1; }
+    BaseGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
+        : skill_(skill), game_type_(game_type), still_in_game_(still_in_game), money_(money),
+          cards_() {}
+
+    bool GetGameStatus() const override { return still_in_game_; }
+    void ChangeGameStatus() override { still_in_game_ ^= 1; }
 
     void GetCard(Card card) override { cards_.emplace_back(card); }
     const std::vector<Card>& ShowCards() const override { return cards_; }
@@ -55,20 +59,30 @@ public:
 
     void GetMoney(size_t amount) override { money_ += amount; }
 
+    ~BaseGambler() override {}
+
 private:
     int16_t skill_;
     GameType game_type_;
-    bool still_in_game;
+    bool still_in_game_;
     size_t money_;
     std::vector<Card> cards_;
 };
 
 class HumbleGambler : public BaseGambler {
 public:
+    HumbleGambler() : BaseGambler() {}
+
+    HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
+        : BaseGambler(skill, game_type, still_in_game, money) {}
+
     enum BlackjackAction BlackjackAction(const std::vector<Card>&) override;
+
     PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                const std::vector<Card>& hand, size_t current_bet, size_t min_bet,
                                size_t min_raise, size_t num_raises) override;
+
+    ~HumbleGambler() override {}
 };
 
 class CheaterGambler : public BaseGambler {

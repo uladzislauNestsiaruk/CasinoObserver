@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 
 enum class GameType : uint8_t { Blackjack, Poker };
 

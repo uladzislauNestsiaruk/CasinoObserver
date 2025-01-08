@@ -1,7 +1,8 @@
-#include "blackjack_table.h"
-#include "constants.h"
 #include <memory>
 #include <stdexcept>
+
+#include "blackjack_table.h"
+#include "constants.h"
 
 int RateCard(Card card, int AceValue = 11) {
     int value = static_cast<int>(card.GetValue());

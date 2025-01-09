@@ -28,8 +28,8 @@ public:
     explicit AbstractTable(GameType table_type)
         : whose_move_{0}, players_(1, std::make_shared<HumbleGambler>(0, table_type, 0, INT_MAX)) {}
 
-    virtual void AddPlayer(IGambler& player) {
-        players_.emplace_back(std::shared_ptr<IGambler>(&player));
+    virtual void AddPlayer(IGambler* player) {
+        players_.emplace_back(std::shared_ptr<IGambler>(player));
     }
 
     virtual void RemovePlayer(const IGambler& player) {

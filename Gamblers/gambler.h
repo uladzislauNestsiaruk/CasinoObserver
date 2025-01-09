@@ -9,13 +9,17 @@
 #include "card.h"
 #include "constants.h"
 
+// Class that describes player state in Blackjack
+class Hand;
+
 class IGambler {
 public:
     IGambler() {}
 
     virtual ~IGambler() {}
 
-    virtual BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&) = 0;
+    virtual BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
+                                            const Hand&) = 0;
     virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                        const std::vector<Card>& hand, size_t current_bet,
                                        size_t min_bet, size_t min_raise, size_t num_raises) = 0;
@@ -28,8 +32,9 @@ public:
     virtual const std::vector<Card>& ShowCards() const = 0;
 
     virtual size_t GetBalance() const = 0;
-    virtual bool PerformBet(size_t amount) = 0;
-    virtual void GetMoney(size_t amount) = 0; // literally our goal
+    virtual bool PerformBet(size_t amount) = 0; // return true if Gambler can perform bet and
+                                                // substracts amount from his money
+    virtual void GetMoney(size_t amount) = 0;   // literally our goal
 };
 
 class BaseGambler : public IGambler {
@@ -40,6 +45,8 @@ public:
         : skill_(skill), game_type_(game_type), still_in_game_(still_in_game), money_(money),
           cards_() {}
 
+    // game status equal true if player did't fold(that's for poker)
+    // or didn't stand(thats's for blackjack)
     bool GetGameStatus() const override { return still_in_game_; }
     void ChangeGameStatus() override { still_in_game_ ^= 1; }
 
@@ -77,7 +84,8 @@ public:
     HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
         : BaseGambler(skill, game_type, still_in_game, money) {}
 
-    enum BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&) override;
+    enum BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
+                                         const Hand&) override;
 
     PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                const std::vector<Card>& hand, size_t current_bet, size_t min_bet,

@@ -2,11 +2,15 @@
 #define CASINOOBSERVER_BRAINMANAGER_GAMBLER_H
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 // "Copyright [2024] Netsiaruk Uladzislau"
 #include "card.h"
 #include "constants.h"
+
+// Class that describes player state in Blackjack
+class Hand;
 
 class IGambler {
 public:
@@ -14,7 +18,8 @@ public:
 
     virtual ~IGambler() {}
 
-    virtual BlackjackAction BlackjackAction(const std::vector<Card>& cards_) = 0;
+    virtual BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
+                                            const Hand&) = 0;
     virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                        const std::vector<Card>& hand, size_t current_bet,
                                        size_t min_bet, size_t min_raise, size_t num_raises) = 0;
@@ -27,16 +32,23 @@ public:
     virtual const std::vector<Card>& ShowCards() const = 0;
 
     virtual size_t GetBalance() const = 0;
-    virtual bool PerformBet(size_t amount) = 0;
-    virtual void GetMoney(size_t amount) = 0; // literally our goal
+    virtual bool PerformBet(size_t amount) = 0; // return true if Gambler can perform bet and
+                                                // substracts amount from his money
+    virtual void GetMoney(size_t amount) = 0;   // literally our goal
 };
 
 class BaseGambler : public IGambler {
 public:
-    BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game{true}, money_{0} {}
+    BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game_{true}, money_{0} {}
 
-    bool GetGameStatus() const override { return still_in_game; }
-    void ChangeGameStatus() override { still_in_game ^= 1; }
+    BaseGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
+        : skill_(skill), game_type_(game_type), still_in_game_(still_in_game), money_(money),
+          cards_() {}
+
+    // game status equal true if player did't fold(that's for poker)
+    // or didn't stand(thats's for blackjack)
+    bool GetGameStatus() const override { return still_in_game_; }
+    void ChangeGameStatus() override { still_in_game_ ^= 1; }
 
     void GetCard(Card card) override { cards_.emplace_back(card); }
     const std::vector<Card>& ShowCards() const override { return cards_; }
@@ -55,20 +67,31 @@ public:
 
     void GetMoney(size_t amount) override { money_ += amount; }
 
+    ~BaseGambler() override {}
+
 private:
     int16_t skill_;
     GameType game_type_;
-    bool still_in_game;
+    bool still_in_game_;
     size_t money_;
     std::vector<Card> cards_;
 };
 
 class HumbleGambler : public BaseGambler {
 public:
-    enum BlackjackAction BlackjackAction(const std::vector<Card>&) override;
+    HumbleGambler() : BaseGambler() {}
+
+    HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
+        : BaseGambler(skill, game_type, still_in_game, money) {}
+
+    enum BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
+                                         const Hand&) override;
+
     PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                const std::vector<Card>& hand, size_t current_bet, size_t min_bet,
                                size_t min_raise, size_t num_raises) override;
+
+    ~HumbleGambler() override {}
 };
 
 class CheaterGambler : public BaseGambler {

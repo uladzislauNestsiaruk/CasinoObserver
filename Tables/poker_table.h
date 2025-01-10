@@ -1,9 +1,10 @@
 #pragma once
 
-#include "table.h"
 #include "deck.h"
+#include "table.h"
 
 #include <string_view>
+#include <vector>
 
 class PokerTable : public AbstractTable {
 public:

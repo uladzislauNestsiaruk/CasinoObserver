@@ -2,6 +2,7 @@
 #ifndef CASINOOBSERVER_BRAINMANAGER_TABLE_H
 #define CASINOOBSERVER_BRAINMANAGER_TABLE_H
 
+#include <climits>
 #include <memory>
 #include <vector>
 
@@ -23,8 +24,12 @@ class AbstractTable : public ITable {
 public:
     AbstractTable() : whose_move_{0} {}
 
-    virtual void AddPlayer(IGambler& player) {
-        players_.emplace_back(std::shared_ptr<IGambler>(&player));
+    // Ctor for dealer specialization
+    explicit AbstractTable(GameType table_type)
+        : whose_move_{0}, players_(1, std::make_shared<HumbleGambler>(0, table_type, 0, INT_MAX)) {}
+
+    virtual void AddPlayer(IGambler* player) {
+        players_.emplace_back(std::shared_ptr<IGambler>(player));
     }
 
     virtual void RemovePlayer(const IGambler& player) {
@@ -36,9 +41,9 @@ public:
         }
     }
 
-    bool IsGameFinished() {
-        return whose_move_ >= players_.size();
-    }
+    virtual void RestartGame() { whose_move_ = 0; }
+
+    bool IsGameFinished() { return whose_move_ >= players_.size(); }
 
     void Update(sf::Time delta) {
         elapsed_ += delta;

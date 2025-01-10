@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../state_manager.h"
+#include "../GameStates/state_manager.h"
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
@@ -28,9 +28,7 @@ public:
 
     void Update(sf::Time time_elapsed);
 
-    void Draw(StateManager* manager) {
-        manager->DrawSprite(sprite_);
-    }
+    void Draw(StateManager* manager) { manager->DrawSprite(sprite_); }
 
     void Reset();
 

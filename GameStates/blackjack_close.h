@@ -3,13 +3,13 @@
 #define CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H
 
 #include "../Tables/blackjack_table.h"
-#include "../game_state.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "animation.h"
+#include "game_state.h"
 
 class BlackjackClose : public IGameState {
-    enum class State { DEALING, PLAYING};
+    enum class State { DEALING, PLAYING };
 
 public:
     explicit BlackjackClose(StateManager* manager);

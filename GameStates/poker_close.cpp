@@ -1,7 +1,7 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
 #include "poker_close.h"
-#include "../state_manager.h"
+#include "state_manager.h"
 #include "SFML/Window/Event.hpp"
 
 PokerClose::PokerClose(StateManager* manager) {}

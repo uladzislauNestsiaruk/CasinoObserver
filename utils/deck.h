@@ -15,6 +15,8 @@ public:
 
     Card GetTopCard();
 
+    void ReturnCards(std::vector<Card>& cards);
+
 private:
     std::vector<Card> cards_;
     std::mt19937 random_generator_;

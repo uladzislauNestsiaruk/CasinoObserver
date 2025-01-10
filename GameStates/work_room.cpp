@@ -1,10 +1,10 @@
 #include "work_room.h"
 #include "../Tables/poker_table.h"
-#include "../state_manager.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "blackjack_close.h"
 #include "poker_close.h"
+#include "state_manager.h"
 #include "textures_loader.h"
 
 #include <algorithm>

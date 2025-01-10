@@ -1,52 +1,75 @@
 #pragma once
 
-#include <memory>
+#include <list>
 #include <unordered_map>
+#include <utility>
 
 #include "constants.h"
 #include "deck.h"
 #include "table.h"
 
+struct Hand {
+    Hand() : bet(0), player_ind(0), cards_pos(std::make_pair(0, 0)) {}
+
+    Hand(size_t in_bet, size_t in_player_ind, std::pair<size_t, size_t> in_cards_pos)
+        : bet(in_bet), player_ind(in_player_ind), cards_pos(in_cards_pos) {}
+
+    size_t bet;
+    size_t player_ind;
+    std::pair<size_t, size_t> cards_pos; // index of the first and the last card corresponding
+                                         // to this hand, [first, last)
+};
+
 // Player by zero index is always a dealer
+// Also whose_move iterating through hands, not players!!!
 class BlackjackTable : public AbstractTable {
+    size_t max_players_amount_ = 8;
+    struct TableSetting {
+        bool das; // is double after split enabled
+    };
+
 public:
-    BlackjackTable() : AbstractTable(), bets_(8, 0), table_state_() {}
+    BlackjackTable() : AbstractTable(GameType::Blackjack), deck_(true), hands_(), settings_{true} {}
 
     void Dealing() override;
 
     void GameIteration() override;
 
-private:
-    // returns first player in the order that still in game
-    std::shared_ptr<IGambler> GetNextPlayer();
+    void RestartGame() override;
 
 private:
     Deck deck_;
-    std::vector<size_t> bets_;
-    std::vector<Card> table_state_; // cards of all players [delaer card 1, player 1
-                                    // card 1, player 1 card 2 ...]
-    // count scores and account wins and looses
-    void FinalStage();
+    std::list<Hand> hands_;
+    std::list<Hand>::iterator hands_iterator_;
+    TableSetting settings_;
 
-    friend void HitAction(BlackjackTable* table, size_t player_ind);
-    friend void StandAction(BlackjackTable* table, size_t player_ind);
-    friend void DoubleOrHitAction(BlackjackTable* table, size_t player_ind);
-    friend void DoubleOrStandAction(BlackjackTable* table, size_t player_ind);
+    friend void HitAction(BlackjackTable* table, Hand&);
+    friend void StandAction(BlackjackTable* table, Hand&);
+    friend void DoubleOrHitAction(BlackjackTable* table, Hand&);
+    friend void DoubleOrStandAction(BlackjackTable* table, Hand&);
+    friend void SplitAction(BlackjackTable* table, Hand& hand);
+    friend void SplitIfDoubleAction(BlackjackTable* table, Hand& hand);
 };
 
-void DummyAction(BlackjackTable* table, size_t player_ind);
+void DummyAction(BlackjackTable* table, Hand&);
 
-void HitAction(BlackjackTable* table, size_t player_ind);
+void HitAction(BlackjackTable* table, Hand&);
 
-void StandAction(BlackjackTable* table, size_t player_ind);
+void StandAction(BlackjackTable* table, Hand&);
 
-void DoubleOrHitAction(BlackjackTable* table, size_t player_ind);
+void DoubleOrHitAction(BlackjackTable* table, Hand&);
 
-void DoubleOrStandAction(BlackjackTable* table, size_t player_ind);
+void DoubleOrStandAction(BlackjackTable* table, Hand&);
 
-const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, size_t player_ind)>
+void SplitAction(BlackjackTable* table, Hand& hand);
+
+void SplitIfDoubleAction(BlackjackTable* table, Hand& hand);
+
+const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, Hand&)>
     kBlackjackActionsTable{{{BlackjackAction::DUMMY, DummyAction},
                             {BlackjackAction::HIT, HitAction},
                             {BlackjackAction::STAND, StandAction},
+                            {BlackjackAction::SPLIT, SplitAction},
+                            {BlackjackAction::SPLIT_IF_DOUBLE, SplitIfDoubleAction},
                             {BlackjackAction::DOUBLE_OR_HIT, DoubleOrHitAction},
                             {BlackjackAction::DOUBLE_OR_STAND, DoubleOrStandAction}}};

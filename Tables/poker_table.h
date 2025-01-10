@@ -15,6 +15,10 @@ public:
 
     void GameIteration() override;
 
+    bool IsGameFinished() const override;
+
+    void Clean() override;
+
 private:
     void ApplyBets();
 
@@ -24,7 +28,12 @@ private:
 
     void BettingPhase();
 
+    void SelectWinners();
+
+
 private:
+    std::atomic<bool> is_active_game = false;
+
     struct BetState {
         size_t amount = 0;
         size_t num_raises = 0;

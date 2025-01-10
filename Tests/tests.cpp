@@ -14,6 +14,6 @@ TEST(BasicFunctionality, OnePlayer) {
         while (!table.IsGameFinished()) {
             table.GameIteration();
         }
-        table.RestartGame();
+        table.Clean();
     }
 }

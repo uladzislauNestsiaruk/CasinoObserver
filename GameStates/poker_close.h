@@ -6,8 +6,11 @@
 
 #include "drawer.hpp"
 #include "thread_safe_queue.hpp"
+#include "json.hpp"
 
 #include <thread>
+
+using json = nlohmann::json;
 
 class PokerClose : public IGameState {
 public:
@@ -23,9 +26,6 @@ private:
     void GameExecutor();
 
 private:
-    struct LogEvent {};
-    struct RenderEvent {};
-
     std::atomic<bool> stop_game_thread_;
     std::atomic<bool> run_game_;
     std::thread game_exec_thr_;
@@ -33,7 +33,7 @@ private:
     std::unique_ptr<ITable> table_;
     std::unique_ptr<IDrawer> drawer_;
 
-    TSQueue<LogEvent> logs_;
-    TSQueue<RenderEvent> render_queue_;
+    TSQueue<json> logs_;
+    TSQueue<json> render_queue_;
 };
 

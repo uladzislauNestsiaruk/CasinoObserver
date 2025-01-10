@@ -4,7 +4,9 @@
 #include "state_manager.h"
 #include "SFML/Window/Event.hpp"
 
-PokerClose::PokerClose(StateManager* manager) : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this]{ GameExecutor(); })), table_(std::make_unique<PokerTable>()) {}
+#include <iostream>
+
+PokerClose::PokerClose(StateManager* manager) : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this]{ GameExecutor(); })), table_(std::make_unique<PokerTable>(logs_, render_queue_)) {}
 
 PokerClose::~PokerClose() {
     stop_game_thread_.store(true);
@@ -28,18 +30,18 @@ void PokerClose::Update(sf::Time delta) {
     }
 
     while (!logs_.empty()) {
-        std::optional<LogEvent> log_event = logs_.pop();
+        std::optional<json> log_event = logs_.pop();
         if (log_event == std::nullopt) {
             continue;
         }
 
-        // Handle log events
+        std::cout << "[LOG_EVENT]:\n" << log_event << '\n';
     }
 }
 
 void PokerClose::Draw(StateManager* manager) {
     while (!render_queue_.empty()) {
-        std::optional<RenderEvent> render_event = render_queue_.pop();
+        std::optional<json> render_event = render_queue_.pop();
         if (render_event == std::nullopt) {
             continue;
         }

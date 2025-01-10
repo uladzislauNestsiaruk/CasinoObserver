@@ -278,20 +278,35 @@ void PokerTable::BettingPhase() {
             PokerMoveState move_state = players_[ind]->PokerAction(
                 players_.size(), table_cards_, players_[ind]->ShowCards(), current_bet_, min_bet_,
                 min_raise_, bets_[ind].num_raises);
+            json move_log = {
+                {"type", "trade_move"}
+            };
+
             switch (static_cast<uint8_t>(move_state.move)) {
             case static_cast<uint8_t>(PokerMove::ALL_IN):
                 current_bet_ = std::min(current_bet_, move_state.money_amount.value());
+                move_log["move"] = "all_in";
+                move_log["amount"] = move_state.money_amount.value();
                 break;
             case static_cast<uint8_t>(PokerMove::BET):
                 current_bet_ = move_state.money_amount.value();
+                move_log["move"] = "bet";
+                move_log["amount"] = move_state.money_amount.value();
                 break;
             case static_cast<uint8_t>(PokerMove::RAISE):
                 current_bet_ = move_state.money_amount.value();
                 ++bets_[ind].num_raises;
+                move_log["move"] = "raise";
+                move_log["amount"] = move_state.money_amount.value();
                 break;
-            default:
+            case static_cast<uint8_t>(PokerMove::CALL):
+                move_log["move"] = "call";
+                break;
+            case static_cast<uint8_t>(PokerMove::FOLD):
+                move_log["move"] = "fold";
                 break;
             }
+            logs_.push(move_log);
 
             if (move_state.move != PokerMove::FOLD) {
                 bets_[ind].amount = move_state.money_amount.value();
@@ -319,6 +334,19 @@ void PokerTable::SelectWinners() {
 
     for (size_t i = 0; i < num_winners; ++i) {
         hand_rates[i].second->GetMoney(bank_ / num_winners);
+        logs_.push({
+            {"type", "game_end"},
+            {"result", "win"},
+            {"profit", bank_ / num_winners}
+        });
+    }
+
+    for (size_t i = num_winners; i < players_.size(); ++i) {
+        logs_.push({
+            {"type", "game_end"},
+            {"result", "lose"}
+            //{"loss", bank_ / num_winners}
+        });
     }
 }
 
@@ -333,7 +361,7 @@ void PokerTable::Clean() {
 
         deck_.ReturnCards(player->TakeAllCards());
     }
-    
+
     is_active_game.store(false);
 }
 

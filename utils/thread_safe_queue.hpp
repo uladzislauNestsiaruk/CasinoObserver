@@ -47,5 +47,5 @@ public:
 
 private:
     std::queue<T> data_;
-    std::mutex mtx_;
+    mutable std::mutex mtx_;
 };

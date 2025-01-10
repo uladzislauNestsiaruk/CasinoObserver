@@ -37,7 +37,9 @@ public:
 
     void GameIteration() override;
 
-    void RestartGame() override;
+    void Clean() override;
+
+    bool IsGameFinished() const override;
 
 private:
     Deck deck_;

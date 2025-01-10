@@ -13,9 +13,15 @@ class ITable {
 public:
     virtual ~ITable() {}
 
+    virtual void AddPlayer(IGambler* player) = 0;
+
+    virtual void RemovePlayer(const IGambler& player) = 0;
+
     virtual void GameIteration() = 0;
 
     virtual void Dealing() = 0;
+
+    virtual bool IsGameFinished() const = 0;
 };
 
 class AbstractTable : public ITable {
@@ -28,11 +34,11 @@ public:
     explicit AbstractTable(GameType table_type)
         : whose_move_{0}, players_(1, std::make_shared<HumbleGambler>(0, table_type, 0, INT_MAX)) {}
 
-    virtual void AddPlayer(IGambler* player) {
+    void AddPlayer(IGambler* player) override {
         players_.emplace_back(std::shared_ptr<IGambler>(player));
     }
 
-    virtual void RemovePlayer(const IGambler& player) {
+    void RemovePlayer(const IGambler& player) override {
         for (size_t ind = 0; ind < players_.size(); ind++) {
             if (&(*players_[ind]) == &player) {
                 players_.erase(players_.begin() + ind);
@@ -41,9 +47,7 @@ public:
         }
     }
 
-    virtual void RestartGame() { whose_move_ = 0; }
-
-    bool IsGameFinished() { return whose_move_ >= players_.size(); }
+    virtual void Clean() = 0;
 
     void Update(sf::Time delta) {
         elapsed_ += delta;

@@ -16,6 +16,7 @@ public:
     Card GetTopCard();
 
     void ReturnCards(std::vector<Card>& cards);
+    void ReturnCards(std::vector<Card>&& cards);
 
 private:
     std::vector<Card> cards_;

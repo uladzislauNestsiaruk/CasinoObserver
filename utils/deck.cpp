@@ -34,3 +34,7 @@ void Deck::ReturnCards(std::vector<Card>& cards) {
     cards_.insert(cards_.end(), std::make_move_iterator(cards.begin()),
                   std::make_move_iterator(cards.end()));
 }
+
+void Deck::ReturnCards(std::vector<Card>&& cards) {
+    cards_.insert(cards_.end(), cards.begin(), cards.end());
+}

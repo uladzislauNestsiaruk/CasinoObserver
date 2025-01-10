@@ -28,6 +28,7 @@ public:
     virtual void ChangeGameStatus() = 0;
 
     virtual void GetCard(Card card) = 0;
+    virtual Card ReturnOneCard() = 0;
     virtual std::vector<Card> TakeAllCards() = 0;
     virtual const std::vector<Card>& ShowCards() const = 0;
 
@@ -51,6 +52,11 @@ public:
     void ChangeGameStatus() override { still_in_game_ ^= 1; }
 
     void GetCard(Card card) override { cards_.emplace_back(card); }
+    Card ReturnOneCard() override {
+        Card last_card = cards_.back();
+        cards_.pop_back();
+        return last_card;
+    }
     const std::vector<Card>& ShowCards() const override { return cards_; }
     std::vector<Card> TakeAllCards() override;
 

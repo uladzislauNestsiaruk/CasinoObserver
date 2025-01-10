@@ -14,6 +14,8 @@ set(SOURCES "")
 set(HEADERS "")
 #All libraries
 set(LIBRARIES "")
+#Compile options
+set(OPTIONS -g3 -O0)
 
 #SFML linkage
 set(HEADERS ${HEADERS} ${CMAKE_SOURCE_DIR}/SFML_ARM/include)
@@ -45,17 +47,13 @@ if(CMAKE_BUILD_TYPE MATCHES "TESTING")
     #link and include
     set(LIBRARIES ${LIBRARIES} gtest_main gmock_main)
     set(HEADERS ${HEADERS} ${gtest_SOURCE_DIR}/include ${gtest_BINARY_DIR})
-    #Compile flags
-    add_compile_options(-g3 -O0)
 else()
     #I dont know where i can put them, so since know the called "TOP_LAYER"
     set(SOURCES ${SOURCES} game_loop.cpp)
-    #Release/Debug target
-    #Compilation flags
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:DEBUG>:-g3 -O0>
-        $<$<CONFIG:RELEASE>:-O3 -march=native>
-    )
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES "RELEASE")
+    set(OPTIONS -O3 -march=native)
 endif()
 
 #Compile sources
@@ -64,3 +62,5 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${HEADERS})
 #Link all
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
+#Compile options
+add_compile_options(${OPTIONS})

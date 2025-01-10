@@ -1,6 +1,5 @@
 #include <functional>
 #include <memory>
-#include <numeric>
 #include <stdexcept>
 #include <utility>
 
@@ -55,7 +54,7 @@ BlackjackAction
 HumbleGambler::BlackjackAction(const std::vector<std::shared_ptr<IGambler>>& players,
                                const Hand& hand) {
     const std::vector<Card>& cards = ShowCards();
-    if (players.size() < 2 || cards.size() < 2) {
+    if (players.size() < 2 || hand.cards_pos.second - hand.cards_pos.first < 2) {
         throw std::logic_error("ill formed state passed to BlackjackAction for HumbleGambler");
     }
 
@@ -79,6 +78,7 @@ void DummyAction(BlackjackTable* table, Hand& hand) {
 void HitAction(BlackjackTable* table, Hand& hand) {
     const auto player = table->players_[hand.player_ind];
     player->GetCard(table->deck_.GetTopCard());
+    ++hand.cards_pos.second;
 }
 
 void StandAction(BlackjackTable* table, Hand& hand) {
@@ -89,12 +89,11 @@ void DoubleOrHitAction(BlackjackTable* table, Hand& hand) {
     auto player = table->players_[hand.player_ind];
     if (player->PerformBet(hand.bet)) {
         hand.bet <<= 1;
-        player->GetCard(table->deck_.GetTopCard());
         player->ChangeGameStatus();
-        return;
     }
 
     player->GetCard(table->deck_.GetTopCard());
+    ++hand.cards_pos.second;
 }
 
 void DoubleOrStandAction(BlackjackTable* table, Hand& hand) {
@@ -102,6 +101,7 @@ void DoubleOrStandAction(BlackjackTable* table, Hand& hand) {
     if (player->PerformBet(hand.bet)) {
         hand.bet <<= 1;
         player->GetCard(table->deck_.GetTopCard());
+        ++hand.cards_pos.second;
     }
 
     player->ChangeGameStatus();
@@ -112,14 +112,21 @@ void SplitAction(BlackjackTable* table, Hand& hand) {
         return;
     }
 
+    // strange immitation of doubling
+    Card last_card = table->players_[hand.player_ind]->ReturnOneCard();
+    table->players_[hand.player_ind]->GetCard(table->deck_.GetTopCard());
+    table->players_[hand.player_ind]->GetCard(table->deck_.GetTopCard());
+    table->players_[hand.player_ind]->GetCard(last_card);
+    hand.cards_pos.second += 2;
+
     Hand splited_hand_left = Hand(
         hand.bet, hand.player_ind,
         std::make_pair(hand.cards_pos.first, (hand.cards_pos.first + hand.cards_pos.second) / 2));
     Hand splited_hand_right = Hand(
         hand.bet, hand.player_ind,
         std::make_pair((hand.cards_pos.first + hand.cards_pos.second) / 2, hand.cards_pos.second));
-    *table->hands_iterator_ = splited_hand_right;
-    table->hands_.insert(table->hands_iterator_, splited_hand_left);
+    *table->hands_iterator_ = splited_hand_left;
+    table->hands_.insert(table->hands_iterator_, splited_hand_right);
 }
 
 void SplitIfDoubleAction(BlackjackTable* table, Hand& hand) {
@@ -133,7 +140,6 @@ void SplitIfDoubleAction(BlackjackTable* table, Hand& hand) {
         return;
     }
 
-    hand.bet <<= 1;
     SplitAction(table, hand);
 }
 
@@ -148,7 +154,9 @@ void BlackjackTable::Dealing() {
     for (size_t ind = 0; ind < players_.size(); ind++) {
         players_[ind]->GetCard(deck_.GetTopCard());
         players_[ind]->GetCard(deck_.GetTopCard());
-        hands_.emplace_back(Hand(0, ind, std::make_pair(0, 2)));
+
+        hands_.emplace_back(Hand(settings_.min_bet * (players_[ind]->PerformBet(settings_.min_bet)),
+                                 ind, std::make_pair(0, 2)));
     }
     hands_iterator_ = ++hands_.begin();
 }
@@ -172,7 +180,6 @@ void BlackjackTable::RestartGame() {
                                        (player_score >= dealer_score && player_score <= 21));
         players_[player_ind]->GetMoney(hands_iterator_->bet *
                                        (player_score > dealer_score && player_score <= 21));
-
         ++hands_iterator_;
     }
 
@@ -181,35 +188,26 @@ void BlackjackTable::RestartGame() {
         deck_.ReturnCards(cards);
     }
 
-    whose_move_ = 0;
+    whose_move_ = 1;
     hands_.clear();
 }
 
 void BlackjackTable::GameIteration() {
-    whose_move_ += whose_move_ == 0;
-
-    if (whose_move_ >= players_.size()) {
+    if (hands_iterator_ == hands_.end() || hands_.empty()) {
+        whose_move_ = players_.size();
         return;
     }
 
-    if (hands_iterator_->player_ind < whose_move_) {
+    if (!hands_iterator_->bet || GetBestPlayerScore(players_, *hands_iterator_) >= 21) {
         ++hands_iterator_;
         return;
     }
 
-    if (!players_[whose_move_]->GetGameStatus()) {
-        ++whose_move_;
-        return;
-    }
-
-    if (GetBestPlayerScore(players_, *hands_iterator_) >= 21) {
-        players_[whose_move_]->ChangeGameStatus();
-        ++whose_move_;
-        return;
-    }
-
     BlackjackAction player_decision =
-        players_[whose_move_]->BlackjackAction(players_, *hands_iterator_);
+        players_[hands_iterator_->player_ind]->BlackjackAction(players_, *hands_iterator_);
     kBlackjackActionsTable.at(player_decision)(this, *hands_iterator_);
-    whose_move_ += !players_[whose_move_]->GetGameStatus();
+    if (!players_[hands_iterator_->player_ind]->GetGameStatus()) {
+        players_[hands_iterator_->player_ind]->ChangeGameStatus();
+        ++hands_iterator_;
+    }
 }

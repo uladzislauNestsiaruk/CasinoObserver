@@ -25,11 +25,13 @@ struct Hand {
 class BlackjackTable : public AbstractTable {
     size_t max_players_amount_ = 8;
     struct TableSetting {
+        size_t min_bet;
         bool das; // is double after split enabled
     };
 
 public:
-    BlackjackTable() : AbstractTable(GameType::Blackjack), deck_(true), hands_(), settings_{true} {}
+    BlackjackTable()
+        : AbstractTable(GameType::Blackjack), deck_(true), hands_(), settings_{100, true} {}
 
     void Dealing() override;
 
@@ -65,11 +67,11 @@ void SplitAction(BlackjackTable* table, Hand& hand);
 
 void SplitIfDoubleAction(BlackjackTable* table, Hand& hand);
 
-const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, Hand&)>
-    kBlackjackActionsTable{{{BlackjackAction::DUMMY, DummyAction},
-                            {BlackjackAction::HIT, HitAction},
-                            {BlackjackAction::STAND, StandAction},
-                            {BlackjackAction::SPLIT, SplitAction},
-                            {BlackjackAction::SPLIT_IF_DOUBLE, SplitIfDoubleAction},
-                            {BlackjackAction::DOUBLE_OR_HIT, DoubleOrHitAction},
-                            {BlackjackAction::DOUBLE_OR_STAND, DoubleOrStandAction}}};
+const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, Hand&)> kBlackjackActionsTable{
+    {{BlackjackAction::DUMMY, DummyAction},
+     {BlackjackAction::HIT, HitAction},
+     {BlackjackAction::STAND, StandAction},
+     {BlackjackAction::SPLIT, SplitAction},
+     {BlackjackAction::SPLIT_IF_DOUBLE, SplitIfDoubleAction},
+     {BlackjackAction::DOUBLE_OR_HIT, DoubleOrHitAction},
+     {BlackjackAction::DOUBLE_OR_STAND, DoubleOrStandAction}}};

@@ -7,7 +7,8 @@
 #include "SFML/System/Time.hpp"
 
 class Animation {
-    sf::Time frame_switch_time = sf::milliseconds(5); // switch frame each 5 milliseconds
+    sf::Time frame_switch_time =
+        sf::milliseconds(1000.0 / 60.0); // switch frame no more than 60 per second
     struct Frame {
         Frame(int32_t frame_h, int32_t frame_w)
             : window(0, 0, frame_h, frame_w), elapsed(sf::Time::Zero) {}
@@ -18,7 +19,7 @@ class Animation {
 
 public:
     Animation(const sf::Texture& image, size_t images_per_row, size_t images_per_col,
-              sf::Time switch_time = sf::milliseconds(5))
+              sf::Time switch_time = sf::milliseconds(1000.0 / 60.0))
         : frame_switch_time(switch_time), sprite_(image), image_(image),
           frame_(image_.getSize().x / images_per_row, image_.getSize().y / images_per_col) {}
 
@@ -27,6 +28,8 @@ public:
     bool IsFinished();
 
     void Update(sf::Time time_elapsed);
+
+    void Resize(float x_factor, float y_factor) { sprite_.setScale(x_factor, y_factor); }
 
     void Draw(StateManager* manager) { manager->DrawSprite(sprite_); }
 

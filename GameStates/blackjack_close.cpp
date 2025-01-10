@@ -1,14 +1,15 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
 #include "blackjack_close.h"
-#include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "state_manager.h"
 #include "textures_loader.h"
 
 BlackjackClose::BlackjackClose(StateManager* manager)
     : table_(), dealing_animation_(GetTextute("blackjack_dealing_animation"), 4, 3),
-      game_state_(State::DEALING) {}
+      game_state_(State::DEALING) {
+    
+}
 
 void BlackjackClose::HandleEvent(const sf::Event& event) {}
 

@@ -1,6 +1,6 @@
 // "Copyright [2024] Netsiaruk Uladzislau"
+#include "GameStates/state_manager.h"
 #include "SFML/System/Clock.hpp"
-#include "state_manager.h"
 
 int main() {
     StateManager& manager = StateManager::Instance();

@@ -19,6 +19,7 @@ public:
 
     virtual void GameIteration() = 0;
 
+private:
     virtual void Dealing() = 0;
 
     virtual bool IsGameFinished() const = 0;

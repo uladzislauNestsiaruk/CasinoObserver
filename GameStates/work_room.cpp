@@ -28,7 +28,7 @@ WorkRoomState::WorkRoomState(StateManager* manager) {
 
         cameras_[ind].setPosition(
             window_center.x + camera_size.x * static_cast<int32_t>(ind / table_width),
-            window_center.y + camera_size.y * static_cast<int32_t>(ind % table_width));
+           window_center.y + camera_size.y * static_cast<int32_t>(ind % table_width));
     }
 }
 

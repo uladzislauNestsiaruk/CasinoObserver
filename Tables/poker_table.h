@@ -15,8 +15,6 @@ public:
     PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
         : AbstractTable(), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_), logs_(logs), render_queue_(render_queue) {}
 
-    void Dealing() override;
-
     void GameIteration() override;
 
     bool IsGameFinished() const override;
@@ -24,6 +22,8 @@ public:
     void Clean() override;
 
 private:
+    void Dealing() override;
+
     void ApplyBets();
 
     void MakeBet(size_t amount, size_t player_ind);

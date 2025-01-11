@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(CasinoObserver)
+project(casino_observer)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
@@ -8,59 +8,76 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers
 
 include(FetchContent)
 
-#All Sources
+# All sources
 set(SOURCES "")
-#All include headers
+# All tests sources
+set(TESTS_SOURCES "")
+# All include headers
 set(HEADERS "")
-#All libraries
+# All libraries
 set(LIBRARIES "")
-#Compile options
+# Compile options
 set(OPTIONS -g3 -O0)
 
-#SFML linkage
+# SFML linkage
 set(HEADERS ${HEADERS} ${CMAKE_SOURCE_DIR}/SFML_ARM/include)
 link_directories(${CMAKE_SOURCE_DIR}/SFML_ARM/lib)
 
-#add_includes
+# Add_includes
 set(HEADERS ${HEADERS} ${CMAKE_SOURCE_DIR}/utils)
 
-#GameStates parsing
+# GameStates parsing
 add_subdirectory(GameStates)
-#Tables logic
+# Tables logic
 add_subdirectory(Tables)
-#Gamblers
+# Gamblers
 add_subdirectory(Gamblers)
-#Utils
+# Utils
 add_subdirectory(Utils)
 
-#All libraries and subdirectories of the project
+# All libraries and subdirectories of the project
 set(LIBRARIES ${LIBRARIES} sfml-graphics sfml-window
               sfml-system sfml-audio)
 
-if(CMAKE_BUILD_TYPE MATCHES "TESTING")
-    #setup googletest
+if(CMAKE_BUILD_TYPE MATCHES "RELEASE")
+    set(OPTIONS -O3 -march=native)
+else()
+    # Setup googletest
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
     enable_testing() 
-    #Tests
+
+    # Tests
     add_subdirectory(Tests)
-    #link and include
-    set(LIBRARIES ${LIBRARIES} gtest_main gmock_main)
-    set(HEADERS ${HEADERS} ${gtest_SOURCE_DIR}/include ${gtest_BINARY_DIR})
-else()
-    #I dont know where i can put them, so since know the called "TOP_LAYER"
-    set(SOURCES ${SOURCES} game_loop.cpp)
+
+    #link and include gtest/gmock
+    set(GTEST_LIBRARIES gtest_main gmock_main)
+    set(GTEST_HEADERS ${gtest_SOURCE_DIR}/include ${gtest_BINARY_DIR})
+
+    # Add heavy and light tests
+    add_executable(light_tests ${SOURCES} ${LIGHT_TESTS_SOURCES})
+    add_executable(heavy_tests ${SOURCES} ${HEAVY_TESTS_SOURCES})
+
+    target_include_directories(light_tests PRIVATE ${HEADERS} ${GTEST_HEADERS})
+    target_include_directories(heavy_tests PRIVATE ${HEADERS} ${GTEST_HEADERS})
+    target_link_libraries(light_tests PRIVATE ${LIBRARIES} ${GTEST_LIBRARIES})
+    target_link_libraries(heavy_tests PRIVATE ${LIBRARIES} ${GTEST_LIBRARIES})
+
+    # Run light tests
+    add_test(NAME LightTests COMMAND light_tests)
+    add_custom_target(run_light_tests ALL
+        COMMAND env GTEST_COLOR=1 ${CMAKE_CTEST_COMMAND} --output-on-failure -VV
+        DEPENDS light_tests)
 endif()
 
-if(CMAKE_BUILD_TYPE MATCHES "RELEASE")
-    set(OPTIONS -O3 -march=native)
-endif()
+# Targets
+add_executable(${PROJECT_NAME} ${SOURCES} game_loop.cpp)
 
-#Compile sources
-add_executable(${PROJECT_NAME} ${SOURCES})
-#Include headers
+# Include headers
 target_include_directories(${PROJECT_NAME} PRIVATE ${HEADERS})
-#Link all
+
+# Link all
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
-#Compile options
+
+# Compile options
 add_compile_options(${OPTIONS})

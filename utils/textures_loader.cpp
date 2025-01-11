@@ -19,7 +19,7 @@ std::string ExtractName(const std::string& path) {
 }
 
 void Preload() {
-    std::filesystem::path images_directory("images/");
+    std::filesystem::path images_directory("../../images/");
     for (const auto& entry : std::filesystem::directory_iterator(images_directory)) {
         if (entry.is_regular_file()) {
             textures[ExtractName(entry.path())].loadFromFile(entry.path());

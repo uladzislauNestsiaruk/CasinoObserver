@@ -11,11 +11,11 @@ public:
     PokerTable()
         : AbstractTable(), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_) {}
 
-    void Dealing() override;
-
     void GameIteration() override;
 
 private:
+    void Dealing() override;
+
     void ApplyBets();
 
     void MakeBet(size_t amount, size_t player_ind);

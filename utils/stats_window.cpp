@@ -58,6 +58,8 @@ void StatsRow::Draw(sf::RenderWindow* window) {
     }
 }
 
+StatsWindow::StatsWindow(float width, float height) : Subwindow(width, height) {}
+
 StatsWindow::StatsWindow(float width, float height, float pos_x, float pos_y,
                          std::vector<StatsRow>* stats)
     : Subwindow(width, height, pos_x, pos_y), stats_(stats) {
@@ -90,14 +92,14 @@ void StatsWindow::Resize(float new_width, float new_height) {
                                              new_height / static_cast<float>(visible_rows_));
 
     for (size_t ind = first_visible_row_;
-         ind < std::min(first_visible_row_ + visible_rows_, stats_->size()); ind++) {
+         ind < std::min(first_visible_row_ + visible_rows_, GetRowsAmount()); ind++) {
         (*stats_)[ind].Resize(new_row_size.x, new_row_size.y);
     }
 }
 
 void StatsWindow::MoveWindow(float new_x, float new_y) {
     for (size_t ind = first_visible_row_;
-         ind < std::min(first_visible_row_ + visible_rows_, stats_->size()); ind++) {
+         ind < std::min(first_visible_row_ + visible_rows_, GetRowsAmount()); ind++) {
         sf::Vector2f current_position = (*stats_)[ind].GetPosition();
         (*stats_)[ind].SetPosition(current_position.x + new_x - GetPosition().x,
                                    current_position.y + new_y - GetPosition().y);
@@ -109,7 +111,7 @@ void StatsWindow::MoveWindow(float new_x, float new_y) {
 void StatsWindow::Draw(sf::RenderWindow* window) {
     window->draw(GetWindow());
     for (size_t ind = first_visible_row_;
-         ind < std::min(first_visible_row_ + visible_rows_, stats_->size()); ind++) {
+         ind < std::min(first_visible_row_ + visible_rows_, GetRowsAmount()); ind++) {
         (*stats_)[ind].Draw(window);
     }
 }

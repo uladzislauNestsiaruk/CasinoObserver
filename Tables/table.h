@@ -15,6 +15,7 @@ public:
 
     virtual void GameIteration() = 0;
 
+private:
     virtual void Dealing() = 0;
 };
 

@@ -74,8 +74,7 @@ class SubwindowsManager {
 public:
     SubwindowsManager() : window_(nullptr), subwindows_() {}
 
-    explicit SubwindowsManager(sf::RenderWindow* window)
-        : window_(window), subwindows_() {}
+    explicit SubwindowsManager(sf::RenderWindow* window) : window_(window), subwindows_() {}
 
     SubwindowsManager(sf::RenderWindow* window,
                       const std::list<std::shared_ptr<Subwindow>>& subwindows)
@@ -94,9 +93,16 @@ private:
     std::list<std::shared_ptr<Subwindow>> subwindows_;
     bool mouse_pressed_ = false;
 
-    void MouseButtonPressed(const sf::Event& event);
-    void MouseButtonReleased(const sf::Event& event);
-    void MouseMoved(const sf::Event& event);
-
-    std::unordered_map<sf::Event::EventType, void (*)(const sf::Event&)> kSubwindowsEvents;
+    friend void MouseButtonPressed(SubwindowsManager* manager, const sf::Event& event);
+    friend void MouseButtonReleased(SubwindowsManager* manager, const sf::Event& event);
+    friend void MouseMoved(SubwindowsManager* manager, const sf::Event& event);
 };
+
+void MouseButtonPressed(SubwindowsManager* manager, const sf::Event& event);
+void MouseButtonReleased(SubwindowsManager* manager, const sf::Event& event);
+void MouseMoved(SubwindowsManager* manager, const sf::Event& event);
+
+const std::unordered_map<sf::Event::EventType, void (*)(SubwindowsManager*, const sf::Event&)>
+    kSubwindowsEvents = {{{sf::Event::EventType::MouseButtonPressed, MouseButtonPressed},
+                          {sf::Event::EventType::MouseButtonReleased, MouseButtonReleased},
+                          {sf::Event::EventType::MouseMoved, MouseMoved}}};

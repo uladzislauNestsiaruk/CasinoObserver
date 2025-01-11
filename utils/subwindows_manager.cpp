@@ -18,36 +18,38 @@ void SubwindowsManager::HandleEvent(const sf::Event& event) {
         return;
     }
 
-    kSubwindowsEvents.at(event.type)(event);
+    kSubwindowsEvents.at(event.type)(this, event);
 }
 
-void SubwindowsManager::MouseButtonPressed(const sf::Event& event) {
-    if (subwindows_.empty()) {
+void MouseButtonPressed(SubwindowsManager* manager, const sf::Event& event) {
+    if (manager->subwindows_.empty()) {
         return;
     }
 
-    mouse_pressed_ = true;
+    manager->mouse_pressed_ = true;
 }
 
-void SubwindowsManager::MouseButtonReleased(const sf::Event& event) { mouse_pressed_ = false; }
+void MouseButtonReleased(SubwindowsManager* manager, const sf::Event& event) {
+    manager->mouse_pressed_ = false;
+}
 
-void SubwindowsManager::MouseMoved(const sf::Event& event) {
-    if (mouse_pressed_) {
-        subwindows_.back()->MoveWindow(event.mouseMove.x, event.mouseMove.y);
+void MouseMoved(SubwindowsManager* manager, const sf::Event& event) {
+    if (manager->mouse_pressed_) {
+        manager->subwindows_.back()->MoveWindow(event.mouseMove.x, event.mouseMove.y);
         return;
     }
 
-    if (!subwindows_.empty() &&
-        subwindows_.back()->Contains(event.mouseMove.x, event.mouseMove.y)) {
+    if (!manager->subwindows_.empty() &&
+        manager->subwindows_.back()->Contains(event.mouseMove.x, event.mouseMove.y)) {
         return;
     }
 
     for (std::list<std::shared_ptr<Subwindow>>::reverse_iterator subwindow_it =
-             subwindows_.rbegin();
-         subwindow_it != subwindows_.rend(); ++subwindow_it) {
+             manager->subwindows_.rbegin();
+         subwindow_it != manager->subwindows_.rend(); ++subwindow_it) {
         if ((*subwindow_it)->Contains(event.mouseMove.x, event.mouseMove.y)) {
-            subwindows_.emplace_back(*subwindow_it);
-            subwindows_.erase(--(subwindow_it.base()));
+            manager->subwindows_.emplace_back(*subwindow_it);
+            manager->subwindows_.erase(--(subwindow_it.base()));
             break;
         }
     }

@@ -110,7 +110,7 @@ public:
 
     void MoveWindow(float new_x, float new_y) override;
 
-    void Close() override;
+    void Close() override {}
 
     void Draw(sf::RenderWindow* window) override;
 
@@ -118,7 +118,7 @@ public:
 
     void DeleteRow(size_t ind);
 
-    size_t GetRowsAmount() { return stats_->size(); }
+    size_t GetRowsAmount() { return stats_ ? stats_->size() : 0; }
 
     ~StatsWindow() override {}
 

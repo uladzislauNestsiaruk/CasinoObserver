@@ -143,6 +143,8 @@ void SplitIfDoubleAction(BlackjackTable* table, Hand& hand) {
     SplitAction(table, hand);
 }
 
+bool BlackjackTable::IsGameFinished() const { return whose_move_ >= players_.size(); }
+
 void BlackjackTable::Dealing() {
     // No players at the table
     if (players_.size() <= 1) {
@@ -161,7 +163,7 @@ void BlackjackTable::Dealing() {
     hands_iterator_ = ++hands_.begin();
 }
 
-void BlackjackTable::RestartGame() {
+void BlackjackTable::Clean() {
     if (players_.empty()) {
         throw std::logic_error("attemt to restart game at the empty desck");
     }

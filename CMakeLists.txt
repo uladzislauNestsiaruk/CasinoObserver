@@ -4,7 +4,7 @@ project(casino_observer)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers and vs code too :(
 
 include(FetchContent)
 

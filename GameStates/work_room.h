@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Time.hpp"
 #include "game_state.h"

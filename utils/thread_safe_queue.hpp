@@ -1,13 +1,14 @@
 #pragma once
 
 #include <mutex>
+#include <optional>
 #include <queue>
+#include <shared_mutex>
 
 // Thread safe queue
 // It is slow and basic implementation
 // TODO: lock-free queue
-template <typename T>
-class TSQueue {
+template <typename T> class TSQueue {
 public:
     TSQueue() = default;
 
@@ -28,6 +29,15 @@ public:
         T elem = data_.front();
         data_.pop();
         return elem;
+    }
+
+    std::optional<T> top() {
+        std::lock_guard<std::mutex> lg{mtx_};
+        if (data_.empty()) {
+            return std::nullopt;
+        }
+
+        return data_.front();
     }
 
     void push(const T& value) {

@@ -1,12 +1,16 @@
 #pragma once
 
+#include <cmath>
 #include <list>
 #include <unordered_map>
 #include <utility>
 
 #include "constants.h"
 #include "deck.h"
+#include "poker_table.h"
 #include "table.h"
+
+using json = nlohmann::json;
 
 struct Hand {
     Hand() : bet(0), player_ind(0), cards_pos(std::make_pair(0, 0)) {}
@@ -30,10 +34,9 @@ class BlackjackTable : public AbstractTable {
     };
 
 public:
-    BlackjackTable()
-        : AbstractTable(GameType::Blackjack), deck_(true), hands_(), settings_{100, true} {}
-
-    void Dealing() override;
+    BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
+        : AbstractTable(GameType::Blackjack), deck_(true), is_game_finished_(true), hands_(),
+          settings_{100, true}, logs_(logs), render_queue_(render_queue) {}
 
     void GameIteration() override;
 
@@ -43,37 +46,42 @@ public:
 
 private:
     Deck deck_;
+    std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;
     std::list<Hand>::iterator hands_iterator_;
     TableSetting settings_;
+    TSQueue<json>& logs_;
+    TSQueue<json>& render_queue_;
 
-    friend void HitAction(BlackjackTable* table, Hand&);
-    friend void StandAction(BlackjackTable* table, Hand&);
-    friend void DoubleOrHitAction(BlackjackTable* table, Hand&);
-    friend void DoubleOrStandAction(BlackjackTable* table, Hand&);
-    friend void SplitAction(BlackjackTable* table, Hand& hand);
-    friend void SplitIfDoubleAction(BlackjackTable* table, Hand& hand);
+    void Dealing() override;
+
+    friend void HitAction(BlackjackTable* table, Hand&, json&);
+    friend void StandAction(BlackjackTable* table, Hand&, json&);
+    friend void DoubleOrHitAction(BlackjackTable* table, Hand&, json&);
+    friend void DoubleOrStandAction(BlackjackTable* table, Hand&, json&);
+    friend void SplitAction(BlackjackTable* table, Hand& hand, json&);
+    friend void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json&);
 };
 
-void DummyAction(BlackjackTable* table, Hand&);
+void DummyAction(BlackjackTable* table, Hand&, json&);
 
-void HitAction(BlackjackTable* table, Hand&);
+void HitAction(BlackjackTable* table, Hand&, json&);
 
-void StandAction(BlackjackTable* table, Hand&);
+void StandAction(BlackjackTable* table, Hand&, json&);
 
-void DoubleOrHitAction(BlackjackTable* table, Hand&);
+void DoubleOrHitAction(BlackjackTable* table, Hand&, json&);
 
-void DoubleOrStandAction(BlackjackTable* table, Hand&);
+void DoubleOrStandAction(BlackjackTable* table, Hand&, json&);
 
-void SplitAction(BlackjackTable* table, Hand& hand);
+void SplitAction(BlackjackTable* table, Hand& hand, json&);
 
-void SplitIfDoubleAction(BlackjackTable* table, Hand& hand);
+void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json&);
 
-const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, Hand&)> kBlackjackActionsTable{
-    {{BlackjackAction::DUMMY, DummyAction},
-     {BlackjackAction::HIT, HitAction},
-     {BlackjackAction::STAND, StandAction},
-     {BlackjackAction::SPLIT, SplitAction},
-     {BlackjackAction::SPLIT_IF_DOUBLE, SplitIfDoubleAction},
-     {BlackjackAction::DOUBLE_OR_HIT, DoubleOrHitAction},
-     {BlackjackAction::DOUBLE_OR_STAND, DoubleOrStandAction}}};
+const std::unordered_map<BlackjackAction, void (*)(BlackjackTable*, Hand&, json&)>
+    kBlackjackActionsTable{{{BlackjackAction::DUMMY, DummyAction},
+                            {BlackjackAction::HIT, HitAction},
+                            {BlackjackAction::STAND, StandAction},
+                            {BlackjackAction::SPLIT, SplitAction},
+                            {BlackjackAction::SPLIT_IF_DOUBLE, SplitIfDoubleAction},
+                            {BlackjackAction::DOUBLE_OR_HIT, DoubleOrHitAction},
+                            {BlackjackAction::DOUBLE_OR_STAND, DoubleOrStandAction}}};

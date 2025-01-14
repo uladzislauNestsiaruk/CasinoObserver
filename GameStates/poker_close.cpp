@@ -1,12 +1,14 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
 #include "poker_close.h"
-#include "state_manager.h"
 #include "SFML/Window/Event.hpp"
+#include "state_manager.h"
 
 #include <iostream>
 
-PokerClose::PokerClose(StateManager* manager) : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this]{ GameExecutor(); })), table_(std::make_unique<PokerTable>(logs_, render_queue_)) {}
+PokerClose::PokerClose(StateManager* manager)
+    : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })),
+      table_(std::make_unique<PokerTable>(logs_, render_queue_)) {}
 
 PokerClose::~PokerClose() {
     stop_game_thread_.store(true);

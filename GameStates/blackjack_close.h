@@ -2,10 +2,13 @@
 #ifndef CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H
 #define CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H
 
+#include <memory>
+#include <thread>
+
 #include "../Tables/blackjack_table.h"
-#include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "animation.h"
+#include "drawer.hpp"
 #include "game_state.h"
 
 class BlackjackClose : public IGameState {
@@ -18,12 +21,20 @@ public:
     void Update(sf::Time delta) override;
     void Draw(StateManager* manager) override;
 
-    ~BlackjackClose() override {}
+    ~BlackjackClose() override;
 
 private:
-    BlackjackTable table_;
+    std::unique_ptr<ITable> table_;
+    std::unique_ptr<IDrawer> drawer_;
+    std::atomic<bool> run_game_;
+    std::atomic<bool> stop_game_thread_;
+    std::thread game_executor_;
+    TSQueue<json> logs_;
+    TSQueue<json> render_queue_;
+
     Animation dealing_animation_;
-    State game_state_;
+
+    void GameExecutor();
 };
 
 #endif // CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H

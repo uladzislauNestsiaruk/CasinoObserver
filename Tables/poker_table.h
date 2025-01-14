@@ -13,7 +13,8 @@ using json = nlohmann::json;
 class PokerTable : public AbstractTable {
 public:
     PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-        : AbstractTable(), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_), logs_(logs), render_queue_(render_queue) {}
+        : AbstractTable(), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_),
+          logs_(logs), render_queue_(render_queue) {}
 
     void GameIteration() override;
 
@@ -33,7 +34,6 @@ private:
     void BettingPhase();
 
     void SelectWinners();
-
 
 private:
     std::atomic<bool> is_active_game = false;

@@ -6,7 +6,7 @@
 #include <vector>
 
 // "Copyright [2024] Netsiaruk Uladzislau"
-#include "card.h"
+#include "card.hpp"
 #include "constants.h"
 
 // Class that describes player state in Blackjack

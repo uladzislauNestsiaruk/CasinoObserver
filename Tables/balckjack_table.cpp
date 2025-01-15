@@ -44,20 +44,23 @@ BlackjackAction
 HumbleGambler::BlackjackAction(const std::vector<std::shared_ptr<IGambler>>& players,
                                const Hand& hand) {
     const std::vector<Card>& cards = ShowCards();
-    if (players.size() < 2 || hand.cards_pos.second - hand.cards_pos.first < 2) {
+    size_t total_cards = hand.cards_pos.second - hand.cards_pos.first;
+    if (players.size() < 2 || total_cards < 2 || hand.cards_pos.second > cards.size()) {
         throw std::logic_error("ill formed state passed to BlackjackAction for HumbleGambler");
     }
 
-    Card dealer_open = players[0]->ShowCards()[0];
+    Card dealer_open = players[0]->ShowCards()[hand.cards_pos.first];
+    size_t player_score = GetBestPlayerScore(players, hand);
 
-    if (cards.size() == 2 && RateCard(cards[0]) == RateCard(cards[1])) {
-        return kPairSplitTable[RateCard(cards[0])][RateCard(dealer_open)];
-    } else if (cards.size() == 2 &&
-               (cards[0].GetValue() == CardValue::Ace || cards[1].GetValue() == CardValue::Ace)) {
-        int non_soft_total = RateCard(cards[0], 1) + RateCard(cards[1], 1) - 1;
+    if (total_cards == 2 &&
+        RateCard(cards[hand.cards_pos.first]) == RateCard(cards[hand.cards_pos.second])) {
+        return kPairSplitTable[RateCard(cards[hand.cards_pos.first])][RateCard(dealer_open)];
+    } else if (total_cards == 2 && (cards[hand.cards_pos.first].GetValue() == CardValue::Ace ||
+                                    cards[hand.cards_pos.second].GetValue() == CardValue::Ace)) {
+        int non_soft_total = RateCard(cards[hand.cards_pos.first], 1) +
+                             RateCard(cards[hand.cards_pos.second], 1) - 1;
         return kSoftTotalsTable[non_soft_total][RateCard(dealer_open)];
     }
-
     return kHardTotalsTable[GetBestPlayerScore(players, hand)][RateCard(dealer_open)];
 }
 
@@ -130,8 +133,8 @@ void SplitAction(BlackjackTable* table, Hand& hand, json& log) {
         std::make_pair(player_cards[(hand.cards_pos.first + hand.cards_pos.second) / 2].GetValue(),
                        player_cards[hand.cards_pos.second].GetValue());
 
-    *table->hands_iterator_ = splited_hand_left;
-    table->hands_.insert(table->hands_iterator_, splited_hand_right);
+    *table->hands_iterator_ = splited_hand_right;
+    table->hands_.insert(table->hands_iterator_, splited_hand_left);
 }
 
 void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json& log) {
@@ -226,7 +229,6 @@ void BlackjackTable::GameIteration() {
         json action_log = {{"player", hands_iterator_->player_ind},
                            {"score", current_player_score},
                            {"action", player_decision}};
-
         kBlackjackActionsTable.at(player_decision)(this, *hands_iterator_, action_log);
         if (!players_[hands_iterator_->player_ind]->GetGameStatus()) {
             players_[hands_iterator_->player_ind]->ChangeGameStatus();

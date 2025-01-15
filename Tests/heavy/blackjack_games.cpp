@@ -40,7 +40,7 @@ bool BetRaise(blackjack_callback_input_t info, std::string trigger) {
 }
 
 void HitActionTest(blackjack_callback_input_t info) {
-    info.first.hands.back().cards.push_back(info.second["card1"]);
+    info.first.hands[0].cards.push_back(info.second["card1"]);
 }
 
 void StandActionTest(blackjack_callback_input_t info) {}
@@ -65,11 +65,11 @@ void SplitActionTest(blackjack_callback_input_t info) {
     PlayerInfo::Hand hand = info.first.hands.back();
     info.first.hands.pop_back();
     info.first.hands.push_back(PlayerInfo::Hand{
-        hand.bet, std::vector<int>{info.second["hand1"].get<std::pair<int, int>>().first,
-                                   info.second["hand1"].get<std::pair<int, int>>().second}});
-    info.first.hands.push_back(PlayerInfo::Hand{
         hand.bet, std::vector<int>{info.second["hand2"].get<std::pair<int, int>>().first,
                                    info.second["hand2"].get<std::pair<int, int>>().second}});
+    info.first.hands.push_back(PlayerInfo::Hand{
+        hand.bet, std::vector<int>{info.second["hand1"].get<std::pair<int, int>>().first,
+                                   info.second["hand1"].get<std::pair<int, int>>().second}});
 }
 
 void SplitIfDoubleActionTest(blackjack_callback_input_t info) {
@@ -86,21 +86,6 @@ const std::unordered_map<BlackjackAction, blackjack_callback_t> kCallbacksMap = 
     {BlackjackAction::SPLIT, SplitActionTest},
     {BlackjackAction::SPLIT_IF_DOUBLE, SplitIfDoubleActionTest}};
 
-/*
-TEST(ExceptionCheck, MultiplePlayers) {
-    TableOutput output;
-    BlackjackTable table(output.logs_, output.render_queue_);
-
-    size_t games = 10000;
-
-    for (size_t players = 0; players < 8; players++) {
-        table.AddPlayer(std::make_shared<HumbleGambler>(100, GameType::Blackjack, true, 10000));
-        for (size_t ind = 0; ind < games; ind++) {
-            table.GameIteration();
-        }
-    }
-}
-*/
 std::queue<json> GetGame(TableOutput& output) {
     std::queue<json> game;
     game.push(output.logs_.pop().value());
@@ -169,7 +154,21 @@ void CheckCorrectness(TableOutput& output) {
         CheckGame(game);
     }
 }
+/*
+TEST(ExceptionCheck, MultiplePlayers) {
+    TableOutput output;
+    BlackjackTable table(output.logs_, output.render_queue_);
 
+    size_t games = 10000;
+
+    for (size_t players = 0; players < 8; players++) {
+        table.AddPlayer(std::make_shared<HumbleGambler>(100, GameType::Blackjack, true, 10000));
+        for (size_t ind = 0; ind < games; ind++) {
+            table.GameIteration();
+        }
+    }
+}
+*/
 TEST(GameCorrectness, MultiplePlayers) {
     TableOutput output;
     BlackjackTable table(output.logs_, output.render_queue_);

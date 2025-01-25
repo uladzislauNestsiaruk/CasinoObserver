@@ -1,5 +1,4 @@
 #include "work_room.h"
-#include "../Tables/poker_table.h"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "blackjack_close.h"

@@ -5,10 +5,11 @@
 #include <optional>
 
 namespace {
-template <typename T> struct Node {
+template <typename T>
+struct Node {
     Node() : nxt(nullptr), data() {}
 
-    Node(const T& val) : nxt(nullptr), data(val) {}
+    explicit Node(const T& val) : nxt(nullptr), data(val) {}
 
     std::atomic<Node*> nxt;
     T data;
@@ -61,9 +62,9 @@ public:
         }
     }
 
+    
     void push(const T& value) {
         Node* new_element = new Node(value);
-
         while (true) {
             Node* expected_nxt = nullptr;
             Node* expected_tail = tail_.load();

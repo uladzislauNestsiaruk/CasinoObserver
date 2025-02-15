@@ -32,8 +32,7 @@ std::unique_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             throw std::logic_error("There is no \"parent\" field in " + item.key());
         }
 
-        objects_graph[item.value()["parent"].template get<std::string>()].push_back(
-            item.key());
+        objects_graph[item.value()["parent"].template get<std::string>()].push_back(item.key());
     }
 
     std::function<std::unique_ptr<GameObject>(std::string, const sf::Rect<int>&)> dfs =
@@ -50,9 +49,6 @@ std::unique_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
 
             std::array<float, 2> coords =
                 data[vertex]["coords"].template get<std::array<float, 2>>();
-            if (coords[0] < 0.0 || coords[0] > 1.0 || coords[1] > 0.0 || coords[1] < 1.0) {
-                throw std::logic_error("Wrong value of \"coords\" field in " + vertex);
-            }
             sf::Vector2f pos = {
                 parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
                 parent_sprites_rect.getPosition().y + parent_sprites_rect.height * coords[1]};

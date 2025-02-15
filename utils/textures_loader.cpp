@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -11,22 +12,18 @@ const std::string kAssetsPaths[] = {"assets/", "../assets/", "../../assets",
                                     "CasinoObserver/assets/"};
 
 std::string ExtractName(const std::string& path) {
-    size_t last_slash = path.find_last_of('/');
-    size_t last_dot = path.find_last_of('.');
-
-    if (last_slash == std::string::npos || last_dot == std::string::npos || last_dot < last_slash) {
+    if (!path.ends_with(".png")) {
         throw std::logic_error("extremely strange texture name in folder assets/");
     }
 
-    return path.substr(last_slash + 1, last_dot - last_slash - 1);
+    return path.substr(0, path.size() - strlen(".png"));
 }
 
 void PreloadSubdirectory(const std::filesystem::path& path, std::string prefix) {
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
-        if (entry.is_regular_file()) {
-            textures[ExtractName(entry.path()) + "_" +
-                     entry.path().parent_path().filename().c_str()]
-                .loadFromFile(entry.path());
+        if (entry.is_regular_file() && std::string(entry.path().filename()).ends_with(".png")) {
+            textures[prefix + "_" + ExtractName(entry.path().filename().c_str())].loadFromFile(
+                entry.path());
         } else if (entry.is_directory()) {
             PreloadSubdirectory(entry.path(),
                                 prefix + "_" + entry.path().parent_path().filename().c_str());
@@ -49,10 +46,8 @@ void Preload() {
     }
 
     for (const auto& entry : std::filesystem::directory_iterator(images_directory)) {
-        if (entry.is_regular_file()) {
-            textures[ExtractName(entry.path())].loadFromFile(entry.path());
-        } else if (entry.is_directory()) {
-            PreloadSubdirectory(entry.path(), entry.path().parent_path().filename());
+        if (entry.is_directory()) {
+            PreloadSubdirectory(entry.path(), entry.path().filename().c_str());
         }
     }
 }

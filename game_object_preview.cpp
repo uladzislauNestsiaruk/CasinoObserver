@@ -1,9 +1,11 @@
+#include "GameStates/state_manager.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
 #include "Utils/game_object.hpp"
+#include "game_objects_loader.hpp"
 #include <filesystem>
 #include <memory>
 #include <stdexcept>
@@ -17,11 +19,13 @@ int main(int argc, char** argv) {
         std::logic_error(std::string("no such file as ./") + argv[1]);
     }
 
+    StateManager& manager = StateManager::Instance();
     std::unique_ptr<GameObject> object = ParseGameObjects(argv[1]);
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "preview",
                             sf::Style::Resize | sf::Style::Close);
+    object->Resize(window.getSize());
     sf::Event last_event;
-    
+
     while (true) {
         window.clear();
 

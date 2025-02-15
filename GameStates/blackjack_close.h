@@ -14,7 +14,7 @@
 
 class BlackjackClose : public IGameState {
     enum class State { DEALING, PLAYING };
-    static constexpr std::string_view kBlackjackCloseGameObjects = "../assets/game_objects/blackjack_close_objects.json";
+    static constexpr std::string_view kBlackjackCloseGameObjects = "assets/game_objects/blackjack_close_objects.json";
 
 public:
     explicit BlackjackClose(StateManager* manager);

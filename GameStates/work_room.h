@@ -8,7 +8,9 @@
 #include <game_object.hpp>
 
 class WorkRoomState : public IGameState {
-    static constexpr std::string_view kWorkRoomGameObjects = "../assets/game_objects/work_room_objects.json";
+    static constexpr std::string_view kWorkRoomGameObjects =
+        "assets/game_objects/work_room_objects.json";
+
 public:
     explicit WorkRoomState(StateManager* manager);
 

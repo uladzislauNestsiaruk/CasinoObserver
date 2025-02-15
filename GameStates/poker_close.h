@@ -14,7 +14,7 @@
 using json = nlohmann::json;
 
 class PokerClose : public IGameState {
-    static constexpr std::string_view kPokerCloseGameObjects = "../assets/game_objects/poker_close_objects.json";
+    static constexpr std::string_view kPokerCloseGameObjects = "assets/game_objects/poker_close_objects.json";
 public:
     explicit PokerClose(StateManager* manager);
 

@@ -3,5 +3,41 @@
         "type": "image",
         "source": "work_room_background",
         "coords" : [0.0, 0.0]
-    }
+    },
+    "bucket":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_bucket",
+        "coords" : [0.005, 0.001]
+    },
+    "phone":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_phone",
+        "coords" : [0.0009, 0.0001]
+    },
+    "screen":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_screen",
+        "coords" : [0.0008, -0.2]
+    },
+    "donuts":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_donuts",
+        "coords" : [0.001, 0.001]
+    },
+    "casino_maschine":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_casino_machine_s",
+        "coords" : [0.0008, 0.001]
+    },
+   "cup":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_cup",
+        "coords" : [0.0017, 0.0012]
+    } 
 }

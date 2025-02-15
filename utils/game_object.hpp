@@ -1,17 +1,17 @@
 #pragma once
 
+#include "../GameStates/state_manager.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Event.hpp"
-#include "../GameStates/state_manager.h"
 
 #include <memory>
 #include <unordered_map>
 
 class GameObject {
     using object_ptr = std::unique_ptr<GameObject>;
-    using event_handler = void(*)(const sf::RenderWindow& window);
+    using event_handler = void (*)(const sf::RenderWindow& window);
 
 public:
     GameObject() : children_(), active_sprite_(0) {}
@@ -31,7 +31,7 @@ public:
     void Resize(sf::Vector2u size);
 
     void Draw(sf::RenderWindow& window);
-    
+
     const sf::Rect<int>& GetSpritesRect() const {
         if (sprites_.empty()) {
             throw std::runtime_error("Attempt Get on empty sprite");

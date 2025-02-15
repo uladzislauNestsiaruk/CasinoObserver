@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 class GameObject {
-    using object_ptr = std::shared_ptr<GameObject>;
+    using object_ptr = std::unique_ptr<GameObject>;
     using event_handler = void(*)(const sf::RenderWindow& window);
 
 public:
@@ -24,10 +24,10 @@ public:
     }
 
     void AddChild(object_ptr child) {
-        children_.emplace_back(child);
+        children_.emplace_back(std::move(child));
     }
 
-    void AddHandler(const sf::Event& event, event_handler handler) {
+    void AddHandler(const sf::Event::EventType& event, event_handler handler) {
         handlers_[event] = handler;
     }
 
@@ -35,9 +35,17 @@ public:
 
     void Draw(sf::RenderWindow& window);
     
+    const sf::Rect<int>& GetSpritesRect() const {
+        if (sprites_.empty()) {
+            throw std::runtime_error("Attempt Get on empty sprite");
+        }
+
+        return sprites_[0].getTextureRect();
+    }
+
 private:
     std::vector<object_ptr> children_;
     std::vector<sf::Sprite> sprites_;
-    std::unordered_map<sf::Event, event_handler> handlers_;
+    std::unordered_map<sf::Event::EventType, event_handler> handlers_;
     size_t active_sprite_;
 };

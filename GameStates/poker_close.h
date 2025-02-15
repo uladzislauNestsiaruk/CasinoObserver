@@ -4,15 +4,17 @@
 
 #include "../Tables/poker_table.h"
 
-#include "drawer.hpp"
-#include "thread_safe_queue.hpp"
-#include "json.hpp"
+#include <drawer.hpp>
+#include <json.hpp>
+#include <game_object.hpp>
+#include <thread_safe_queue.hpp>
 
 #include <thread>
 
 using json = nlohmann::json;
 
 class PokerClose : public IGameState {
+    static constexpr std::string_view kPokerCloseGameObjects = "../assets/game_objects/poker_close_objects.json";
 public:
     explicit PokerClose(StateManager* manager);
 
@@ -35,5 +37,7 @@ private:
 
     TSQueue<json> logs_;
     TSQueue<json> render_queue_;
+
+    std::unique_ptr<GameObject> root_game_object_;
 };
 

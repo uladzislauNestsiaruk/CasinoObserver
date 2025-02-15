@@ -1,6 +1,7 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
 #include "poker_close.h"
+#include <game_objects_loader.hpp>
 #include "SFML/Window/Event.hpp"
 #include "state_manager.h"
 
@@ -8,7 +9,8 @@
 
 PokerClose::PokerClose(StateManager* manager)
     : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })),
-      table_(std::make_unique<PokerTable>(logs_, render_queue_)) {
+      table_(std::make_unique<PokerTable>(logs_, render_queue_)),
+      root_game_object_(std::move(ParseGameObjects(kPokerCloseGameObjects))) {
 }
 
 PokerClose::~PokerClose() {

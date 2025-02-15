@@ -5,12 +5,14 @@
 #include "blackjack_close.h"
 #include "SFML/Window/Event.hpp"
 #include "state_manager.h"
-#include "textures_loader.h"
+#include <textures_loader.h>
+#include <game_objects_loader.hpp>
 
 BlackjackClose::BlackjackClose(StateManager* manager)
     : table_(std::make_unique<BlackjackTable>(logs_, render_queue_)), drawer_(), run_game_(false),
       stop_game_thread_(false), game_executor_(([this] { GameExecutor(); })), logs_(),
-      render_queue_(), dealing_animation_(GetTextute("blackjack_dealing_animation"), 4, 3) {}
+      render_queue_(), dealing_animation_(GetTextute("blackjack_dealing_animation"), 4, 3),
+      root_game_object_(std::move(ParseGameObjects(kBlackjackCloseGameObjects))) {}
 
 BlackjackClose::~BlackjackClose() {
     stop_game_thread_.store(false);

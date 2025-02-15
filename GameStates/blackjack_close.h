@@ -8,11 +8,13 @@
 #include "../Tables/blackjack_table.h"
 #include "SFML/Window/Event.hpp"
 #include "animation.h"
-#include "drawer.hpp"
+#include <drawer.hpp>
 #include "game_state.h"
+#include <game_object.hpp>
 
 class BlackjackClose : public IGameState {
     enum class State { DEALING, PLAYING };
+    static constexpr std::string_view kBlackjackCloseGameObjects = "../assets/game_objects/blackjack_close_objects.json";
 
 public:
     explicit BlackjackClose(StateManager* manager);
@@ -31,6 +33,8 @@ private:
     std::thread game_executor_;
     TSQueue<json> logs_;
     TSQueue<json> render_queue_;
+
+    std::unique_ptr<GameObject> root_game_object_;
 
     Animation dealing_animation_;
 

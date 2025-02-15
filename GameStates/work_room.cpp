@@ -5,12 +5,13 @@
 #include "poker_close.h"
 #include "state_manager.h"
 #include "textures_loader.h"
+#include <game_objects_loader.hpp>
 
 #include <algorithm>
 #include <cmath>
 #include <memory>
 
-WorkRoomState::WorkRoomState(StateManager* manager) {
+WorkRoomState::WorkRoomState(StateManager* manager) : root_game_object_(std::move(ParseGameObjects(kWorkRoomGameObjects))) {
     
 }
 

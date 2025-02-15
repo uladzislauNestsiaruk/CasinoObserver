@@ -12,8 +12,8 @@ void GameObject::Resize(sf::Vector2u size) {
         sprite.setScale(scale);
     }
 
-    for (auto child : children_) {
-        child->Resize(size);
+    for (size_t i = 0; i < children_.size(); ++i) {
+        children_[i]->Resize(size);
     }
 }
 
@@ -25,7 +25,7 @@ void GameObject::Draw(sf::RenderWindow& window) {
     window.draw(sprites_[active_sprite_++]);
     active_sprite_ %= sprites_.size();
 
-    for (auto child : children_) {
-        child->Draw(window);
+    for (size_t i = 0; i < children_.size(); ++i) {
+        children_[i]->Draw(window);
     }
 }

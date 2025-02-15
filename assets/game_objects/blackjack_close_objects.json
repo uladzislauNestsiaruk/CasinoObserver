@@ -2,6 +2,6 @@
     "root":{
         "type": "image",
         "source": "work_room_background",
-        "coords" : [0.0, 0.0]
+        "coords" : [0, 0]
     }
 }

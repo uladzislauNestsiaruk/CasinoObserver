@@ -1,0 +1,19 @@
+{
+    "root":{
+        "type": "animation",
+        "sources": [
+            "poker_1", "poker_2", "poker_3", "poker_4", "poker_5",
+            "poker_6", "poker_7", "poker_8", "poker_9", "poker_10",
+            "poker_11", "poker_12", "poker_13", "poker_14", "poker_15",
+            "poker_16", "poker_17", "poker_18", "poker_19", "poker_20",
+            "poker_21", "poker_22", "poker_23", "poker_24", "poker_25",
+            "poker_26", "poker_27", "poker_28", "poker_29", "poker_30",
+            "poker_31", "poker_32", "poker_33", "poker_34", "poker_35",
+            "poker_36", "poker_37", "poker_38", "poker_39", "poker_40",
+            "poker_41", "poker_42", "poker_43", "poker_44", "poker_45",
+            "poker_46", "poker_47", "poker_48", "poker_49", "poker_50",
+            "poker_51"
+        ],
+        "coords" : [0.0, 0.0]
+    }
+}

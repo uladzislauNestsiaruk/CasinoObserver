@@ -2,7 +2,6 @@
 #include <memory>
 #include <string>
 
-#include "SFML/Window/Event.hpp"
 #include "blackjack_close.h"
 #include "state_manager.h"
 #include <game_objects_loader.hpp>

@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(casino_observer)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers and vs code too :(
 
@@ -73,8 +73,8 @@ endif()
 # Targets
 add_executable(${PROJECT_NAME} ${SOURCES} game_loop.cpp)
 
-# Objects previewer
-add_executable(preview ${SOURCES} game_object_preview.cpp)
+# # Objects previewer
+# add_executable(preview ${SOURCES} game_object_preview.cpp)
 
 # Include headers
 target_include_directories(${PROJECT_NAME} PRIVATE ${HEADERS})

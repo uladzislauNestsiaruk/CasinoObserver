@@ -1,8 +1,10 @@
 #include "poker_table.h"
 #include "constants.h"
 
+#include <iostream>
+
 namespace {
-constexpr uint32_t num_iterations = 10000;
+constexpr uint32_t num_iterations = 1000;
 
 struct PokerComboInfo {
     int combo_id;
@@ -129,13 +131,14 @@ double WinProbability(size_t num_opponents, const std::vector<Card>& table_cards
     std::vector<Card> all_cards(table_cards);
     all_cards.insert(all_cards.end(), hand.begin(), hand.end());
 
-    Deck exp_deck;
+    Deck exp_deck(true);
     exp_deck.RemoveCards(all_cards);
     uint16_t wins = 0;
     uint16_t ties = 0;
 
     std::vector<Card> exp_table_cards(table_cards);
     for (size_t i = 0; i < num_iterations; ++i) {
+        exp_deck = Deck(true);
         exp_deck.ReshuffleDeck();
         for (size_t j = 0; j < 5 - table_cards.size(); ++j) {
             exp_table_cards.push_back(exp_deck.GetTopCard());
@@ -190,6 +193,8 @@ void PokerTable::Dealing() {
         return;
     }
 
+    active_players_ = 0;
+    is_all_in_.assign(players_.size(), 0);
     for (auto player : players_) {
         if (!player->GetGameStatus()) {
             player->ChangeGameStatus();
@@ -204,6 +209,12 @@ void PokerTable::Dealing() {
             continue;
         }
         bets_[i] = {big_blind_, 0};
+        ++active_players_;
+    }
+
+    // Not enough active players
+    if (active_players_ < 2) {
+        return;
     }
 
     ApplyBets();
@@ -233,7 +244,6 @@ PokerMoveState HumbleGambler::PokerAction(size_t num_opponents,
                (probability < 0.2 && table_cards.size() == 4) ||
                (probability < 0.1 && table_cards.size() == 3) ||
                (probability < 0.05 && table_cards.empty())) {
-        ChangeGameStatus();
         return {.move = PokerMove::FOLD};
     }
 
@@ -244,7 +254,10 @@ PokerMoveState HumbleGambler::PokerAction(size_t num_opponents,
     size_t total_bet = current_bet + (raise != 0 && raise < min_raise ? min_raise : static_cast<size_t>(raise));
 
     if (total_bet > 0.95 * GetBalance()) {
-        ChangeGameStatus();
+        if (GetBalance() == 0) {
+            return {.move = PokerMove::FOLD};
+        }
+
         return {.move = PokerMove::ALL_IN, .money_amount = GetBalance()};
     }
 
@@ -274,9 +287,19 @@ void PokerTable::DistributionPhase(std::string_view phase) {
 void PokerTable::BettingPhase() {
     for (size_t ind = 0; bets_[ind].amount != current_bet_ || current_bet_ == 0;
          ind = (ind + 1) % players_.size()) {
-        if (players_[ind]->GetGameStatus()) {
+        if (active_players_ == all_in_players_) {
+            show_all_cards_ = 1;
+            break;
+        }
+
+        if (players_[ind]->GetGameStatus() && !is_all_in_[ind]) {
+            if (active_players_ == 1) {
+                show_all_cards_ = 1;
+                return;
+            }
+
             PokerMoveState move_state = players_[ind]->PokerAction(
-                players_.size(), table_cards_, players_[ind]->ShowCards(), current_bet_, min_bet_,
+                players_.size() - 1, table_cards_, players_[ind]->ShowCards(), current_bet_, min_bet_,
                 min_raise_, bets_[ind].num_raises);
             json move_log = {
                 {"type", "trade_move"}
@@ -284,6 +307,8 @@ void PokerTable::BettingPhase() {
 
             switch (static_cast<uint8_t>(move_state.move)) {
             case static_cast<uint8_t>(PokerMove::ALL_IN):
+                is_all_in_[ind] = true;
+                ++all_in_players_;
                 current_bet_ = std::min(current_bet_, move_state.money_amount.value());
                 move_log["move"] = "all_in";
                 move_log["amount"] = move_state.money_amount.value();
@@ -303,6 +328,8 @@ void PokerTable::BettingPhase() {
                 move_log["move"] = "call";
                 break;
             case static_cast<uint8_t>(PokerMove::FOLD):
+                --active_players_;
+                players_[ind]->ChangeGameStatus();
                 move_log["move"] = "fold";
                 break;
             }
@@ -324,14 +351,13 @@ void PokerTable::SelectWinners() {
         return lhs > rhs;
     });
 
-    size_t num_winners;
+    size_t num_winners = hand_rates.size();
     for (size_t i = 1; i < hand_rates.size(); ++i) {
         if (hand_rates[0].first != hand_rates[i].first) {
             num_winners = i;
             break;
         }
     }
-
     for (size_t i = 0; i < num_winners; ++i) {
         hand_rates[i].second->GetMoney(bank_ / num_winners);
         logs_.push({
@@ -340,7 +366,6 @@ void PokerTable::SelectWinners() {
             {"profit", bank_ / num_winners}
         });
     }
-
     for (size_t i = num_winners; i < players_.size(); ++i) {
         logs_.push({
             {"type", "game_end"},
@@ -353,6 +378,7 @@ void PokerTable::SelectWinners() {
 void PokerTable::Clean() {
     bank_ = 0;
     current_bet_ = 0;
+    show_all_cards_ = 0;
 
     for (auto player : players_) {
         if (player->GetGameStatus()) {
@@ -362,25 +388,31 @@ void PokerTable::Clean() {
         deck_.ReturnCards(player->TakeAllCards());
     }
 
+    deck_.ReturnCards(table_cards_);
+    table_cards_.clear();
     is_active_game.store(false);
 }
 
 void PokerTable::GameIteration() {
     is_active_game.store(true);
 
-    // Not enough players
-    if (players_.size() < 2) {
+    Dealing();
+    if (active_players_ < 2) {
+        Clean();
         return;
     }
-
+    
     for (const std::string& phase : {"preflop", "flop", "turn", "river"}) {
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
+        if (show_all_cards_) {
+            continue;   
+        }
+
         BettingPhase();
         ApplyBets();
     }
-
     SelectWinners();
     Clean();
 }

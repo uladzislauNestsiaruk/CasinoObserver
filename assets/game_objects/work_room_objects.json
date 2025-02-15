@@ -1,0 +1,12 @@
+[
+    "root":{
+        "background":"sprite_key",
+        "cords" : [x, y]
+    }
+
+    "child1" : {
+        "parent" : "root",
+        "background":"sprite_key",
+        "cords" : [x, y]
+    }
+]

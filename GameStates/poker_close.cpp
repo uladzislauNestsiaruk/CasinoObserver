@@ -8,7 +8,8 @@
 
 PokerClose::PokerClose(StateManager* manager)
     : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })),
-      table_(std::make_unique<PokerTable>(logs_, render_queue_)) {}
+      table_(std::make_unique<PokerTable>(logs_, render_queue_)) {
+}
 
 PokerClose::~PokerClose() {
     stop_game_thread_.store(true);

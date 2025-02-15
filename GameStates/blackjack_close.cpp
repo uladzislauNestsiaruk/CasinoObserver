@@ -1,12 +1,12 @@
 // Copyright [2024] Nestsiarul Uladzislau
-
 #include <memory>
+#include <string>
 
-#include "blackjack_close.h"
 #include "SFML/Window/Event.hpp"
+#include "blackjack_close.h"
 #include "state_manager.h"
-#include <textures_loader.h>
 #include <game_objects_loader.hpp>
+#include <textures_loader.h>
 
 BlackjackClose::BlackjackClose(StateManager* manager)
     : table_(std::make_unique<BlackjackTable>(logs_, render_queue_)), drawer_(), run_game_(false),

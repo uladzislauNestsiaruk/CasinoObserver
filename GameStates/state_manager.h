@@ -45,6 +45,8 @@ public:
 
     sf::Vector2u GetWindowSize() { return game_window_.getSize(); }
 
+    sf::RenderWindow& GetOriginWindow() { return game_window_; };
+
 private:
     std::vector<std::shared_ptr<IGameState>> states_;
     sf::RenderWindow game_window_;

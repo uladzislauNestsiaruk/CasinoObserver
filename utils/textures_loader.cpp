@@ -21,6 +21,19 @@ std::string ExtractName(const std::string& path) {
     return path.substr(last_slash + 1, last_dot - last_slash - 1);
 }
 
+void PreloadSubdirectory(const std::filesystem::path& path, std::string prefix) {
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_regular_file()) {
+            textures[ExtractName(entry.path()) + "_" +
+                     entry.path().parent_path().filename().c_str()]
+                .loadFromFile(entry.path());
+        } else if (entry.is_directory()) {
+            PreloadSubdirectory(entry.path(),
+                                prefix + "_" + entry.path().parent_path().filename().c_str());
+        }
+    }
+}
+
 void Preload() {
     std::filesystem::path images_directory;
 
@@ -38,6 +51,8 @@ void Preload() {
     for (const auto& entry : std::filesystem::directory_iterator(images_directory)) {
         if (entry.is_regular_file()) {
             textures[ExtractName(entry.path())].loadFromFile(entry.path());
+        } else if (entry.is_directory()) {
+            PreloadSubdirectory(entry.path(), entry.path().parent_path().filename());
         }
     }
 }

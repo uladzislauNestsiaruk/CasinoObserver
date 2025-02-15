@@ -20,8 +20,6 @@ public:
 
 private:
     std::vector<std::shared_ptr<IGameState>> tables_;
-    std::vector<sf::Sprite> cameras_;
-    mutable size_t total_tables = 8;
-
     std::unique_ptr<GameObject> root_game_object_;
+    mutable size_t total_tables = 12;
 };

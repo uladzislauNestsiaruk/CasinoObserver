@@ -2,6 +2,7 @@
 
 #include "card.hpp"
 
+#include <algorithm>
 #include <random>
 #include <vector>
 

@@ -3,20 +3,24 @@
 #define CASINOONSERVER_GAMESTATES_BLACKJACK_CLOSE_H
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "../Tables/blackjack_table.h"
 #include "SFML/Window/Event.hpp"
 #include "animation.h"
-#include <drawer.hpp>
 #include "game_state.h"
+#include <drawer.hpp>
 #include <game_object.hpp>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 class BlackjackClose : public IGameState {
     enum class State { DEALING, PLAYING };
-    static constexpr std::string_view kBlackjackCloseGameObjects = "assets/game_objects/blackjack_close_objects.json";
+    const static std::string kBlackjackCloseGameObjects;
 
-public:
+ public:
     explicit BlackjackClose(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
@@ -25,7 +29,7 @@ public:
 
     ~BlackjackClose() override;
 
-private:
+ private:
     std::unique_ptr<ITable> table_;
     std::unique_ptr<IDrawer> drawer_;
     std::atomic<bool> run_game_;

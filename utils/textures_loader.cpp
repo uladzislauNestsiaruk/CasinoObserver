@@ -4,12 +4,12 @@
 #include <string>
 #include <unordered_map>
 
-#include "textures_loader.h"
+#include <constants.hpp>
+#include <textures_loader.hpp>
+
+const char* kAssetsPrefix[] = {"assets/", "../assets/", "../../assets", "CasinoObserver/assets/"};
 
 std::unordered_map<std::string, sf::Texture> textures;
-
-const std::string kAssetsPaths[] = {"assets/", "../assets/", "../../assets",
-                                    "CasinoObserver/assets/"};
 
 std::string ExtractName(const std::string& path) {
     if (!path.ends_with(".png")) {
@@ -25,8 +25,7 @@ void PreloadSubdirectory(const std::filesystem::path& path, std::string prefix) 
             textures[prefix + "_" + ExtractName(entry.path().filename().c_str())].loadFromFile(
                 entry.path());
         } else if (entry.is_directory()) {
-            PreloadSubdirectory(entry.path(),
-                                prefix + "_" + entry.path().parent_path().filename().c_str());
+            PreloadSubdirectory(entry.path(), prefix + "_" + entry.path().filename().c_str());
         }
     }
 }
@@ -34,9 +33,9 @@ void PreloadSubdirectory(const std::filesystem::path& path, std::string prefix) 
 void Preload() {
     std::filesystem::path images_directory;
 
-    for (size_t ind = 0; ind < sizeof(kAssetsPaths); ind++) {
-        if (std::filesystem::is_directory(kAssetsPaths[ind])) {
-            images_directory = kAssetsPaths[ind];
+    for (size_t ind = 0; ind < sizeof(kAssetsPrefix); ind++) {
+        if (std::filesystem::is_directory(kAssetsPrefix[ind])) {
+            images_directory = kAssetsPrefix[ind];
             break;
         }
     }
@@ -50,6 +49,21 @@ void Preload() {
             PreloadSubdirectory(entry.path(), entry.path().filename().c_str());
         }
     }
+}
+
+const std::string& GetAssetPrefix() {
+    static std::string prefix;
+    if (!prefix.empty()) {
+        return prefix;
+    }
+
+    for (const std::string& asset_prefix : kAssetsPrefix) {
+        if (std::filesystem::exists(asset_prefix)) {
+            prefix = asset_prefix;
+        }
+    }
+
+    return prefix;
 }
 
 const sf::Texture& GetTextute(const std::string& texture_name) {

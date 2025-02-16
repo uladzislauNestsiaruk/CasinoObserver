@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "blackjack_table.h"
-#include "constants.h"
 
 // cards through 2 to 10 rate as their face value
 // J Q K = 10

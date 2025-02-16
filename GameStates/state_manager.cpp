@@ -8,8 +8,8 @@
 #include "SFML/Window/WindowStyle.hpp"
 #include "game_state.h"
 #include "state_manager.h"
-#include "textures_loader.h"
-#include "work_room.h"
+#include "work_room.hpp"
+#include <textures_loader.hpp>
 
 const size_t kReserveStatesAmount = 32;
 const size_t kDefaultFrameLimit = 60;

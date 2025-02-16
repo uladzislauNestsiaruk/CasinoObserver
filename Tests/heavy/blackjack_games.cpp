@@ -5,7 +5,7 @@
 #include <queue>
 
 #include "../../Tables/blackjack_table.h"
-#include "constants.h"
+#include <constants.hpp>
 /*
 struct TableOutput {
     TSQueue<json> logs_;

@@ -8,36 +8,42 @@
         "parent":"root",
         "type": "image",
         "source": "work_room_bucket",
-        "coords" : [0.005, 0.001]
+        "coords" : [0.6, 1.29]
     },
     "phone":{
         "parent":"root",
         "type": "image",
         "source": "work_room_phone",
-        "coords" : [0.0009, 0.0001]
+        "coords" : [1.085, 0.965]
     },
-    "screen":{
+    "screen0":{
         "parent":"root",
         "type": "image",
         "source": "work_room_screen",
-        "coords" : [0.0008, -0.2]
+        "coords" : [0.5, 0.42]
+    },
+    "screen1":{
+        "parent":"root",
+        "type": "image",
+        "source": "work_room_screen",
+        "coords" : [0.95, 0.42]
     },
     "donuts":{
         "parent":"root",
         "type": "image",
         "source": "work_room_donuts",
-        "coords" : [0.001, 0.001]
+        "coords" : [0.52, 1.02]
     },
     "casino_maschine":{
         "parent":"root",
         "type": "image",
         "source": "work_room_casino_machine_s",
-        "coords" : [0.0008, 0.001]
+        "coords" : [0.64, 0.96]
     },
    "cup":{
         "parent":"root",
         "type": "image",
         "source": "work_room_cup",
-        "coords" : [0.0017, 0.0012]
+        "coords" : [1.025, 1.02]
     } 
 }

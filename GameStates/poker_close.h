@@ -1,21 +1,21 @@
 #pragma once
 
-#include "game_state.h"
+#include <string>
+#include <thread>
 
 #include "../Tables/poker_table.h"
-
+#include "game_state.h"
 #include <drawer.hpp>
-#include <json.hpp>
 #include <game_object.hpp>
+#include <json.hpp>
 #include <thread_safe_queue.hpp>
-
-#include <thread>
 
 using json = nlohmann::json;
 
 class PokerClose : public IGameState {
-    static constexpr std::string_view kPokerCloseGameObjects = "assets/game_objects/poker_close_objects.json";
-public:
+    static const std::string kPokerCloseGameObjects;
+
+ public:
     explicit PokerClose(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
@@ -24,10 +24,10 @@ public:
 
     ~PokerClose() override;
 
-private:
+ private:
     void GameExecutor();
 
-private:
+ private:
     std::atomic<bool> stop_game_thread_;
     std::atomic<bool> run_game_;
     std::thread game_exec_thr_;
@@ -40,4 +40,3 @@ private:
 
     std::unique_ptr<GameObject> root_game_object_;
 };
-

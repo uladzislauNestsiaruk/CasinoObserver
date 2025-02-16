@@ -1,5 +1,4 @@
-#ifndef CASINOOBSERVER_BRAINMANAGER_GAMBLER_H
-#define CASINOOBSERVER_BRAINMANAGER_GAMBLER_H
+#pragma once
 
 #include <cstdint>
 #include <memory>
@@ -7,13 +6,13 @@
 
 // "Copyright [2024] Netsiaruk Uladzislau"
 #include "card.hpp"
-#include "constants.h"
+#include <constants.hpp>
 
 // Class that describes player state in Blackjack
 class Hand;
 
 class IGambler {
-public:
+ public:
     IGambler() {}
 
     virtual ~IGambler() {}
@@ -39,7 +38,7 @@ public:
 };
 
 class BaseGambler : public IGambler {
-public:
+ public:
     BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game_{true}, money_{0} {}
 
     BaseGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
@@ -75,7 +74,7 @@ public:
 
     ~BaseGambler() override {}
 
-private:
+ private:
     int16_t skill_;
     GameType game_type_;
     bool still_in_game_;
@@ -84,7 +83,7 @@ private:
 };
 
 class HumbleGambler : public BaseGambler {
-public:
+ public:
     HumbleGambler() : BaseGambler() {}
 
     HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
@@ -101,9 +100,7 @@ public:
 };
 
 class CheaterGambler : public BaseGambler {
-public:
-private:
+ public:
+ private:
     std::vector<Card> visible_cards_;
 };
-
-#endif // !CASINOOBSERVER_BRAINMANAGER_GAMBLER_H

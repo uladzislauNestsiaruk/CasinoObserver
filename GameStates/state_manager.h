@@ -15,7 +15,7 @@ const std::string kGameTitle = "Casino observer";
 // I have no idea of situation when it's usefull to have multiple state managers
 // in the game, so it would be Singleton
 class StateManager {
-public:
+ public:
     void Init();
     void Clean();
 
@@ -45,9 +45,9 @@ public:
 
     sf::Vector2u GetWindowSize() { return game_window_.getSize(); }
 
-    sf::RenderWindow& GetOriginWindow() { return game_window_; };
+    sf::RenderWindow* GetOriginWindow() { return &game_window_; }
 
-private:
+ private:
     std::vector<std::shared_ptr<IGameState>> states_;
     sf::RenderWindow game_window_;
     bool is_running_;

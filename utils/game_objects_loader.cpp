@@ -2,7 +2,7 @@
 #include "SFML/System/Vector2.hpp"
 #include "game_object.hpp"
 #include <json.hpp>
-#include <textures_loader.h>
+#include <textures_loader.hpp>
 
 #include <fstream>
 #include <memory>
@@ -38,7 +38,7 @@ std::unique_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
     std::function<std::unique_ptr<GameObject>(std::string, const sf::Rect<int>&)> dfs =
         [&objects_graph, &data, &dfs](std::string vertex,
                                       const sf::Rect<int>& parent_sprites_rect) {
-            std::unique_ptr<GameObject> object = std::make_unique<GameObject>();
+            std::unique_ptr<GameObject> object = std::make_unique<GameObject>(vertex);
             if (!data[vertex].contains("type")) {
                 throw std::logic_error("There is no \"type\" field in " + vertex);
             }
@@ -79,7 +79,7 @@ std::unique_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             }
 
             for (std::string child : objects_graph[vertex]) {
-                object->AddChild(std::move(dfs(child, object->GetSpritesRect())));
+                object->AddChild(std::move(dfs(child, object->GetSpriteRect())));
             }
 
             return object;

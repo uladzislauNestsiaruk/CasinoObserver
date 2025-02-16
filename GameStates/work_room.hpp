@@ -1,17 +1,22 @@
 #pragma once
 
+#include <memory>
+#include <string>
 #include <vector>
 
-#include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Time.hpp"
 #include "game_state.h"
+#include "state_manager.h"
 #include <game_object.hpp>
+#include <json.hpp>
+#include <thread_safe_queue.hpp>
+
+using json = nlohmann::json;
 
 class WorkRoomState : public IGameState {
-    static constexpr std::string_view kWorkRoomGameObjects =
-        "assets/game_objects/work_room_objects.json";
+    const static std::string kWorkRoomGameObjects;
 
-public:
+ public:
     explicit WorkRoomState(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
@@ -20,8 +25,14 @@ public:
 
     ~WorkRoomState() override {}
 
-private:
+ private:
     std::vector<std::shared_ptr<IGameState>> tables_;
     std::unique_ptr<GameObject> root_game_object_;
+
     mutable size_t total_tables = 12;
+
+    friend void BlackjackScreenHandler(StateManager* manager, const std::string& child_tag,
+                                       IGameState* state);
+    friend void PokerScreenHandler(StateManager* manager, const std::string& child_tag,
+                                   IGameState* state);
 };

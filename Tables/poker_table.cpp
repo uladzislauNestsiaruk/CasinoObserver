@@ -1,5 +1,5 @@
 #include "poker_table.h"
-#include "constants.h"
+#include <constants.hpp>
 
 #include <iostream>
 
@@ -21,13 +21,11 @@ struct PokerComboInfo {
     bool operator<(const PokerComboInfo& other_combo) const {
         return std::tie(combo_id, values) < std::tie(other_combo.combo_id, other_combo.values);
     }
-
 };
 
 // Rate introduced by pair <id of combination increasing by priority, card values which
 // characterized this combination>
-PokerComboInfo RateHand(const std::vector<Card>& table_cards,
-                                                   const std::vector<Card>& hand) {
+PokerComboInfo RateHand(const std::vector<Card>& table_cards, const std::vector<Card>& hand) {
     std::vector<Card> all_cards(table_cards);
     all_cards.insert(all_cards.end(), hand.begin(), hand.end());
 
@@ -251,7 +249,8 @@ PokerMoveState HumbleGambler::PokerAction(size_t num_opponents,
         raise = 0.0;
     }
 
-    size_t total_bet = current_bet + (raise != 0 && raise < min_raise ? min_raise : static_cast<size_t>(raise));
+    size_t total_bet =
+        current_bet + (raise != 0 && raise < min_raise ? min_raise : static_cast<size_t>(raise));
 
     if (total_bet > 0.95 * GetBalance()) {
         if (GetBalance() == 0) {
@@ -299,11 +298,9 @@ void PokerTable::BettingPhase() {
             }
 
             PokerMoveState move_state = players_[ind]->PokerAction(
-                players_.size() - 1, table_cards_, players_[ind]->ShowCards(), current_bet_, min_bet_,
-                min_raise_, bets_[ind].num_raises);
-            json move_log = {
-                {"type", "trade_move"}
-            };
+                players_.size() - 1, table_cards_, players_[ind]->ShowCards(), current_bet_,
+                min_bet_, min_raise_, bets_[ind].num_raises);
+            json move_log = {{"type", "trade_move"}};
 
             switch (static_cast<uint8_t>(move_state.move)) {
             case static_cast<uint8_t>(PokerMove::ALL_IN):
@@ -347,9 +344,8 @@ void PokerTable::SelectWinners() {
     for (size_t i = 0; i < players_.size(); ++i) {
         hand_rates[i] = {RateHand(table_cards_, players_[i]->ShowCards()), players_[i]};
     }
-    std::sort(hand_rates.begin(), hand_rates.end(), [this](auto lhs, auto rhs){
-        return lhs > rhs;
-    });
+    std::sort(hand_rates.begin(), hand_rates.end(),
+              [this](auto lhs, auto rhs) { return lhs > rhs; });
 
     size_t num_winners = hand_rates.size();
     for (size_t i = 1; i < hand_rates.size(); ++i) {
@@ -360,17 +356,11 @@ void PokerTable::SelectWinners() {
     }
     for (size_t i = 0; i < num_winners; ++i) {
         hand_rates[i].second->GetMoney(bank_ / num_winners);
-        logs_.push({
-            {"type", "game_end"},
-            {"result", "win"},
-            {"profit", bank_ / num_winners}
-        });
+        logs_.push({{"type", "game_end"}, {"result", "win"}, {"profit", bank_ / num_winners}});
     }
     for (size_t i = num_winners; i < players_.size(); ++i) {
         logs_.push({
-            {"type", "game_end"},
-            {"result", "lose"}
-            //{"loss", bank_ / num_winners}
+            {"type", "game_end"}, {"result", "lose"} //{"loss", bank_ / num_winners}
         });
     }
 }
@@ -401,13 +391,13 @@ void PokerTable::GameIteration() {
         Clean();
         return;
     }
-    
+
     for (const std::string& phase : {"preflop", "flop", "turn", "river"}) {
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
         if (show_all_cards_) {
-            continue;   
+            continue;
         }
 
         BettingPhase();
@@ -417,6 +407,4 @@ void PokerTable::GameIteration() {
     Clean();
 }
 
-bool PokerTable::IsGameFinished() const {
-    return !is_active_game.load();
-}
+bool PokerTable::IsGameFinished() const { return !is_active_game.load(); }

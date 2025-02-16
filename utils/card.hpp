@@ -2,10 +2,10 @@
 #ifndef CASINOOBSERVER_CARD_H_
 #define CASINOOBSERVER_CARD_H_
 
-#include "constants.h"
+#include <constants.hpp>
 
 class Card {
-public:
+ public:
     Card() : value_{0} {}
 
     Card(CardType type, CardValue value) {
@@ -22,7 +22,7 @@ public:
 
     bool operator>(const Card& other_card) const { return value_ > other_card.value_; }
 
-private:
+ private:
     uint8_t value_;
 };
 

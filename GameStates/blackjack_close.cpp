@@ -2,16 +2,19 @@
 #include <memory>
 #include <string>
 
-#include "blackjack_close.h"
+#include "blackjack_close.hpp"
 #include "state_manager.h"
 #include <game_objects_loader.hpp>
-#include <textures_loader.h>
+#include <textures_loader.hpp>
+
+const std::string BlackjackClose::kBlackjackCloseGameObjects =
+    GetAssetPrefix() + "/game_objects/blackjack_close_objects.json";
 
 BlackjackClose::BlackjackClose(StateManager* manager)
     : table_(std::make_unique<BlackjackTable>(logs_, render_queue_)), drawer_(), run_game_(false),
       stop_game_thread_(false), game_executor_(([this] { GameExecutor(); })), logs_(),
-      render_queue_(), dealing_animation_(GetTextute("blackjack_dealing_animation"), 4, 3),
-      root_game_object_(std::move(ParseGameObjects(kBlackjackCloseGameObjects))) {}
+      render_queue_(), root_game_object_(std::move(ParseGameObjects(kBlackjackCloseGameObjects))),
+      dealing_animation_(GetTextute("dealing_animations_blackjack_players_dealing_1"), 1, 1) {}
 
 BlackjackClose::~BlackjackClose() {
     stop_game_thread_.store(false);

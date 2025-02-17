@@ -15,6 +15,8 @@ using json = nlohmann::json;
 class PokerClose : public IGameState {
     static const std::string kPokerCloseGameObjects;
 
+    enum class Anim;
+
  public:
     explicit PokerClose(StateManager* manager);
 

@@ -1,5 +1,4 @@
 #include <cstdlib>
-#include <iostream>
 #include <memory>
 
 #include "SFML/Window/Event.hpp"

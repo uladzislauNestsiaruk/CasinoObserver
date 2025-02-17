@@ -71,12 +71,12 @@ const sf::Texture& GetTextute(const std::string& texture_name) {
         return textures[texture_name];
     }
 
-    throw std::logic_error("no such texture in preloaded map");
+    throw std::logic_error("no such texture as \"" + texture_name + "\" in preloaded map");
 }
 
 TexturesRef GetTextures(const std::string& textures_dir_name) {
     TexturesRef result;
-    for (size_t i = 1; ; ++i) {
+    for (size_t i = 1;; ++i) {
         std::string texture_name = textures_dir_name + "_" + std::to_string(i);
         if (!textures.contains(texture_name)) {
             break;

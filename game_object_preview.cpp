@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     std::shared_ptr<GameObject> object = ParseGameObjects(argv[1]);
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "preview",
                             sf::Style::Resize | sf::Style::Close);
-    object->Resize(window.getSize());
+    object->Resize(sf::Vector2u(960, 640));
     sf::Event last_event;
 
     while (true) {

@@ -11,22 +11,25 @@
 #include "../GameStates/state_manager.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
+#include "SFML/System/Clock.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Event.hpp"
 #include "json.hpp"
 
 #define DEFINE_GOHANDLER(NAME) void NAME(const nlohmann::json& data);
 
-class GameObject {
+using nlohmann::json;
+
+class GameObject : public std::enable_shared_from_this<GameObject> {
     using object_ptr = std::shared_ptr<GameObject>;
 
  public:
-    using event_handler = void (*)(const nlohmann::json& data);
+    using event_handler = void (*)(StateManager* manager, IGameState* state, json& data);
 
     GameObject() = delete;
 
     explicit GameObject(const std::string& tag, double scale, const std::string& default_phase)
-        : tag_(tag), scale_(scale), active_sprite_(0), active_phase_(default_phase) {}
+        : tag_(tag), scale_(scale), active_phase_(default_phase) {}
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
         phases_[phase] = {std::move(sprite)};
@@ -49,13 +52,17 @@ class GameObject {
     void AddHandler(const sf::Event::EventType event_type, event_handler handler,
                     const std::string& tag = "");
 
-    std::optional<std::string> TriggerHandler(const nlohmann::json& data);
+    std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
 
     void Resize(sf::Vector2u size, sf::Vector2f scale = sf::Vector2f(-1, -1));
 
     void Move(sf::Vector2f offset);
 
     void Draw(sf::RenderWindow* window);
+
+    object_ptr FindGameObjectByTag(const std::string& tag);
+
+    bool TryUpdatePhase(const std::string&, uint64_t delay);
 
     const sf::Rect<int>& GetSpriteRect() const;
 
@@ -67,8 +74,11 @@ class GameObject {
     std::unordered_map<std::string, std::vector<object_ptr>> children_;
     std::unordered_map<std::string, std::vector<sf::Sprite>> phases_;
 
-    size_t active_sprite_;
+    size_t active_sprite_ = 0;
+    bool is_finished_current_phase_ = false;
     std::string active_phase_;
+
+    sf::Clock clock_;
 
     bool Contains(sf::Vector2f point) noexcept;
 };

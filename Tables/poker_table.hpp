@@ -14,7 +14,10 @@ class PokerTable : public AbstractTable {
 public:
     PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
         : AbstractTable(), deck_(true), min_bet_(100), min_raise_(50), small_blind_(50), big_blind_(min_bet_),
-          logs_(logs), render_queue_(render_queue) {}
+          logs_(logs), render_queue_(render_queue) {
+        AddPlayer(std::make_shared<HumbleGambler>(0, GameType::Poker, false, 1000));
+        AddPlayer(std::make_shared<HumbleGambler>(0, GameType::Poker, false, 2000));
+    }
 
     void GameIteration() override;
 

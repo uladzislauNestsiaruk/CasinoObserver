@@ -31,8 +31,6 @@ class WorkRoomState : public IGameState {
 
     mutable size_t total_tables = 12;
 
-    friend void BlackjackScreenHandler(StateManager* manager, const std::string& child_tag,
-                                       IGameState* state);
-    friend void PokerScreenHandler(StateManager* manager, const std::string& child_tag,
-                                   IGameState* state);
+    friend void BlackjackScreenHandler(StateManager* manager, IGameState* state, json& data);
+    friend void PokerScreenHandler(StateManager* manager, IGameState* state, json& data);
 };

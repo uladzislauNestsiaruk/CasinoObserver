@@ -1,10 +1,12 @@
 #include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <stdexcept>
 
 #include "../GameStates/state_manager.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
+#include "SFML/System/Time.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Event.hpp"
 #include "json.hpp"
@@ -47,6 +49,9 @@ void GameObject::Draw(sf::RenderWindow* window) {
 
     active_sprite_ = std::min(phases_[active_phase_].size() - 1, active_sprite_ + 1);
     window->draw(phases_[active_phase_][active_sprite_]);
+    if (active_sprite_ == phases_[active_phase_].size() - 1) {
+        is_finished_current_phase_ = true;
+    }
 
     for (auto child : children_[active_phase_]) {
         child->Draw(window);
@@ -82,16 +87,17 @@ void GameObject::AddHandler(const sf::Event::EventType type, event_handler handl
         }
 }
 
-std::optional<std::string> GameObject::TriggerHandler(const nlohmann::json& data) {
-    sf::Vector2f point = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGameState* state, nlohmann::json& data) {
+    sf::Vector2f point = sf::Vector2f(data["event"]["mouse_button"]["x"], data["event"]["mouse_button"]["y"]);
     for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0; ind--) {
         if (children_[active_phase_][ind]->Contains(point)) {
-            return children_[active_phase_][ind]->TriggerHandler(data);
+            return children_[active_phase_][ind]->TriggerHandler(manager, state, data);
         }
     }
 
-    if (Contains(point) && handlers_.contains(event.type)) {
-        handlers_[event.type](data);
+    if (Contains(point) && handlers_.contains(data["event"]["type"])) {
+        data["child_tag"] = tag_;
+        handlers_[data["event"]["type"]](manager, state, data);
         return std::optional<std::string>(tag_);
     }
 
@@ -113,4 +119,33 @@ bool GameObject::Contains(sf::Vector2f point) noexcept {
     }
 
     return phases_.at(active_phase_)[active_sprite_].getGlobalBounds().contains(point);
+}
+
+GameObject::object_ptr GameObject::FindGameObjectByTag(const std::string& tag) {
+    if (tag_ == tag) {
+        return shared_from_this();
+    }
+
+    for (const auto& [phase, phased_children] : children_) {
+        for (auto phased_child : phased_children) {
+            object_ptr child_result = phased_child->FindGameObjectByTag(tag);
+            if (child_result != nullptr) {
+                return child_result;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
+    if (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay)) {
+        active_phase_ = new_phase;
+        active_sprite_ = 0;
+        is_finished_current_phase_ = false;
+        clock_.restart();
+        return true;
+    }
+
+    return false;
 }

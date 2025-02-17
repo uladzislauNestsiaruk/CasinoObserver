@@ -1,7 +1,11 @@
 {
     "root":{
-        "default_phase": "preflop",
+        "default_phase": "afk",
         "phases": {
+            "afk": {
+                "type": "image",
+                "source": "dealing_animations_poker_preflop_1"
+            },
             "preflop": {
                 "type": "animation",
                 "source_dir": "dealing_animations_poker_preflop"

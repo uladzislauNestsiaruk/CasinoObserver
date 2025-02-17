@@ -10,6 +10,8 @@
 #include <game_objects_loader.hpp>
 #include <textures_loader.hpp>
 
+using nlohmann::json;
+
 const std::string WorkRoomState::kWorkRoomGameObjects =
     GetAssetPrefix() + "/game_objects/work_room_objects.json";
 
@@ -22,13 +24,12 @@ size_t ExtractTableId(const std::string& tag) {
     return atoll(tag.data() + strlen("screen"));
 }
 
-void BlackjackScreenHandler(StateManager* manager, const std::string& child_tag,
-                            IGameState* state) {
-    manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(child_tag)]);
+void BlackjackScreenHandler(StateManager* manager, IGameState* state, json& data) {
+    manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["child_tag"])]);
 }
 
-void PokerScreenHandler(StateManager* manager, const std::string& child_tag, IGameState* state) {
-    manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(child_tag)]);
+void PokerScreenHandler(StateManager* manager, IGameState* state, json& data) {
+    manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["child_tag"])]);
 }
 
 WorkRoomState::WorkRoomState(StateManager* manager)
@@ -46,7 +47,11 @@ void WorkRoomState::HandleEvent(const sf::Event& event) {
         return;
     }
 
-    root_game_object_->TriggerHandler(event, this);
+    json event_data;
+    event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
+    event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
+    event_data["event"]["type"] = event.type;
+    root_game_object_->TriggerHandler(&StateManager::Instance(), this, event_data);
 }
 
 void WorkRoomState::Update(sf::Time delta) {}

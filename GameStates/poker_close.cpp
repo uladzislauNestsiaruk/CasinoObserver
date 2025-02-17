@@ -1,7 +1,9 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
 #include "poker_close.hpp"
+#include "SFML/System/Time.hpp"
 #include "SFML/Window/Event.hpp"
+#include "game_object.hpp"
 #include "state_manager.h"
 #include <game_objects_loader.hpp>
 #include <textures_loader.hpp>
@@ -50,13 +52,23 @@ void PokerClose::Update(sf::Time delta) {
 }
 
 void PokerClose::Draw(StateManager* manager) {
-    while (!render_queue_.empty()) {
-        std::optional<json> render_event = render_queue_.pop();
-        if (render_event == std::nullopt) {
-            continue;
+    static std::optional<json> render_event = std::nullopt;
+    if (render_event != std::nullopt){
+        std::shared_ptr<GameObject> target_object = root_game_object_->FindGameObjectByTag(render_event.value()["tag"].template get<std::string>());
+        std::string new_phase = render_event.value()["new_phase"].template get<std::string>();
+        uint64_t delay = render_event.value()["delay"].template get<uint64_t>();
+        if (target_object->TryUpdatePhase(new_phase, delay)) {
+            render_event = std::nullopt;
         }
-
-        // Handle render events
+    } else {
+        while (!render_queue_.empty()) {
+            if (render_event != std::nullopt) {
+                break;
+            }
+            render_event = render_queue_.pop();
+        }
     }
+
+    sf::sleep(sf::milliseconds(50));
     root_game_object_->Draw(manager->GetOriginWindow());
 }

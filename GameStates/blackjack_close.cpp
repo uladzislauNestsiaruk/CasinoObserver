@@ -13,8 +13,9 @@ const std::string BlackjackClose::kBlackjackCloseGameObjects =
 BlackjackClose::BlackjackClose(StateManager* manager)
     : table_(std::make_unique<BlackjackTable>(logs_, render_queue_)), drawer_(), run_game_(false),
       stop_game_thread_(false), game_executor_(([this] { GameExecutor(); })), logs_(),
-      render_queue_(), root_game_object_(std::move(ParseGameObjects(kBlackjackCloseGameObjects))),
-      dealing_animation_(GetTextute("dealing_animations_blackjack_players_dealing_1"), 1, 1) {}
+      render_queue_(), root_game_object_(std::move(ParseGameObjects(kBlackjackCloseGameObjects))) {
+    root_game_object_->Resize(manager->GetWindowSize());
+}
 
 BlackjackClose::~BlackjackClose() {
     stop_game_thread_.store(false);
@@ -45,4 +46,6 @@ void BlackjackClose::Update(sf::Time delta) {
     }
 }
 
-void BlackjackClose::Draw(StateManager* manager) { dealing_animation_.Draw(manager); }
+void BlackjackClose::Draw(StateManager* manager) { 
+    root_game_object_->Draw(manager->GetOriginWindow());
+}

@@ -1,7 +1,8 @@
-#ifndef CASINOOBSERVER_TEXTURES_LOADER_H
-#define CASINOOBSERVER_TEXTURES_LOADER_H
+#pragma once
 
 #include "SFML/Graphics/Texture.hpp"
+
+using TexturesRef = std::vector<std::reference_wrapper<sf::Texture>>;
 
 void Preload();
 
@@ -9,4 +10,4 @@ const std::string& GetAssetPrefix();
 
 const sf::Texture& GetTextute(const std::string& texture_name);
 
-#endif
+TexturesRef GetTextures(const std::string& textures_dir_name);

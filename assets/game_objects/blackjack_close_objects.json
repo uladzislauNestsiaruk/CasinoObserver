@@ -1,7 +1,10 @@
 {
-    "root":{
-        "type": "image",
-        "source": "work_room_background",
-        "coords" : [0, 0]
+    "root": {
+        "type": "animation",
+        "source_dir": "dealing_animations_blackjack_players_dealing",
+        "coords" : [0.0, 0.0]
+    },
+    "obj": {
+        ""
     }
 }

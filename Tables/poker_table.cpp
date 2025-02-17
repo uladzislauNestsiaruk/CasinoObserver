@@ -1,4 +1,4 @@
-#include "poker_table.h"
+#include "poker_table.hpp"
 #include <constants.hpp>
 
 #include <iostream>

@@ -1,6 +1,7 @@
 #include "game_objects_loader.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "game_object.hpp"
+#include <iostream>
 #include <json.hpp>
 #include <textures_loader.hpp>
 
@@ -63,14 +64,18 @@ std::unique_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
                 sprite.setPosition(pos);
                 object->AddSprite(sprite);
             } else if (type == "animation") {
-                if (!data[vertex].contains("sources")) {
-                    throw std::logic_error("There is no \"sources\" field in " + vertex);
+                if (!data[vertex].contains("source_dir")) {
+                    for (auto el : data[vertex].items()) {
+                        std::cout << el.key() << '\n';
+                    }
+                    throw std::logic_error("There is no \"source_dir\" field in " + vertex);
                 }
 
-                std::vector<std::string> sources =
-                    data[vertex]["sources"].template get<std::vector<std::string>>();
-                for (const auto& source : sources) {
-                    sf::Sprite sprite(GetTextute(source));
+                std::string source_dir =
+                    data[vertex]["source_dir"].template get<std::string>();
+                TexturesRef textures = GetTextures(source_dir);
+                for (auto source : textures) {
+                    sf::Sprite sprite(source.get());
                     sprite.setPosition(pos);
                     object->AddSprite(sprite);
                 }

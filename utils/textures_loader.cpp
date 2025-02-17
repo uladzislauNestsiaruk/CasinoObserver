@@ -1,5 +1,5 @@
+#include "SFML/Graphics/Texture.hpp"
 #include <filesystem>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -9,7 +9,7 @@
 
 const char* kAssetsPrefix[] = {"assets/", "../assets/", "../../assets", "CasinoObserver/assets/"};
 
-std::unordered_map<std::string, sf::Texture> textures;
+static std::unordered_map<std::string, sf::Texture> textures;
 
 std::string ExtractName(const std::string& path) {
     if (!path.ends_with(".png")) {
@@ -72,4 +72,18 @@ const sf::Texture& GetTextute(const std::string& texture_name) {
     }
 
     throw std::logic_error("no such texture in preloaded map");
+}
+
+TexturesRef GetTextures(const std::string& textures_dir_name) {
+    TexturesRef result;
+    for (size_t i = 1; ; ++i) {
+        std::string texture_name = textures_dir_name + "_" + std::to_string(i);
+        if (!textures.contains(texture_name)) {
+            break;
+        }
+
+        result.push_back(textures[texture_name]);
+    }
+
+    return result;
 }

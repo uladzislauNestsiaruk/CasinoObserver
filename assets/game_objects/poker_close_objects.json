@@ -1,25 +1,7 @@
 {
     "root":{
         "type": "animation",
-        "sources": [
-            "dealing_animations_poker_1", "dealing_animations_poker_2", "dealing_animations_poker_3",
-            "dealing_animations_poker_4", "dealing_animations_poker_5", "dealing_animations_poker_6",
-            "dealing_animations_poker_7", "dealing_animations_poker_8", "dealing_animations_poker_9",
-            "dealing_animations_poker_10", "dealing_animations_poker_11", "dealing_animations_poker_12",
-            "dealing_animations_poker_13", "dealing_animations_poker_14", "dealing_animations_poker_15",
-            "dealing_animations_poker_16", "dealing_animations_poker_17", "dealing_animations_poker_18",
-            "dealing_animations_poker_19", "dealing_animations_poker_20", "dealing_animations_poker_21",
-            "dealing_animations_poker_22", "dealing_animations_poker_23", "dealing_animations_poker_24",
-            "dealing_animations_poker_25", "dealing_animations_poker_26", "dealing_animations_poker_27",
-            "dealing_animations_poker_28", "dealing_animations_poker_29", "dealing_animations_poker_30",
-            "dealing_animations_poker_31", "dealing_animations_poker_32", "dealing_animations_poker_33",
-            "dealing_animations_poker_34", "dealing_animations_poker_35", "dealing_animations_poker_36",
-            "dealing_animations_poker_37", "dealing_animations_poker_38", "dealing_animations_poker_39",
-            "dealing_animations_poker_40", "dealing_animations_poker_41", "dealing_animations_poker_42",
-            "dealing_animations_poker_43", "dealing_animations_poker_44", "dealing_animations_poker_45",
-            "dealing_animations_poker_46", "dealing_animations_poker_47", "dealing_animations_poker_48",
-            "dealing_animations_poker_49", "dealing_animations_poker_50", "dealing_animations_poker_51"
-        ],
+        "source_dir": "dealing_animations_poker",
         "coords" : [0.0, 0.0]
     }
 }

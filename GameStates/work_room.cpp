@@ -4,7 +4,7 @@
 
 #include "SFML/Window/Event.hpp"
 #include "blackjack_close.hpp"
-#include "poker_close.h"
+#include "poker_close.hpp"
 #include "state_manager.h"
 #include "work_room.hpp"
 

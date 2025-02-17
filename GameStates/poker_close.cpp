@@ -1,6 +1,6 @@
 // Copyright [2024] Nestsiarul Uladzislau
 
-#include "poker_close.h"
+#include "poker_close.hpp"
 #include "SFML/Window/Event.hpp"
 #include "state_manager.h"
 #include <game_objects_loader.hpp>

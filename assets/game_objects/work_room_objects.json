@@ -40,7 +40,7 @@
         "source": "work_room_casino_machine_s",
         "coords" : [0.64, 0.96]
     },
-   "cup":{
+    "cup":{
         "parent":"root",
         "type": "image",
         "source": "work_room_cup",

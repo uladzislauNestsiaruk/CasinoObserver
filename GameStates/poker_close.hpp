@@ -3,7 +3,7 @@
 #include <string>
 #include <thread>
 
-#include "../Tables/poker_table.h"
+#include "../Tables/poker_table.hpp"
 #include "game_state.h"
 #include <drawer.hpp>
 #include <game_object.hpp>
@@ -14,6 +14,8 @@ using json = nlohmann::json;
 
 class PokerClose : public IGameState {
     static const std::string kPokerCloseGameObjects;
+
+    enum class Anim
 
  public:
     explicit PokerClose(StateManager* manager);

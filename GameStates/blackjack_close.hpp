@@ -40,8 +40,6 @@ class BlackjackClose : public IGameState {
 
     std::unique_ptr<GameObject> root_game_object_;
 
-    Animation dealing_animation_;
-
     void GameExecutor();
 };
 

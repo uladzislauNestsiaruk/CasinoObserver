@@ -13,7 +13,7 @@ const std::string BlackjackClose::kBlackjackCloseGameObjects =
 BlackjackClose::BlackjackClose(StateManager* manager)
     : table_(std::make_unique<BlackjackTable>(logs_, render_queue_)), drawer_(), run_game_(false),
       stop_game_thread_(false), game_executor_(([this] { GameExecutor(); })), logs_(),
-      render_queue_(), root_game_object_(std::move(ParseGameObjects(kBlackjackCloseGameObjects))) {
+      render_queue_(), root_game_object_(ParseGameObjects(kBlackjackCloseGameObjects)) {
     root_game_object_->Resize(manager->GetWindowSize());
 }
 

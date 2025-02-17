@@ -33,7 +33,7 @@ void PokerScreenHandler(StateManager* manager, const std::string& child_tag, IGa
 }
 
 WorkRoomState::WorkRoomState(StateManager* manager)
-    : root_game_object_(std::move(ParseGameObjects(kWorkRoomGameObjects))) {
+    : root_game_object_(ParseGameObjects(kWorkRoomGameObjects)) {
     tables_.emplace_back(std::make_shared<BlackjackClose>(manager));
     tables_.emplace_back(std::make_shared<PokerClose>(manager));
 

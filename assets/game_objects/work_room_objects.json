@@ -1,49 +1,97 @@
 {
     "root":{
-        "type": "image",
-        "source": "work_room_background",
-        "coords" : [0.0, 0.0]
+        "default_phase": "afk",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_background"
+            }
+        },
+        "coords" : [0.0, 0.0],
+        "scale": 1.0
     },
     "bucket":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_bucket",
-        "coords" : [0.6, 1.29]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_bucket"
+            }
+        },
+        "coords" : [0.6, 1.29],
+        "scale": 1.0
     },
     "phone":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_phone",
-        "coords" : [1.085, 0.965]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_phone"
+            }
+        },
+        "coords" : [1.085, 0.965],
+        "scale": 1.0
     },
     "screen0":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_screen",
-        "coords" : [0.5, 0.42]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_screen"
+            }
+        },
+        "coords" : [0.5, 0.42],
+        "scale": 1.0
     },
     "screen1":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_screen",
-        "coords" : [0.95, 0.42]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_screen"
+            }
+        },
+        "coords" : [0.95, 0.42],
+        "scale": 1.0
     },
     "donuts":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_donuts",
-        "coords" : [0.52, 1.02]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_donuts"
+            }
+        },
+        "coords" : [0.52, 1.02],
+        "scale": 1.0
     },
     "casino_maschine":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_casino_machine_s",
-        "coords" : [0.64, 0.96]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_casino_machine_s"
+            }
+        },
+        "coords" : [0.64, 0.96],
+        "scale": 1.0
     },
     "cup":{
-        "parent":"root",
-        "type": "image",
-        "source": "work_room_cup",
-        "coords" : [1.025, 1.02]
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "work_room_cup"
+            }
+        },
+        "coords" : [1.025, 1.02],
+        "scale": 1.0
     } 
 }

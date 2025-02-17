@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     }
 
     Preload();
-    std::unique_ptr<GameObject> object = ParseGameObjects(argv[1]);
+    std::shared_ptr<GameObject> object = ParseGameObjects(argv[1]);
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "preview",
                             sf::Style::Resize | sf::Style::Close);
     object->Resize(window.getSize());

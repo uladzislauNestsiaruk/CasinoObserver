@@ -1,10 +1,13 @@
 {
     "root": {
-        "type": "animation",
-        "source_dir": "dealing_animations_blackjack_players_dealing",
+        "default_phase": "players_dealing",
+        "phases": {
+            "players_dealing": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing"
+            }
+        },
+        "scale": 1.0,
         "coords" : [0.0, 0.0]
-    },
-    "obj": {
-        ""
     }
 }

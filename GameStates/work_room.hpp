@@ -27,7 +27,7 @@ class WorkRoomState : public IGameState {
 
  private:
     std::vector<std::shared_ptr<IGameState>> tables_;
-    std::unique_ptr<GameObject> root_game_object_;
+    std::shared_ptr<GameObject> root_game_object_;
 
     mutable size_t total_tables = 12;
 

@@ -14,7 +14,9 @@ const std::string PokerClose::kPokerCloseGameObjects =
 PokerClose::PokerClose(StateManager* manager)
     : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })),
       table_(std::make_unique<PokerTable>(logs_, render_queue_)),
-      root_game_object_(std::move(ParseGameObjects(kPokerCloseGameObjects))){}
+      root_game_object_(ParseGameObjects(kPokerCloseGameObjects)){
+    root_game_object_->Resize(manager->GetWindowSize());
+}
 
 PokerClose::~PokerClose() {
     stop_game_thread_.store(true);
@@ -56,4 +58,5 @@ void PokerClose::Draw(StateManager* manager) {
 
         // Handle render events
     }
+    root_game_object_->Draw(manager->GetOriginWindow());
 }

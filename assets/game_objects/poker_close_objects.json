@@ -1,7 +1,25 @@
 {
     "root":{
-        "type": "animation",
-        "source_dir": "dealing_animations_poker",
-        "coords" : [0.0, 0.0]
+        "default_phase": "preflop",
+        "phases": {
+            "preflop": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_preflop"
+            },
+            "flop": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_flop"
+            },
+            "turn": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_turn"
+            },
+            "river": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_river"
+            }
+        },
+        "coords" : [0.0, 0.0],
+        "scale": 1.0
     }
 }

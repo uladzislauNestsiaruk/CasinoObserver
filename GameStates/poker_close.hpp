@@ -15,8 +15,6 @@ using json = nlohmann::json;
 class PokerClose : public IGameState {
     static const std::string kPokerCloseGameObjects;
 
-    enum class Anim
-
  public:
     explicit PokerClose(StateManager* manager);
 
@@ -40,5 +38,5 @@ class PokerClose : public IGameState {
     TSQueue<json> logs_;
     TSQueue<json> render_queue_;
 
-    std::unique_ptr<GameObject> root_game_object_;
+    std::shared_ptr<GameObject> root_game_object_;
 };

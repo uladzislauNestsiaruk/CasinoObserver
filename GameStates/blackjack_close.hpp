@@ -38,7 +38,7 @@ class BlackjackClose : public IGameState {
     TSQueue<json> logs_;
     TSQueue<json> render_queue_;
 
-    std::unique_ptr<GameObject> root_game_object_;
+    std::shared_ptr<GameObject> root_game_object_;
 
     void GameExecutor();
 };

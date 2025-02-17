@@ -3,8 +3,9 @@
 #include "poker_close.hpp"
 #include "SFML/System/Time.hpp"
 #include "SFML/Window/Event.hpp"
-#include "game_object.hpp"
+#include "game_state.h"
 #include "state_manager.h"
+#include <game_object.hpp>
 #include <game_objects_loader.hpp>
 #include <textures_loader.hpp>
 
@@ -13,11 +14,17 @@
 const std::string PokerClose::kPokerCloseGameObjects =
     GetAssetPrefix() + "/game_objects/poker_close_objects.json";
 
+void ReturnButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data) {
+    manager->Pop();
+}
+
 PokerClose::PokerClose(StateManager* manager)
     : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })),
       table_(std::make_unique<PokerTable>(logs_, render_queue_)),
-      root_game_object_(ParseGameObjects(kPokerCloseGameObjects)){
+      root_game_object_(ParseGameObjects(kPokerCloseGameObjects)) {
     root_game_object_->Resize(manager->GetWindowSize());
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed, ReturnButtonHandler,
+                                  "return_button");
 }
 
 PokerClose::~PokerClose() {
@@ -34,7 +41,17 @@ void PokerClose::GameExecutor() {
     }
 }
 
-void PokerClose::HandleEvent(const sf::Event& event) {}
+void PokerClose::HandleEvent(const sf::Event& event) {
+    if (event.type != sf::Event::MouseButtonPressed) {
+        return;
+    }
+
+    json event_data;
+    event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
+    event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
+    event_data["event"]["type"] = event.type;
+    root_game_object_->TriggerHandler(&StateManager::Instance(), this, event_data);
+}
 
 void PokerClose::Update(sf::Time delta) {
     if (table_->IsGameFinished() && logs_.empty() && render_queue_.empty()) {
@@ -53,8 +70,9 @@ void PokerClose::Update(sf::Time delta) {
 
 void PokerClose::Draw(StateManager* manager) {
     static std::optional<json> render_event = std::nullopt;
-    if (render_event != std::nullopt){
-        std::shared_ptr<GameObject> target_object = root_game_object_->FindGameObjectByTag(render_event.value()["tag"].template get<std::string>());
+    if (render_event != std::nullopt) {
+        std::shared_ptr<GameObject> target_object = root_game_object_->FindGameObjectByTag(
+            render_event.value()["tag"].template get<std::string>());
         std::string new_phase = render_event.value()["new_phase"].template get<std::string>();
         uint64_t delay = render_event.value()["delay"].template get<uint64_t>();
         if (target_object->TryUpdatePhase(new_phase, delay)) {

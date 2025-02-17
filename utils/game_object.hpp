@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <memory>
 #include <optional>
 #include <string>
@@ -16,7 +15,8 @@
 #include "SFML/Window/Event.hpp"
 #include "json.hpp"
 
-#define DEFINE_GOHANDLER(NAME) void NAME(const nlohmann::json& data);
+#define DEFINE_GOHANDLER(NAME)                                                                     \
+    void NAME(StateManager& manager, IGameState* state, const nlohmann::json& data);
 
 using nlohmann::json;
 
@@ -49,10 +49,13 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
 
     void RemoveChild(const std::string& phase_tag, const std::string& child_tag);
 
+    std::optional<GameObject*> GetChild(const std::string& phase_tag, const std::string& child_tag);
+
     void AddHandler(const sf::Event::EventType event_type, event_handler handler,
                     const std::string& tag = "");
 
-    std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
+    std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state,
+                                              nlohmann::json& data);
 
     void Resize(sf::Vector2u size, sf::Vector2f scale = sf::Vector2f(-1, -1));
 

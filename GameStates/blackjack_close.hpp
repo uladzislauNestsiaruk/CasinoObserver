@@ -6,10 +6,9 @@
 #include <string>
 #include <thread>
 
-#include "../Tables/blackjack_table.h"
 #include "SFML/Window/Event.hpp"
-#include "animation.h"
 #include "game_state.h"
+#include <../Tables/blackjack_table.hpp>
 #include <drawer.hpp>
 #include <game_object.hpp>
 #include <json.hpp>

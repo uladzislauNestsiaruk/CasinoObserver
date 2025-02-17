@@ -25,5 +25,17 @@
         },
         "coords" : [0.0, 0.0],
         "scale": 1.0
+    },
+    "return_button":{
+        "default_phase": "afk",
+        "parent":"root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_return_button"
+            }
+        },
+        "coords" : [0.01, 0.01],
+        "scale": 1.0
     }
 }

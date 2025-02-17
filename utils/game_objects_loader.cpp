@@ -1,12 +1,11 @@
-#include "game_objects_loader.hpp"
-#include "SFML/System/Vector2.hpp"
-#include "game_object.hpp"
-#include <iostream>
-#include <json.hpp>
-#include <textures_loader.hpp>
-
 #include <fstream>
 #include <memory>
+
+#include "SFML/System/Vector2.hpp"
+#include "game_object.hpp"
+#include "game_objects_loader.hpp"
+#include <json.hpp>
+#include <textures_loader.hpp>
 
 using nlohmann::json;
 
@@ -23,7 +22,8 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
         throw std::runtime_error("There is no \"root\" in " + std::string(game_objects_path));
     }
 
-    std::unordered_map<std::string, std::vector<std::pair<std::string, std::optional<std::string>>>> objects_graph;
+    std::unordered_map<std::string, std::vector<std::pair<std::string, std::optional<std::string>>>>
+        objects_graph;
     for (const auto& item : data.items()) {
         if (item.key() == "root") {
             continue;
@@ -64,7 +64,8 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             std::array<float, 2> coords =
                 data[vertex]["coords"].template get<std::array<float, 2>>();
 
-            std::shared_ptr<GameObject> object = std::make_shared<GameObject>(vertex, scale, default_phase);
+            std::shared_ptr<GameObject> object =
+                std::make_shared<GameObject>(vertex, scale, default_phase);
             sf::Vector2f pos = {
                 parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
                 parent_sprites_rect.getPosition().y + parent_sprites_rect.height * coords[1]};
@@ -75,25 +76,28 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
 
             for (auto item : data[vertex]["phases"].items()) {
                 if (!item.value().contains("type")) {
-                    throw std::logic_error("There is no \"type\" field in the " + item.key() + " phase in " + vertex);
+                    throw std::logic_error("There is no \"type\" field in the " + item.key() +
+                                           " phase in " + vertex);
                 }
                 std::string type = item.value()["type"].template get<std::string>();
 
                 if (type == "image") {
                     if (!item.value().contains("source")) {
-                        throw std::logic_error("There is no \"source\" field in the " + item.key() + " phase in " + vertex);
+                        throw std::logic_error("There is no \"source\" field in the " + item.key() +
+                                               " phase in " + vertex);
                     }
 
-                    sf::Sprite sprite(GetTextute(item.value()["source"].template get<std::string>()));
+                    sf::Sprite sprite(
+                        GetTextute(item.value()["source"].template get<std::string>()));
                     sprite.setPosition(pos);
                     object->AddPhase({std::move(sprite)}, item.key());
                 } else if (type == "animation") {
                     if (!item.value().contains("source_dir")) {
-                        throw std::logic_error("There is no \"source_dir\" field in the " + item.key() + " phase in " + vertex);
+                        throw std::logic_error("There is no \"source_dir\" field in the " +
+                                               item.key() + " phase in " + vertex);
                     }
 
-                    std::string source_dir =
-                        item.value()["source_dir"].template get<std::string>();
+                    std::string source_dir = item.value()["source_dir"].template get<std::string>();
                     TexturesRef textures = GetTextures(source_dir);
                     std::vector<sf::Sprite> animation;
                     animation.reserve(textures.size());
@@ -104,7 +108,8 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
                     }
                     object->AddPhase(std::move(animation), item.key());
                 } else {
-                    throw std::logic_error("Wrong value of \"type\" field in the " + item.key() + " phase in " + vertex);
+                    throw std::logic_error("Wrong value of \"type\" field in the " + item.key() +
+                                           " phase in " + vertex);
                 }
             }
 

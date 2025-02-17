@@ -4,8 +4,8 @@
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/WindowStyle.hpp"
-#include "stats_window.h"
 #include "subwindows_manager.h"
+#include <stats_window.hpp>
 /*
 TEST(BasicFunctionality, OneStatsWindow) {
     sf::RenderWindow render_window;

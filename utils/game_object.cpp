@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 
 #include "../GameStates/state_manager.h"
@@ -9,8 +10,8 @@
 #include "SFML/System/Time.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Event.hpp"
-#include "json.hpp"
 #include "game_object.hpp"
+#include "json.hpp"
 
 void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale) {
     for (auto& [tag, sprites] : phases_) {
@@ -40,6 +41,23 @@ void GameObject::Move(sf::Vector2f offset) {
         std::for_each(child_pair.second.begin(), child_pair.second.end(),
                       [offset](object_ptr child) { child->Move(offset); });
     }
+}
+
+std::optional<GameObject*> GameObject::GetChild(const std::string& phase_tag,
+                                                const std::string& child_tag) {
+    if (tag_ == child_tag && phases_.contains(phase_tag)) {
+        return this;
+    }
+
+    std::optional<GameObject*> result;
+    for (auto& child_pair : children_) {
+        std::for_each(child_pair.second.begin(), child_pair.second.end(), [&](object_ptr child) {
+            auto child_result = child->GetChild(phase_tag, child_tag);
+            result = child_result.has_value() ? child_result : result;
+        });
+    }
+
+    return result;
 }
 
 void GameObject::Draw(sf::RenderWindow* window) {

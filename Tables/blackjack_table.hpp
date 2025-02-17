@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cmath>
 #include <list>
 #include <unordered_map>
 #include <utility>
@@ -27,7 +26,7 @@ struct Hand {
 // Player by zero index is always a dealer
 // Also whose_move iterating through hands, not players!!!
 class BlackjackTable : public AbstractTable {
-    size_t max_players_amount_ = 8;
+    size_t max_players_amount_ = 6;
     struct TableSetting {
         size_t min_bet;
         bool das; // is double after split enabled

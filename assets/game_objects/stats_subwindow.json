@@ -1,0 +1,61 @@
+{
+    "root":{
+        "default_phase": "afk",
+        "phases":{
+            "afk": {
+                "source":"stats_subwindow_subwindow_background",
+                "type":"image"
+            }
+        },
+        "coords":[0,0],
+        "scale":1.0
+    },
+    "close_button":{
+        "parent":"root",
+        "default_phase": "afk",
+        "phases":{
+            "afk": {
+                "source":"stats_subwindow_red_cross",
+                "type":"image"
+            }
+        },
+        "coords":[0,0],
+        "scale":1.0
+    },
+    "row1":{
+        "parent":"root",
+        "default_phase": "afk",
+        "phases":{
+            "afk": {
+                "source":"stats_subwindow_row_background",
+                "type":"image"
+            }
+        },
+        "coords":[0,1.3],
+        "scale":1.0
+    },
+    "cell1":{
+        "parent":"row1",
+        "default_phase": "afk",
+        "phases":{
+            "afk": {
+                "source":"stats_subwindow_cell_background",
+                "type":"image"
+            }
+        },
+        "coords":[0,0],
+        "scale":1.0
+    },
+    "cell2":{
+        "parent":"row1",
+        "default_phase": "afk",
+        "phases":{
+            "afk": {
+                "source":"stats_subwindow_cell_background",
+                "type":"image"
+            }
+        },
+        "coords":[0.3,0],
+        "scale":1.0
+    }
+}

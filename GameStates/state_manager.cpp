@@ -51,6 +51,16 @@ void StateManager::HandleEvents() {
     }
 }
 
+std::shared_ptr<IGameState> StateManager::Pop() {
+    if (states_.size() <= 1) {
+        throw std::runtime_error("attempt to pop state from empty manager stack");
+    }
+
+    std::shared_ptr<IGameState> top = states_.back();
+    states_.pop_back();
+    return top;
+}
+
 void StateManager::Update(sf::Time delta) {
     for (auto state : states_) {
         state->Update(delta);

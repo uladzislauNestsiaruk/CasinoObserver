@@ -1,117 +1,95 @@
-#include <algorithm>
-#include <cassert>
-#include <memory>
+#include <cstdint>
 #include <stdexcept>
-#include <sys/stat.h>
+#include <type_traits>
 
-#include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/System/Vector2.hpp"
-#include "stats_window.h"
-#include "subwindows_manager.h"
+#include "json.hpp"
+#include "stats_window.hpp"
+#include <game_object.hpp>
 
-using namespace StatsWindowUtils;
-
-void SpriteStatsEntity::Resize(float new_width, float new_height) {
-    sf::Vector2f entity_size = static_cast<sf::Vector2f>(sprite_.getTextureRect().getSize());
-    sf::Vector2f scale_factor = sf::Vector2f(new_width / entity_size.x, new_height / entity_size.y);
-    if (scale_factor.x != 1.0 || scale_factor.y != 1.0) {
-        sprite_.setScale(scale_factor.x, scale_factor.y);
+template <class Row>
+    requires std::is_base_of_v<GameObject, Row>
+void StatsWindow<Row>::OnMousePressedHandler(StateManager& manager, IGameState* state,
+                                             const nlohmann::json& data) {
+    if (!data.contains("x") || !data.contains("y")) {
+        throw std::logic_error(
+            "not enough info about mouse press event provided to the stats_window");
     }
+
+    mouse_pressed_ = true;
+    mouse_pressed_cords =
+        sf::Vector2f(data["x"].template get<float>(), data["y"].template get<float>());
 }
 
-void TextStatsEntity::Resize(float new_width, float new_height) {
-    sf::Vector2f entity_size = text_.getGlobalBounds().getSize();
-    sf::Vector2f scale_factor = sf::Vector2f(new_width / entity_size.x, new_height / entity_size.y);
-    if (scale_factor.x != 1.0 || scale_factor.y != 1.0) {
-        text_.setScale(scale_factor.x, scale_factor.y);
+template <class Row>
+    requires std::is_base_of_v<GameObject, Row>
+void StatsWindow<Row>::OnMouseReleasedHandler(StateManager& manager, IGameState* state,
+                                              const nlohmann::json& data) {
+    mouse_pressed_ = false;
+    mouse_pressed_cords = sf::Vector2f(0, 0);
+}
+
+template <class Row>
+    requires std::is_base_of_v<GameObject, Row>
+void StatsWindow<Row>::OnMouseMoveHandler(StateManager& manager, IGameState* state,
+                                          const nlohmann::json& data) {
+    if (!data.contains("x") || !data.contains("y")) {
+        throw std::logic_error(
+            "not enough info about mouse move event provided to the stats_window");
     }
+
+    sf::Vector2f mouse_position =
+        sf::Vector2f(data["x"].template get<int32_t>(), data["y"].template get<int32_t>());
+    root_object_->Move(mouse_position - mouse_pressed_cords);
+    mouse_pressed_cords = mouse_position;
 }
 
-StatsRow::StatsRow(float width, float height, float pos_x, float pos_y,
-                   const std::vector<std::shared_ptr<BaseStatsEntity>>& info)
-    : info_(info), size_(width, height), position_(pos_x, pos_y) {
-    Resize(width, height);
-}
+template <class Row>
+    requires std::is_base_of_v<GameObject, Row>
+void StatsWindow<Row>::OnMouseScrolledHandler(StateManager& manager, IGameState* state,
+                                              const nlohmann::json& data) {
+    if (visible_rows_ >= data_.size() || mouse_pressed_) {
+        return;
+    }
 
-void StatsRow::Resize(float new_height, float new_width) {
-    for (auto entity_ptr : info_) {
-        if (!entity_ptr) {
-            throw std::invalid_argument("passed null StatsEntity");
+    if (!data.contains("delta")) {
+        throw std::logic_error(
+            "not enough info about mouse scroll event provided to the stats_window");
+    }
+
+    float delta = data["delta"].template get<float>();
+    sf::Vector2f window_position =
+        static_cast<sf::Vector2f>(root_object_->GetSpriteRect().getPosition());
+    sf::Vector2f window_y_borders = sf::Vector2f(
+        window_position.y, window_position.y + root_object_->GetSpriteRect().getSize().y);
+
+    auto prefix_deleted = [&]() {
+        ++first_visible_row_;
+        Row& row = data[first_visible_row_ + visible_rows_ - 1];
+        sf::Vector2f row_pos = static_cast<sf::Vector2f>(row.GetSpriteRect().getPosition());
+
+        row.Move(sf::Vector2f(window_position.x, window_y_borders.y) - row_pos);
+        root_object_->AddChild(row);
+    };
+    auto suffix_deleted = [&]() {
+        first_visible_row_ = std::max(0ul, first_visible_row_ - 1);
+        Row& row = data[first_visible_row_];
+        sf::Vector2f row_pos = static_cast<sf::Vector2f>(row.GetSpriteRect().getPosition());
+
+        row.Move(window_position - row_pos);
+        root_object_->AddChild(row);
+    };
+
+    for (size_t ind = first_visible_row_;
+         ind < min(first_visible_row_ + visible_rows_, data_.size()); ind++) {
+        GameObject* row = root_object_->GetChild("default_phase", "row" + std::to_string(ind))
+                              .value(); // TODO: CHANGE TO CORRECT PHASE
+        row->Move(sf::Vector2f(0, delta));
+        float new_row_y = row->GetSpriteRect().getPosition().y;
+        if (new_row_y > window_y_borders.y || new_row_y < window_y_borders.x) {
+            root_object_->RemoveChild("default_phase",
+                                      "row" + std::to_string(ind)); // TODO: CHANGE TO CORRECT PHASE
+            delta > 0 ? prefix_deleted() : suffix_deleted();
         }
-        entity_ptr->Resize(new_width, new_height);
-    }
-}
-
-void StatsRow::Draw(sf::RenderWindow* window) {
-    sf::Vector2f start_position = info_[0]->GetSize();
-    size_t delta_x = 0;
-    for (auto entity : info_) {
-        entity->Move(start_position.x + delta_x, start_position.y);
-
-        if (Is<SpriteStatsEntity>(entity)) {
-            window->draw(As<SpriteStatsEntity>(entity)->GetSprite());
-        } else {
-            window->draw(As<TextStatsEntity>(entity)->GetText());
-        }
-
-        delta_x += entity->GetSize().x;
-    }
-}
-
-StatsWindow::StatsWindow(float width, float height) : Subwindow(width, height) {}
-
-StatsWindow::StatsWindow(float width, float height, float pos_x, float pos_y,
-                         std::vector<StatsRow>* stats)
-    : Subwindow(width, height, pos_x, pos_y), stats_(stats) {
-    assert(visible_rows_ != 0);
-    if (!height || !width || stats->empty()) {
-        throw std::invalid_argument("attempt to create stats window with zero size");
-    }
-
-    sf::Vector2f row_size = sf::Vector2f(width / static_cast<float>(visible_rows_),
-                                         height / static_cast<float>(visible_rows_));
-
-    for (auto& row : *stats) {
-        row.Resize(row_size.x, row_size.y);
-        row.SetPosition(pos_x, pos_y);
-        pos_y += row_size.y;
-    }
-}
-
-void StatsWindow::PushRow(StatsRow&& row) { stats_->emplace_back(row); }
-
-void StatsWindow::DeleteRow(size_t ind) {
-    if (stats_->size() <= ind) {
-        throw std::invalid_argument("attempt to delete non existing row in stats window");
-    }
-    stats_->erase(stats_->begin() + ind);
-}
-
-void StatsWindow::Resize(float new_width, float new_height) {
-    sf::Vector2f new_row_size = sf::Vector2f(new_width / static_cast<float>(visible_rows_),
-                                             new_height / static_cast<float>(visible_rows_));
-
-    for (size_t ind = first_visible_row_;
-         ind < std::min(first_visible_row_ + visible_rows_, GetRowsAmount()); ind++) {
-        (*stats_)[ind].Resize(new_row_size.x, new_row_size.y);
-    }
-}
-
-void StatsWindow::MoveWindow(float new_x, float new_y) {
-    for (size_t ind = first_visible_row_;
-         ind < std::min(first_visible_row_ + visible_rows_, GetRowsAmount()); ind++) {
-        sf::Vector2f current_position = (*stats_)[ind].GetPosition();
-        (*stats_)[ind].SetPosition(current_position.x + new_x - GetPosition().x,
-                                   current_position.y + new_y - GetPosition().y);
-    }
-
-    SetPosition(new_x, new_y);
-}
-
-void StatsWindow::Draw(sf::RenderWindow* window) {
-    window->draw(GetWindow());
-    for (size_t ind = first_visible_row_;
-         ind < std::min(first_visible_row_ + visible_rows_, GetRowsAmount()); ind++) {
-        (*stats_)[ind].Draw(window);
     }
 }

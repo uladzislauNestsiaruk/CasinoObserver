@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "blackjack_table.h"
+#include "blackjack_table.hpp"
 
 // cards through 2 to 10 rate as their face value
 // J Q K = 10
@@ -60,7 +60,7 @@ HumbleGambler::BlackjackAction(const std::vector<std::shared_ptr<IGambler>>& pla
                              RateCard(cards[hand.cards_pos.second], 1) - 1;
         return kSoftTotalsTable[non_soft_total][RateCard(dealer_open)];
     }
-    return kHardTotalsTable[GetBestPlayerScore(players, hand)][RateCard(dealer_open)];
+    return kHardTotalsTable[player_score][RateCard(dealer_open)];
 }
 
 void DummyAction(BlackjackTable* table, Hand& hand, json&) {

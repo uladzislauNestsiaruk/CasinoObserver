@@ -24,16 +24,21 @@ public:
     }
 
     void HandleEvent() {
-        static std::optional<json> render_event = std::nullopt;
-        if (render_event != std::nullopt && TryHandle(render_event.value()["event_type"], render_event.value())) {
-            render_event = std::nullopt;
-        } else {
-            while (!render_queue_.empty()) {
-                if (render_event != std::nullopt) {
+        static std::optional<json> current_render_event = std::nullopt;
+        while (!render_queue_.empty() || current_render_event != std::nullopt) {
+            if (current_render_event != std::nullopt) {
+                if(!TryHandle(current_render_event.value()["event_type"], current_render_event.value())) {
                     break;
                 }
-                render_event = render_queue_.pop();
+
+                current_render_event = std::nullopt;
             }
+
+            if (render_queue_.empty()) {
+                break;
+            }
+
+            current_render_event = render_queue_.pop();
         }
     }
 

@@ -8,9 +8,10 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/System/Vector2.hpp"
-#include "game_state.h"
 
 const std::string kGameTitle = "Casino observer";
+
+class IGameState;
 
 // I have no idea of situation when it's usefull to have multiple state managers
 // in the game, so it would be Singleton

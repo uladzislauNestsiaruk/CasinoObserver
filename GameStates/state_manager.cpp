@@ -6,7 +6,7 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
-#include "game_state.h"
+#include "game_state.hpp"
 #include "state_manager.h"
 #include "work_room.hpp"
 #include <textures_loader.hpp>

@@ -3,11 +3,10 @@
 #include "poker_close.hpp"
 #include "SFML/System/Time.hpp"
 #include "SFML/Window/Event.hpp"
-#include "game_state.h"
+#include "game_state.hpp"
 #include "state_manager.h"
 #include <common_render_handlers.hpp>
 #include <game_object.hpp>
-#include <game_objects_loader.hpp>
 #include <textures_loader.hpp>
 
 #include <iostream>
@@ -20,8 +19,7 @@ void ReturnButtonHandler(StateManager* manager, IGameState* state, nlohmann::jso
 }
 
 PokerClose::PokerClose(StateManager* manager)
-    : stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })),
-      render_events_manager_(this), root_game_object_(ParseGameObjects(kPokerCloseGameObjects)) {
+    : AbstractGameState(kPokerCloseGameObjects), stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })) {
     table_ = std::make_unique<PokerTable>(logs_, render_events_manager_.GetRenderQueue());
     root_game_object_->Resize(manager->GetWindowSize());
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed, ReturnButtonHandler,
@@ -75,8 +73,4 @@ void PokerClose::Draw(StateManager* manager) {
     render_events_manager_.HandleEvent();
     sf::sleep(sf::milliseconds(50));
     root_game_object_->Draw(manager->GetOriginWindow());
-}
-
-std::shared_ptr<GameObject> PokerClose::FindGameObjectByTag(const std::string& tag) const {
-    return root_game_object_->FindGameObjectByTag(tag);
 }

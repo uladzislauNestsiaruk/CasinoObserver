@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "SFML/Window/Event.hpp"
-#include "game_state.h"
+#include "game_state.hpp"
 #include <../Tables/blackjack_table.hpp>
 #include <drawer.hpp>
 #include <game_object.hpp>

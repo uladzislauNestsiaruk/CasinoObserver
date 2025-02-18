@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "SFML/System/Time.hpp"
-#include "game_state.h"
+#include "game_state.hpp"
 #include "state_manager.h"
 #include <game_object.hpp>
 #include <json.hpp>

@@ -122,6 +122,10 @@ struct PokerMoveState {
     std::optional<size_t> money_amount;
 };
 
+// Animation constants
+constexpr size_t default_delay = 50;
+constexpr size_t default_antimation_end_delay = 2000;
+
 #undef D
 #undef H
 #undef S

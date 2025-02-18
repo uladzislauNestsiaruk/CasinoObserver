@@ -28,24 +28,15 @@ public:
 
     GameObject() = delete;
 
-    explicit GameObject(const std::string& tag, double scale, const std::string& default_phase)
-        : tag_(tag), scale_(scale), active_phase_(default_phase) {}
+    explicit GameObject(const std::string& tag, double scale, std::optional<std::string> default_phase)
+        : tag_(tag), scale_(scale), active_phase_((default_phase.has_value() ? default_phase.value() : "")),
+          is_active_(default_phase.has_value()) {}
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
         phases_[phase] = {std::move(sprite)};
     }
 
-    void AddChild(object_ptr child, const std::optional<std::string>& phase) {
-        if (!phase.has_value()) {
-            for (auto& [tag, _] : phases_) {
-                children_[tag].push_back(child);
-            }
-
-            return;
-        }
-
-        children_[phase.value()].push_back(child);
-    }
+    void AddChild(object_ptr child, const std::optional<std::string>& phase);
 
     void RemoveChild(const std::string& phase_tag, const std::string& child_tag);
 
@@ -70,6 +61,11 @@ public:
 
     bool TryUpdatePhase(const std::string&, uint64_t delay);
 
+private:
+    void ResetUnactivePhaseAnimations();
+
+public:
+    bool is_active_ = false;
 private:
     std::string tag_;
     double scale_;

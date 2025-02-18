@@ -12,7 +12,7 @@
 #include <iostream>
 
 const std::string PokerClose::kPokerCloseGameObjects =
-    GetAssetPrefix() + "/game_objects/poker_close_objects.json";
+    GetAssetPrefix() + "game_objects/poker_close_objects.json";
 
 PokerClose::PokerClose(StateManager* manager)
     : AbstractGameState(kPokerCloseGameObjects), stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })) {

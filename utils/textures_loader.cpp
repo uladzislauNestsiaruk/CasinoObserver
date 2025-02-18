@@ -7,7 +7,7 @@
 #include <constants.hpp>
 #include <textures_loader.hpp>
 
-const char* kAssetsPrefix[] = {"assets/", "../assets/", "../../assets", "CasinoObserver/assets/"};
+const char* kAssetsPrefix[] = {"assets/", "../assets/", "../../assets/", "CasinoObserver/assets/"};
 
 static std::unordered_map<std::string, sf::Texture> textures;
 

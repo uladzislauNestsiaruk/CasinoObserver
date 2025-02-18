@@ -13,7 +13,7 @@
 using nlohmann::json;
 
 const std::string WorkRoomState::kWorkRoomGameObjects =
-    GetAssetPrefix() + "/game_objects/work_room_objects.json";
+    GetAssetPrefix() + "game_objects/work_room_objects.json";
 
 size_t ExtractTableId(const std::string& tag) {
     if (!tag.starts_with("screen")) {

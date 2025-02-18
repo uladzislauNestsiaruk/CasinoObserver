@@ -1,14 +1,44 @@
 #include <fstream>
-#include <iostream>
 #include <memory>
 
 #include "SFML/System/Vector2.hpp"
 #include "game_object.hpp"
 #include "game_objects_loader.hpp"
 #include <json.hpp>
+#include <stdexcept>
 #include <textures_loader.hpp>
 
 using nlohmann::json;
+
+namespace {
+    template <typename T>
+    std::optional<T> GetOptionalJsonValue(const json& data, const std::string& key) {
+        if (!data.contains(key)) {
+            return std::nullopt;
+        }
+
+        if (std::is_same_v<T, json> && data[key].is_string()) {
+            std::string value = data[key].template get<std::string>();
+            if (value[0] == '{') {
+                std::ifstream file(value.substr(1, value.size() - 2));
+                json result;
+                file >> result;
+                return result;
+            }
+        }
+
+        return data[key].template get<T>();
+    }
+    template <typename T>
+    T GetJsonValue(const json& data, const std::string& key) {
+        std::optional<T> result = GetOptionalJsonValue<T>(data, key);
+        if (!result.has_value()) {
+            throw std::logic_error("There is no \"" + key + "\" field");
+        }
+
+        return result.value();
+    }
+}
 
 std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path) {
     std::ifstream file(game_objects_path);
@@ -30,77 +60,56 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             continue;
         }
 
-        if (!item.value().contains("parent")) {
-            throw std::logic_error("There is no \"parent\" field in " + item.key());
-        }
-
-        std::string parent = item.value()["parent"].template get<std::string>();
+        std::string parent = GetJsonValue<std::string>(item.value(), "parent");
         std::optional<std::string> parent_phase;
         size_t pos = parent.find(':');
         if (pos != std::string::npos) {
-            parent_phase = parent.substr(pos, parent.size() - pos);
+            std::string parent_phases = parent.substr(pos + 1, parent.size() - pos - 1);
             parent = parent.substr(0, pos);
+            pos = 0;
+            while (pos < parent_phases.size()) {
+                size_t next_pos = parent_phases.find(',', pos);
+                if (next_pos == std::string::npos) {
+                    next_pos = parent_phases.size();
+                }
+                objects_graph[parent].push_back({item.key(), parent_phases.substr(pos, next_pos - pos)});
+                pos = next_pos + 1;
+            }
+        } else {
+            objects_graph[parent].push_back({item.key(), std::nullopt});
         }
 
-        objects_graph[parent].push_back({item.key(), parent_phase});
     }
 
+    std::unordered_map<std::string, std::shared_ptr<GameObject>> tags;
     std::function<std::shared_ptr<GameObject>(std::string, const sf::Rect<float>&)> dfs =
-        [&objects_graph, &data, &dfs](std::string vertex,
+        [&objects_graph, &data, &dfs, &tags](std::string vertex,
                                       const sf::Rect<float>& parent_sprites_rect) {
-            if (!data[vertex].contains("scale")) {
-                throw std::logic_error("There is no \"scale\" field in " + vertex);
+            std::optional<std::string> default_phase = GetOptionalJsonValue<std::string>(data[vertex], "default_phase");
+            
+            double scale = GetJsonValue<double>(data[vertex], "scale");
+            std::array<float, 2> coords = GetJsonValue<std::array<float,2>>(data[vertex], "coords");
+
+            if(tags.contains(vertex)) {
+                return tags[vertex];
             }
-
-            if (!data[vertex].contains("coords")) {
-                throw std::logic_error("There is no \"coords\" field in " + vertex);
-            }
-
-            if (!data[vertex].contains("default_phase")) {
-                throw std::logic_error("There is no \"default_phase\" field in " + vertex);
-            }
-
-            std::string default_phase = data[vertex]["default_phase"].template get<std::string>();
-            double scale = data[vertex]["scale"].template get<double>();
-            std::array<float, 2> coords =
-                data[vertex]["coords"].template get<std::array<float, 2>>();
-
             std::shared_ptr<GameObject> object =
                 std::make_shared<GameObject>(vertex, scale, default_phase);
+            tags[vertex] = object;
             sf::Vector2f pos = {
                 parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
                 parent_sprites_rect.getPosition().y + parent_sprites_rect.height * coords[1]};
 
-            std::cout << vertex << " " << pos.x << " " << pos.y << "\n";
-
-            if (!data[vertex].contains("phases")) {
-                throw std::logic_error("There is no \"phases\" field in " + vertex);
-            }
-
-            for (auto item : data[vertex]["phases"].items()) {
-                if (!item.value().contains("type")) {
-                    throw std::logic_error("There is no \"type\" field in the " + item.key() +
-                                           " phase in " + vertex);
-                }
-                std::string type = item.value()["type"].template get<std::string>();
-
+            json phases =  GetJsonValue<json>(data[vertex], "phases");
+            for (auto item : phases.items()) {
+                std::string type = GetJsonValue<std::string>(item.value(), "type");
                 if (type == "image") {
-                    if (!item.value().contains("source")) {
-                        throw std::logic_error("There is no \"source\" field in the " + item.key() +
-                                               " phase in " + vertex);
-                    }
-
                     sf::Sprite sprite(
-                        GetTextute(item.value()["source"].template get<std::string>()));
+                        GetTextute(GetJsonValue<std::string>(item.value(), "source")));
                     sprite.setPosition(pos);
                     object->AddPhase({std::move(sprite)}, item.key());
                 } else if (type == "animation") {
-                    if (!item.value().contains("source_dir")) {
-                        throw std::logic_error("There is no \"source_dir\" field in the " +
-                                               item.key() + " phase in " + vertex);
-                    }
-
-                    std::string source_dir = item.value()["source_dir"].template get<std::string>();
+                    std::string source_dir = GetJsonValue<std::string>(item.value(), "source_dir");
                     TexturesRef textures = GetTextures(source_dir);
                     std::vector<sf::Sprite> animation;
                     animation.reserve(textures.size());
@@ -117,9 +126,8 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             }
 
             for (const auto& child : objects_graph[vertex]) {
-                object->AddChild(
-                    dfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize())),
-                    child.second);
+                std::shared_ptr<GameObject> ptr = dfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize()));
+                object->AddChild(ptr, child.second);
             }
 
             return object;

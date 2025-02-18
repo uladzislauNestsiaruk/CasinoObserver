@@ -1,6 +1,7 @@
 #pragma once
 
 #include <game_object.hpp>
+#include <iostream>
 #include <json.hpp>
 #include <string>
 #include <thread_safe_queue.hpp>
@@ -24,21 +25,20 @@ public:
     }
 
     void HandleEvent() {
-        static std::optional<json> current_render_event = std::nullopt;
-        while (!render_queue_.empty() || current_render_event != std::nullopt) {
-            if (current_render_event != std::nullopt) {
-                if(!TryHandle(current_render_event.value()["event_type"], current_render_event.value())) {
+        while (!render_queue_.empty() || current_render_event_ != std::nullopt) {
+            if (current_render_event_ != std::nullopt) {
+                if(!TryHandle(current_render_event_.value()["event_type"], current_render_event_.value())) {
                     break;
                 }
 
-                current_render_event = std::nullopt;
+                current_render_event_ = std::nullopt;
             }
 
             if (render_queue_.empty()) {
                 break;
             }
 
-            current_render_event = render_queue_.pop();
+            current_render_event_ = render_queue_.pop();
         }
     }
 
@@ -61,5 +61,6 @@ public:
 private:
     IGameState* state_;
     TSQueue<T> render_queue_;
+    std::optional<json> current_render_event_;
     std::unordered_map<std::string, event_handler> handlers_;
 };

@@ -56,6 +56,10 @@ void GameObject::Move(sf::Vector2f offset) {
 }
 
 void GameObject::Draw(sf::RenderWindow* window) {
+    if (!is_active_) {
+        throw std::logic_error("draw called on non active game_object");
+    }
+    
     if (phases_[active_phase_].empty()) {
         throw std::logic_error("draw called on empty game_object");
     }
@@ -153,13 +157,62 @@ sf::Vector2f GameObject::GetSize() const {
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
-    if (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay)) {
+    if (!is_active_ || (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
+        is_active_ = true;
         active_phase_ = new_phase;
         active_sprite_ = 0;
         is_finished_current_phase_ = false;
         clock_.restart();
+        ResetUnactivePhaseAnimations();
         return true;
     }
 
     return false;
+}
+
+void GameObject::AddChild(object_ptr child, const std::optional<std::string>& phase) {
+    if (!phase.has_value()) {
+        for (auto& [tag, _] : phases_) {
+            children_[tag].push_back(child);
+        }
+
+        return;
+    }
+
+    children_[phase.value()].push_back(child);
+}
+
+void GameObject::ResetUnactivePhaseAnimations() {
+    std::unordered_map<std::string, bool> is_good_object;
+    std::queue<object_ptr> object_queue;
+    for (const auto& [phase, sprites] : phases_) {
+        for (auto child : children_[phase]) {
+            is_good_object[child->tag_] = phase == active_phase_;
+            object_queue.push(child);
+        }
+    }
+
+    while (!object_queue.empty()) {
+        object_ptr item = object_queue.front();
+        object_queue.pop();
+        if (is_good_object.contains(item->tag_)) {
+            continue;
+        }
+
+        const bool current_state = is_good_object[item->tag_];
+        if (!current_state) {
+            active_sprite_ = 0;
+            is_finished_current_phase_ = false;
+            clock_.restart();
+        }
+
+        for (const auto& [phase, sprites] : item->phases_) {
+            for (auto child : children_[phase]) {
+                if (!is_good_object.contains(child->tag_)) {
+                    object_queue.push(child);
+                }
+                is_good_object[child->tag_] |= current_state;
+            }
+        }
+    }
 }

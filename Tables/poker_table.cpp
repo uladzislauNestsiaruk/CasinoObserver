@@ -1,10 +1,14 @@
 #include "poker_table.hpp"
 #include <constants.hpp>
-
-#include <iostream>
+#include <cstdint>
 
 namespace {
 constexpr uint32_t num_iterations = 1000;
+constexpr std::array<std::string, 4> type_names = {"hearts", "clubs", "diamonds", "spades"};
+constexpr std::array<std::string, 13> value_names = {
+    "two", "three", "four", "five", "six", "seven", "eight", 
+    "nine", "ten", "jack", "queen", "king", "ace"
+};
 
 struct PokerComboInfo {
     int combo_id;
@@ -166,6 +170,11 @@ double WinProbability(size_t num_opponents, const std::vector<Card>& table_cards
 
     return static_cast<double>(wins + 0.5 * ties) / num_iterations;
 }
+std::string GetPhaseByCard(Card card) {
+    uint8_t type = static_cast<uint8_t>(card.GetType());
+    uint8_t value = static_cast<uint8_t>(card.GetValue());
+    return value_names[value] + "_of_" + type_names[type];
+}
 } // namespace
 
 void PokerTable::MakeBet(size_t amount, size_t player_ind) {
@@ -275,11 +284,26 @@ void PokerTable::DistributionPhase(std::string_view phase) {
             player->GetCard(deck_.GetTopCard());
         }
     } else if (phase == "flop") {
-        for (size_t i = 0; i < 3; ++i) {
-            table_cards_.push_back(deck_.GetTopCard());
+        for (const std::string& card_id : {"first", "second", "third"}) {
+            Card card = deck_.GetTopCard();
+            json render_event;
+            render_event["event_type"] = "change_phase";
+            render_event["new_phase"] = GetPhaseByCard(card);
+            render_event["tag"] = card_id + "_central_card";
+            render_event["delay"] = 0;
+            render_queue_.push(render_event);
+
+            table_cards_.push_back(card);
         }
     } else {
-        table_cards_.push_back(deck_.GetTopCard());
+        Card card = deck_.GetTopCard();
+        json render_event;
+        render_event["event_type"] = "change_phase";
+        render_event["new_phase"] = GetPhaseByCard(card);
+        render_event["tag"] = (phase == "turn" ? "fourth_central_card" : "fivth_central_card");
+        render_event["delay"] = 0;
+        render_queue_.push(render_event);
+        table_cards_.push_back(card);
     }
 }
 
@@ -392,16 +416,18 @@ void PokerTable::GameIteration() {
         return;
     }
 
-    for (const std::string& phase : {"preflop", "flop", "turn", "river"}) {
+    for (const auto& [phase, part] : std::vector<std::pair<std::string, int>>{{"preflop", 1}, {"flop", 3}, {"turn", 2}, {"river", 2}}) {
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
-        json render_event;
-        render_event["event_type"] = "change_phase";
-        render_event["new_phase"] = phase;
-        render_event["tag"] = "root";
-        render_event["delay"] = 2000;
-        render_queue_.push(render_event);
+        for (size_t i = 1; i <= part; ++i) {
+            json render_event;
+            render_event["event_type"] = "change_phase";
+            render_event["new_phase"] = phase + "_" + std::to_string(i);
+            render_event["tag"] = "root";
+            render_event["delay"] = (i == part ? default_antimation_end_delay : default_delay);
+            render_queue_.push(render_event);
+        }
         if (show_all_cards_) {
             continue;
         }

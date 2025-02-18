@@ -32,7 +32,7 @@ class BlackjackTable : public AbstractTable {
         bool das; // is double after split enabled
     };
 
- public:
+public:
     BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
         : AbstractTable(GameType::Blackjack), deck_(true), is_game_finished_(true), hands_(),
           settings_{100, true}, logs_(logs), render_queue_(render_queue) {}
@@ -43,7 +43,7 @@ class BlackjackTable : public AbstractTable {
 
     bool IsGameFinished() const override;
 
- private:
+private:
     Deck deck_;
     std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;

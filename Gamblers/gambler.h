@@ -12,7 +12,7 @@
 class Hand;
 
 class IGambler {
- public:
+public:
     IGambler() {}
 
     virtual ~IGambler() {}
@@ -38,7 +38,7 @@ class IGambler {
 };
 
 class BaseGambler : public IGambler {
- public:
+public:
     BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game_{true}, money_{0} {}
 
     BaseGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
@@ -74,7 +74,7 @@ class BaseGambler : public IGambler {
 
     ~BaseGambler() override {}
 
- private:
+private:
     int16_t skill_;
     GameType game_type_;
     bool still_in_game_;
@@ -83,7 +83,7 @@ class BaseGambler : public IGambler {
 };
 
 class HumbleGambler : public BaseGambler {
- public:
+public:
     HumbleGambler() : BaseGambler() {}
 
     HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
@@ -100,7 +100,7 @@ class HumbleGambler : public BaseGambler {
 };
 
 class CheaterGambler : public BaseGambler {
- public:
- private:
+public:
+private:
     std::vector<Card> visible_cards_;
 };

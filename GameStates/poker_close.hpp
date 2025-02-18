@@ -5,9 +5,9 @@
 
 #include "../Tables/poker_table.hpp"
 #include "game_state.h"
-#include <drawer.hpp>
 #include <game_object.hpp>
 #include <json.hpp>
+#include <render_events_manager.hpp>
 #include <thread_safe_queue.hpp>
 
 using json = nlohmann::json;
@@ -17,7 +17,7 @@ class PokerClose : public IGameState {
 
     enum class Anim;
 
- public:
+public:
     explicit PokerClose(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
@@ -26,19 +26,22 @@ class PokerClose : public IGameState {
 
     ~PokerClose() override;
 
- private:
+    std::shared_ptr<GameObject> FindGameObjectByTag(const std::string& tag) const;
+
+private:
     void GameExecutor();
 
- private:
+    friend class RenderEventsManager<json>;
+
+private:
     std::atomic<bool> stop_game_thread_;
     std::atomic<bool> run_game_;
     std::thread game_exec_thr_;
 
     std::unique_ptr<ITable> table_;
-    std::unique_ptr<IDrawer> drawer_;
 
     TSQueue<json> logs_;
-    TSQueue<json> render_queue_;
+    RenderEventsManager<json> render_events_manager_;
 
     std::shared_ptr<GameObject> root_game_object_;
 };

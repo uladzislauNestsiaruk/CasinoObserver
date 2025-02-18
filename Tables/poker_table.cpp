@@ -397,6 +397,7 @@ void PokerTable::GameIteration() {
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
         json render_event;
+        render_event["event_type"] = "change_phase";
         render_event["new_phase"] = phase;
         render_event["tag"] = "root";
         render_event["delay"] = 2000;

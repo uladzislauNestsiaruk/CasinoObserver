@@ -1,4 +1,3 @@
 #pragma once
 
-class IDrawer {
-};
+class IDrawer {};

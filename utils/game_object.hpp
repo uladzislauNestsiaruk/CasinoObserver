@@ -23,7 +23,7 @@ using nlohmann::json;
 class GameObject : public std::enable_shared_from_this<GameObject> {
     using object_ptr = std::shared_ptr<GameObject>;
 
- public:
+public:
     using event_handler = void (*)(StateManager* manager, IGameState* state, json& data);
 
     GameObject() = delete;
@@ -69,7 +69,7 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
 
     const sf::Rect<int>& GetSpriteRect() const;
 
- private:
+private:
     std::string tag_;
     double scale_;
 

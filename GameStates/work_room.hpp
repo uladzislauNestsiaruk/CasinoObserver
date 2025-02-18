@@ -16,7 +16,7 @@ using json = nlohmann::json;
 class WorkRoomState : public IGameState {
     const static std::string kWorkRoomGameObjects;
 
- public:
+public:
     explicit WorkRoomState(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
@@ -25,7 +25,7 @@ class WorkRoomState : public IGameState {
 
     ~WorkRoomState() override {}
 
- private:
+private:
     std::vector<std::shared_ptr<IGameState>> tables_;
     std::shared_ptr<GameObject> root_game_object_;
 

@@ -5,7 +5,7 @@
 #include <constants.hpp>
 
 class Card {
- public:
+public:
     Card() : value_{0} {}
 
     Card(CardType type, CardValue value) {
@@ -22,7 +22,7 @@ class Card {
 
     bool operator>(const Card& other_card) const { return value_ > other_card.value_; }
 
- private:
+private:
     uint8_t value_;
 };
 

@@ -19,7 +19,7 @@ class BlackjackClose : public IGameState {
     enum class State { DEALING, PLAYING };
     const static std::string kBlackjackCloseGameObjects;
 
- public:
+public:
     explicit BlackjackClose(StateManager* manager);
 
     void HandleEvent(const sf::Event& event) override;
@@ -28,7 +28,7 @@ class BlackjackClose : public IGameState {
 
     ~BlackjackClose() override;
 
- private:
+private:
     std::unique_ptr<ITable> table_;
     std::unique_ptr<IDrawer> drawer_;
     std::atomic<bool> run_game_;

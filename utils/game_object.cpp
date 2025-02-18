@@ -105,8 +105,10 @@ void GameObject::AddHandler(const sf::Event::EventType type, event_handler handl
         }
 }
 
-std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGameState* state, nlohmann::json& data) {
-    sf::Vector2f point = sf::Vector2f(data["event"]["mouse_button"]["x"], data["event"]["mouse_button"]["y"]);
+std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGameState* state,
+                                                      nlohmann::json& data) {
+    sf::Vector2f point =
+        sf::Vector2f(data["event"]["mouse_button"]["x"], data["event"]["mouse_button"]["y"]);
     for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0; ind--) {
         if (children_[active_phase_][ind]->Contains(point)) {
             return children_[active_phase_][ind]->TriggerHandler(manager, state, data);

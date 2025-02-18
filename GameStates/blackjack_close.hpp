@@ -12,10 +12,11 @@
 #include <drawer.hpp>
 #include <game_object.hpp>
 #include <json.hpp>
+#include <render_events_manager.hpp>
 
 using json = nlohmann::json;
 
-class BlackjackClose : public IGameState {
+class BlackjackClose : public AbstractGameState {
     enum class State { DEALING, PLAYING };
     const static std::string kBlackjackCloseGameObjects;
 
@@ -30,14 +31,10 @@ public:
 
 private:
     std::unique_ptr<ITable> table_;
-    std::unique_ptr<IDrawer> drawer_;
     std::atomic<bool> run_game_;
     std::atomic<bool> stop_game_thread_;
     std::thread game_executor_;
     TSQueue<json> logs_;
-    TSQueue<json> render_queue_;
-
-    std::shared_ptr<GameObject> root_game_object_;
 
     void GameExecutor();
 };

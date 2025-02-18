@@ -27,7 +27,8 @@ public:
 
 class AbstractGameState : public IGameState {
 public:
-    AbstractGameState(std::string_view game_objects_path) : render_events_manager_(this), root_game_object_(ParseGameObjects(game_objects_path)) {}
+    AbstractGameState(std::string_view game_objects_path)
+        : render_events_manager_(this), root_game_object_(ParseGameObjects(game_objects_path)) {}
 
     virtual ~AbstractGameState() {}
 

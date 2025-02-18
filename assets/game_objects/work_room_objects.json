@@ -19,7 +19,7 @@
                 "source": "work_room_bucket"
             }
         },
-        "coords" : [0.6, 1.29],
+        "coords" : [0.325, 0.725],
         "scale": 1.0
     },
     "phone":{
@@ -31,7 +31,7 @@
                 "source": "work_room_phone"
             }
         },
-        "coords" : [1.085, 0.965],
+        "coords" : [0.6109, 0.54],
         "scale": 1.0
     },
     "screen0":{
@@ -43,7 +43,7 @@
                 "source": "work_room_screen"
             }
         },
-        "coords" : [0.5, 0.42],
+        "coords" : [0.28, 0.28],
         "scale": 1.0
     },
     "screen1":{
@@ -55,7 +55,7 @@
                 "source": "work_room_screen"
             }
         },
-        "coords" : [0.95, 0.42],
+        "coords" : [0.54, 0.28],
         "scale": 1.0
     },
     "donuts":{
@@ -67,7 +67,7 @@
                 "source": "work_room_donuts"
             }
         },
-        "coords" : [0.52, 1.02],
+        "coords" : [0.3, 0.57],
         "scale": 1.0
     },
     "casino_maschine":{
@@ -79,7 +79,7 @@
                 "source": "work_room_casino_machine_s"
             }
         },
-        "coords" : [0.64, 0.96],
+        "coords" : [0.368, 0.533],
         "scale": 1.0
     },
     "cup":{
@@ -91,7 +91,7 @@
                 "source": "work_room_cup"
             }
         },
-        "coords" : [1.025, 1.02],
+        "coords" : [0.58, 0.57],
         "scale": 1.0
     } 
 }

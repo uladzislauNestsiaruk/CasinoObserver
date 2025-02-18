@@ -1,4 +1,5 @@
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <numeric>
 #include <stdexcept>
@@ -183,7 +184,7 @@ void BlackjackTable::Clean() {
     std::vector<Card> dealer_cards = players_[0]->TakeAllCards();
 
     deck_.ReturnCards(dealer_cards);
-    logs_.push({{"phase", "winners selection"}});
+    logs_.push({{"change_phase", "winners_selection"}});
 
     hands_iterator_ = ++hands_.begin();
     while (hands_iterator_ != hands_.end()) {
@@ -210,11 +211,17 @@ void BlackjackTable::GameIteration() {
     if (players_.size() < 2) {
         return;
     }
-
     is_game_finished_.store(false);
     Dealing();
-    logs_.push({{"phase", "game"}});
 
+    render_queue_.push({{"event_type", "change_phase"},
+                        {"new_phase", "players_dealing"},
+                        {"tag", "root"},
+                        {"delay", 2000}});
+    render_queue_.push({{"event_type", "change_phase"},
+                        {"new_phase", "dealer_dealing"},
+                        {"tag", "root"},
+                        {"delay", 2000}});
     while (hands_iterator_ != hands_.end()) {
         size_t current_player_score = GetBestPlayerScore(players_, *hands_iterator_);
         if (!hands_iterator_->bet || current_player_score >= 21) {

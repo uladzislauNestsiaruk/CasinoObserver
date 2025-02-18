@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 
@@ -59,9 +60,9 @@ void StatsWindow<Row>::OnMouseScrolledHandler(StateManager& manager, IGameState*
 
     float delta = data["delta"].template get<float>();
     sf::Vector2f window_position =
-        static_cast<sf::Vector2f>(root_object_->GetSpriteRect().getPosition());
+        static_cast<sf::Vector2f>(root_object_->GetPosition());
     sf::Vector2f window_y_borders = sf::Vector2f(
-        window_position.y, window_position.y + root_object_->GetSpriteRect().getSize().y);
+        window_position.y, window_position.y + root_object_->GetSize().y);
 
     auto prefix_deleted = [&]() {
         ++first_visible_row_;
@@ -82,13 +83,12 @@ void StatsWindow<Row>::OnMouseScrolledHandler(StateManager& manager, IGameState*
 
     for (size_t ind = first_visible_row_;
          ind < min(first_visible_row_ + visible_rows_, data_.size()); ind++) {
-        GameObject* row = root_object_->GetChild("default_phase", "row" + std::to_string(ind))
-                              .value(); // TODO: CHANGE TO CORRECT PHASE
+         std::shared_ptr<GameObject> row = root_object_->FindGameObjectByTag("row" + std::to_string(ind)); 
         row->Move(sf::Vector2f(0, delta));
-        float new_row_y = row->GetSpriteRect().getPosition().y;
+        float new_row_y = row->GetPosition().y;
         if (new_row_y > window_y_borders.y || new_row_y < window_y_borders.x) {
             root_object_->RemoveChild("default_phase",
-                                      "row" + std::to_string(ind)); // TODO: CHANGE TO CORRECT PHASE
+                                      "row" + std::to_string(ind));
             delta > 0 ? prefix_deleted() : suffix_deleted();
         }
     }

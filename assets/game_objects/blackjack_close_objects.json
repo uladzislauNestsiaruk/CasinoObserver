@@ -1,14 +1,26 @@
 {
-    "root": {
-        "default_phase": "players_dealing",
+    "root":{
+        "default_phase": "afk",
         "phases": {
+            "afk" : {
+                "type":"image",
+                "source":"dealing_animations_blackjack_players_dealing_1"
+            },
             "players_dealing": {
                 "type": "animation",
                 "source_dir": "dealing_animations_blackjack_players_dealing"
+            },
+            "dealer_dealing": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_dealer_dealing"
+            },
+            "additional_cards": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_additional_cards"
             }
         },
-        "scale": 1.0,
-        "coords" : [0.0, 0.0]
+        "coords" : [0.0, 0.0],
+        "scale": 1.0
     },
     "return_button":{
         "default_phase": "afk",

@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <memory>
 
 #include "SFML/System/Vector2.hpp"
@@ -44,9 +45,9 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
         objects_graph[parent].push_back({item.key(), parent_phase});
     }
 
-    std::function<std::shared_ptr<GameObject>(std::string, const sf::Rect<int>&)> dfs =
+    std::function<std::shared_ptr<GameObject>(std::string, const sf::Rect<float>&)> dfs =
         [&objects_graph, &data, &dfs](std::string vertex,
-                                      const sf::Rect<int>& parent_sprites_rect) {
+                                      const sf::Rect<float>& parent_sprites_rect) {
             if (!data[vertex].contains("scale")) {
                 throw std::logic_error("There is no \"scale\" field in " + vertex);
             }
@@ -69,6 +70,8 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             sf::Vector2f pos = {
                 parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
                 parent_sprites_rect.getPosition().y + parent_sprites_rect.height * coords[1]};
+
+            std::cout << vertex << " " << pos.x << " " << pos.y << "\n";
 
             if (!data[vertex].contains("phases")) {
                 throw std::logic_error("There is no \"phases\" field in " + vertex);
@@ -114,11 +117,13 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             }
 
             for (const auto& child : objects_graph[vertex]) {
-                object->AddChild(dfs(child.first, object->GetSpriteRect()), child.second);
+                object->AddChild(
+                    dfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize())),
+                    child.second);
             }
 
             return object;
         };
 
-    return dfs("root", sf::Rect<int>());
+    return dfs("root", sf::Rect<float>());
 }

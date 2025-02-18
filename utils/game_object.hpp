@@ -49,15 +49,18 @@ public:
 
     void RemoveChild(const std::string& phase_tag, const std::string& child_tag);
 
-    std::optional<GameObject*> GetChild(const std::string& phase_tag, const std::string& child_tag);
-
     void AddHandler(const sf::Event::EventType event_type, event_handler handler,
                     const std::string& tag = "");
 
     std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state,
                                               nlohmann::json& data);
 
-    void Resize(sf::Vector2u size, sf::Vector2f scale = sf::Vector2f(-1, -1));
+    void Resize(sf::Vector2u size, sf::Vector2f scale = {-1, -1}, sf::Vector2f new_parent_size = {1, 1},
+                                    sf::Vector2f new_parent_pos = {0, 0}, sf::Vector2f parent_delta = {1, 1});
+
+    sf::Vector2f GetPosition() const;
+
+    sf::Vector2f GetSize() const;
 
     void Move(sf::Vector2f offset);
 
@@ -66,8 +69,6 @@ public:
     object_ptr FindGameObjectByTag(const std::string& tag);
 
     bool TryUpdatePhase(const std::string&, uint64_t delay);
-
-    const sf::Rect<int>& GetSpriteRect() const;
 
 private:
     std::string tag_;

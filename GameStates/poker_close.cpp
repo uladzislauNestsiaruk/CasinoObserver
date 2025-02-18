@@ -14,18 +14,15 @@
 const std::string PokerClose::kPokerCloseGameObjects =
     GetAssetPrefix() + "/game_objects/poker_close_objects.json";
 
-void ReturnButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data) {
-    manager->Pop();
-}
-
 PokerClose::PokerClose(StateManager* manager)
     : AbstractGameState(kPokerCloseGameObjects), stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })) {
     table_ = std::make_unique<PokerTable>(logs_, render_events_manager_.GetRenderQueue());
     root_game_object_->Resize(manager->GetWindowSize());
-    root_game_object_->AddHandler(sf::Event::MouseButtonPressed, ReturnButtonHandler,
-                                  "return_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::ReturnButtonHandler, "return_button");
 
-    render_events_manager_.AddHandler("change_phase", ChangePhaseHandler);
+    render_events_manager_.AddHandler("change_phase",
+                                      CommonREMEventHandlers::ChangePhaseHandler);
 }
 
 PokerClose::~PokerClose() {

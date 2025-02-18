@@ -1,7 +1,16 @@
-#include "../GameStates/poker_close.hpp"
-#include "render_events_manager.hpp"
+#include <memory>
 
-bool ChangePhaseHandler(RenderEventsManager<json>* render_manager, const json& data) {
+#include "common_render_handlers.hpp"
+#include <../GameStates/poker_close.hpp>
+#include <game_object.hpp>
+#include <render_events_manager.hpp>
+
+void CommonGOEventHandlers::ReturnButtonHandler(StateManager* manager, IGameState* state,
+                                                nlohmann::json& data) {
+    manager->Pop();
+}
+
+bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* render_manager, const json& data) {
     std::shared_ptr<GameObject> target_object =
         static_cast<const AbstractGameState*>(render_manager->GetState())
             ->FindGameObjectByTag(data["tag"].template get<std::string>());

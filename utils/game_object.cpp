@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <stdexcept>
@@ -13,21 +14,32 @@
 #include "game_object.hpp"
 #include "json.hpp"
 
-void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale) {
+void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale, sf::Vector2f new_parent_size,
+                        sf::Vector2f new_parent_pos, sf::Vector2f parent_delta) {
+    sf::Vector2f old_pos = GetPosition();
+    sf::Vector2f old_size = GetSize();
+    bool is_root = scale == sf::Vector2f(-1, -1);
     for (auto& [tag, sprites] : phases_) {
         for (auto& sprite : sprites) {
-            scale =
-                scale == sf::Vector2f(-1, -1)
-                    ? sf::Vector2f(static_cast<float>(size.x) / sprite.getTexture()->getSize().x,
-                                   static_cast<float>(size.y) / sprite.getTexture()->getSize().y)
-                    : scale;
+            sf::Vector2f sprite_pos = static_cast<sf::Vector2f>(sprite.getPosition());
+            if (!is_root) {
+                sprite.setPosition({new_parent_pos.x + parent_delta.x * new_parent_size.x,
+                                    new_parent_pos.y + parent_delta.y * new_parent_size.y});
+            } else {
+                scale = {static_cast<float>(size.x) / sprite.getTexture()->getSize().x,
+                         static_cast<float>(size.y) / sprite.getTexture()->getSize().y};
+            }
             sprite.setScale(scale);
         }
     }
 
+    sf::Vector2f new_size = GetSize();
+    sf::Vector2f new_pos = GetPosition();
     for (auto& [phase, phased_children] : children_) {
         for (auto& phased_child : phased_children) {
-            phased_child->Resize(size, scale);
+            sf::Vector2f delta = phased_child->GetPosition() - old_pos;
+            delta = {delta.x / old_size.x, delta.y / old_size.y};
+            phased_child->Resize(size, scale, new_size, new_pos, delta);
         }
     }
 }
@@ -41,23 +53,6 @@ void GameObject::Move(sf::Vector2f offset) {
         std::for_each(child_pair.second.begin(), child_pair.second.end(),
                       [offset](object_ptr child) { child->Move(offset); });
     }
-}
-
-std::optional<GameObject*> GameObject::GetChild(const std::string& phase_tag,
-                                                const std::string& child_tag) {
-    if (tag_ == child_tag && phases_.contains(phase_tag)) {
-        return this;
-    }
-
-    std::optional<GameObject*> result;
-    for (auto& child_pair : children_) {
-        std::for_each(child_pair.second.begin(), child_pair.second.end(), [&](object_ptr child) {
-            auto child_result = child->GetChild(phase_tag, child_tag);
-            result = child_result.has_value() ? child_result : result;
-        });
-    }
-
-    return result;
 }
 
 void GameObject::Draw(sf::RenderWindow* window) {
@@ -124,15 +119,6 @@ std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGa
     return std::nullopt;
 }
 
-const sf::Rect<int>& GameObject::GetSpriteRect() const {
-    if (active_sprite_ >= phases_.at(active_phase_).size()) {
-        throw std::runtime_error("Attempt Get rect of non exisisting sprite in Game object " +
-                                 tag_);
-    }
-
-    return phases_.at(active_phase_)[active_sprite_].getTextureRect();
-}
-
 bool GameObject::Contains(sf::Vector2f point) noexcept {
     if (active_sprite_ >= phases_.at(active_phase_).size()) {
         return false;
@@ -156,6 +142,14 @@ GameObject::object_ptr GameObject::FindGameObjectByTag(const std::string& tag) {
     }
 
     return nullptr;
+}
+
+sf::Vector2f GameObject::GetPosition() const {
+    return phases_.at(active_phase_)[active_sprite_].getPosition();
+}
+
+sf::Vector2f GameObject::GetSize() const {
+    return phases_.at(active_phase_)[active_sprite_].getGlobalBounds().getSize();
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {

@@ -1,41 +1,108 @@
 {
-    "root":{
+    "root": {
         "default_phase": "afk",
         "phases": {
             "afk": {
                 "type": "image",
                 "source": "dealing_animations_poker_preflop_1"
             },
-            "preflop": {
+            "preflop_1": {
                 "type": "animation",
                 "source_dir": "dealing_animations_poker_preflop"
             },
-            "flop": {
+            "flop_1": {
                 "type": "animation",
-                "source_dir": "dealing_animations_poker_flop"
+                "source_dir": "dealing_animations_poker_flop_first_part"
             },
-            "turn": {
+            "flop_2": {
                 "type": "animation",
-                "source_dir": "dealing_animations_poker_turn"
+                "source_dir": "dealing_animations_poker_flop_second_part"
             },
-            "river": {
+            "flop_3": {
                 "type": "animation",
-                "source_dir": "dealing_animations_poker_river"
+                "source_dir": "dealing_animations_poker_flop_third_part"
+            },
+            "turn_1": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_turn_first_part"
+            },
+            "turn_2": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_turn_second_part"
+            },
+            "river_1": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_river_first_part"
+            },
+            "river_2": {
+                "type": "animation",
+                "source_dir": "dealing_animations_poker_river_second_part"
             }
         },
-        "coords" : [0.0, 0.0],
+        "coords": [
+            0.0,
+            0.0
+        ],
         "scale": 1.0
     },
-    "return_button":{
+    "return_button": {
         "default_phase": "afk",
-        "parent":"root",
+        "parent": "root",
         "phases": {
             "afk": {
                 "type": "image",
                 "source": "ui_buttons_return_button"
             }
         },
-        "coords" : [0.01, 0.01],
+        "coords": [
+            0.01,
+            0.01
+        ],
         "scale": 1.0
+    },
+    "first_central_card": {
+        "parent": "root:flop_2,flop_3,turn_1,turn_2,river_1,river_2",
+        "coords": [
+            0.9,
+            0.67
+        ],
+        "scale": 1.0,
+        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+    },
+    "second_central_card": {
+        "parent": "root:flop_3,turn_1,turn_2,river_1,river_2",
+        "coords": [
+            0.2,
+            0.65
+        ],
+        "scale": 1.0,
+        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+    },
+    "third_central_card": {
+        "parent": "root:flop_3,turn_1,turn_2,river_1,river_2",
+        "coords": [
+            0.4,
+            0.7
+        ],
+        "scale": 1.0,
+        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+    },
+    "fourth_central_card": {
+        "parent": "root:turn_2,river_1,river_2",
+        "coords": [
+            0.7,
+            0.75
+        ],
+        "scale": 1.0,
+        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+    },
+    "fivth_central_card": {
+        "parent": "root:river_2",
+        "coords": [
+            0.7,
+            0.8
+        ],
+        "scale": 1.0,
+        "phases": "{./assets/game_objects/utils/cards_phases.json}"
     }
 }

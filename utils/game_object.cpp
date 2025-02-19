@@ -32,11 +32,16 @@ void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale, sf::Vector2f new_
             sprite.setScale({scale.x * scale_.x, scale.y * scale_.y});
         }
     }
+    resized_ = true;
 
     sf::Vector2f new_size = GetSize();
     sf::Vector2f new_pos = GetPosition();
     for (auto& [phase, phased_children] : children_) {
-        for (auto& phased_child : phased_children) {
+        for (auto phased_child : phased_children) {
+            if (phased_child->resized_) {
+                continue;
+            }
+
             sf::Vector2f delta = phased_child->GetPosition() - old_pos;
             delta = {delta.x / old_size.x, delta.y / old_size.y};
             phased_child->Resize(size, scale, new_size, new_pos, delta);
@@ -56,12 +61,7 @@ void GameObject::Move(sf::Vector2f offset) {
 }
 
 void GameObject::Draw(sf::RenderWindow* window) {
-    if (!is_active_) {
-        throw std::logic_error("draw called on non active game_object");
-    }
-
     if (phases_[active_phase_].empty()) {
-        std::cout << active_phase_ << "\n";
         throw std::logic_error("draw called on empty game_object");
     }
 
@@ -176,9 +176,7 @@ sf::Vector2f GameObject::GetSize() const {
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
-    if (!is_active_ ||
-        (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
-        is_active_ = true;
+    if (clock_.getElapsedTime() >= sf::milliseconds(delay)) {
         active_phase_ = new_phase;
         active_sprite_ = 0;
         is_finished_current_phase_ = false;

@@ -1,4 +1,8 @@
 {
+    "empty_card": {
+        "type": "image",
+        "source": "cards_empty_card"
+    },
     "queen_of_spades": {
         "type": "image",
         "source": "cards_queen_of_spades"

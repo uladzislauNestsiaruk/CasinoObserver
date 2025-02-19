@@ -425,7 +425,7 @@ void PokerTable::GameIteration() {
             render_event["event_type"] = "change_phase";
             render_event["new_phase"] = phase + "_" + std::to_string(i);
             render_event["tag"] = "root";
-            render_event["delay"] = (i == part ? default_antimation_end_delay : default_delay);
+            render_event["delay"] = (i == 1 ? default_antimation_end_delay : default_delay);
             render_queue_.push(render_event);
         }
         if (show_all_cards_) {

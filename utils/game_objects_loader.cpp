@@ -84,9 +84,7 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
     std::function<std::shared_ptr<GameObject>(std::string, const sf::Rect<float>&)> dfs =
         [&objects_graph, &data, &dfs, &tags](std::string vertex,
                                              const sf::Rect<float>& parent_sprites_rect) {
-            std::optional<std::string> default_phase =
-                GetOptionalJsonValue<std::string>(data[vertex], "default_phase");
-
+            std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
             std::array<float, 2> scale = GetJsonValue<std::array<float, 2>>(data[vertex], "scale");
             std::array<float, 2> coords =
                 GetJsonValue<std::array<float, 2>>(data[vertex], "coords");

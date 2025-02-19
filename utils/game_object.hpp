@@ -28,11 +28,8 @@ public:
 
     GameObject() = delete;
 
-    explicit GameObject(const std::string& tag, sf::Vector2f scale,
-                        std::optional<std::string> default_phase)
-        : tag_(tag), scale_(scale),
-          active_phase_((default_phase.has_value() ? default_phase.value() : "")),
-          is_active_(default_phase.has_value()) {}
+    explicit GameObject(const std::string& tag, sf::Vector2f scale, std::string default_phase)
+        : tag_(tag), scale_(scale), active_phase_(default_phase) {}
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
         phases_[phase] = {std::move(sprite)};
@@ -67,12 +64,10 @@ public:
 private:
     void ResetUnactivePhaseAnimations();
 
-public:
-    bool is_active_ = false;
-    std::string tag_;
-
 private:
+    std::string tag_;
     sf::Vector2f scale_;
+    bool resized_ = false;
 
     std::unordered_map<sf::Event::EventType, event_handler> handlers_;
     std::unordered_map<std::string, std::vector<object_ptr>> children_;

@@ -43,7 +43,7 @@
             0.0,
             0.0
         ],
-        "scale": 1.0
+        "scale" : [1.0, 1.0]
     },
     "return_button": {
         "default_phase": "afk",
@@ -58,7 +58,7 @@
             0.01,
             0.01
         ],
-        "scale": 1.0
+        "scale": [1.0, 1.0]
     },
     "first_central_card": {
         "parent": "root:flop_2,flop_3,turn_1,turn_2,river_1,river_2",
@@ -66,7 +66,7 @@
             0.9,
             0.67
         ],
-        "scale": 1.0,
+        "scale": [1.0, 1.0],
         "phases": "{./assets/game_objects/utils/cards_phases.json}"
     },
     "second_central_card": {
@@ -75,7 +75,7 @@
             0.2,
             0.65
         ],
-        "scale": 1.0,
+        "scale": [1.0, 1.0],
         "phases": "{./assets/game_objects/utils/cards_phases.json}"
     },
     "third_central_card": {
@@ -84,7 +84,7 @@
             0.4,
             0.7
         ],
-        "scale": 1.0,
+        "scale": [1.0, 1.0],
         "phases": "{./assets/game_objects/utils/cards_phases.json}"
     },
     "fourth_central_card": {
@@ -93,16 +93,13 @@
             0.7,
             0.75
         ],
-        "scale": 1.0,
+        "scale": [1.0, 1.0],
         "phases": "{./assets/game_objects/utils/cards_phases.json}"
     },
     "fivth_central_card": {
         "parent": "root:river_2",
-        "coords": [
-            0.7,
-            0.8
-        ],
-        "scale": 1.0,
-        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+        "phases": "{./assets/game_objects/utils/cards_phases.json}",
+        "coords" : [0.01, 0.01],
+        "scale" : [1.0, 1.0]
     }
 }

@@ -4,9 +4,11 @@
 #include <memory>
 #include <stdexcept>
 
+#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
+#include "Utils/stats_window.hpp"
 #include <game_object.hpp>
 #include <game_objects_loader.hpp>
 
@@ -25,7 +27,7 @@ int main(int argc, char** argv) {
     std::shared_ptr<GameObject> object = ParseGameObjects(argv[1]);
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "preview",
                             sf::Style::Resize | sf::Style::Close);
-    object->Resize(window.getSize());
+    object->Resize(sf::Vector2u(960, 640));
     sf::Event last_event;
 
     while (true) {

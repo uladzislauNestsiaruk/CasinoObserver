@@ -1,4 +1,5 @@
 #include <memory>
+#include <string>
 
 #include "common_render_handlers.hpp"
 #include <../GameStates/poker_close.hpp>
@@ -10,7 +11,8 @@ void CommonGOEventHandlers::ReturnButtonHandler(StateManager* manager, IGameStat
     manager->Pop();
 }
 
-bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* render_manager, const json& data) {
+bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* render_manager,
+                                                const json& data) {
     std::shared_ptr<GameObject> target_object =
         static_cast<const AbstractGameState*>(render_manager->GetState())
             ->FindGameObjectByTag(data["tag"].template get<std::string>());

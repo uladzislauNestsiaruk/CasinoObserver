@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <queue>
 #include <stdexcept>
 
 #include "../GameStates/state_manager.h"
@@ -21,7 +22,6 @@ void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale, sf::Vector2f new_
     bool is_root = scale == sf::Vector2f(-1, -1);
     for (auto& [tag, sprites] : phases_) {
         for (auto& sprite : sprites) {
-            sf::Vector2f sprite_pos = static_cast<sf::Vector2f>(sprite.getPosition());
             if (!is_root) {
                 sprite.setPosition({new_parent_pos.x + parent_delta.x * new_parent_size.x,
                                     new_parent_pos.y + parent_delta.y * new_parent_size.y});
@@ -29,7 +29,7 @@ void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale, sf::Vector2f new_
                 scale = {static_cast<float>(size.x) / sprite.getTexture()->getSize().x,
                          static_cast<float>(size.y) / sprite.getTexture()->getSize().y};
             }
-            sprite.setScale(scale);
+            sprite.setScale({scale.x * scale_.x, scale.y * scale_.y});
         }
     }
 
@@ -59,8 +59,9 @@ void GameObject::Draw(sf::RenderWindow* window) {
     if (!is_active_) {
         throw std::logic_error("draw called on non active game_object");
     }
-    
+
     if (phases_[active_phase_].empty()) {
+        std::cout << active_phase_ << "\n";
         throw std::logic_error("draw called on empty game_object");
     }
 
@@ -131,6 +132,18 @@ bool GameObject::Contains(sf::Vector2f point) noexcept {
     return phases_.at(active_phase_)[active_sprite_].getGlobalBounds().contains(point);
 }
 
+void GameObject::AddChild(object_ptr child, const std::optional<std::string>& phase) {
+    if (!phase.has_value()) {
+        for (auto& [tag, _] : phases_) {
+            children_[tag].push_back(child);
+        }
+
+        return;
+    }
+
+    children_[phase.value()].push_back(child);
+}
+
 GameObject::object_ptr GameObject::FindGameObjectByTag(const std::string& tag) {
     if (tag_ == tag) {
         return shared_from_this();
@@ -149,15 +162,22 @@ GameObject::object_ptr GameObject::FindGameObjectByTag(const std::string& tag) {
 }
 
 sf::Vector2f GameObject::GetPosition() const {
+    if (!is_active_) {
+        return sf::Vector2f(0, 0);
+    }
     return phases_.at(active_phase_)[active_sprite_].getPosition();
 }
 
 sf::Vector2f GameObject::GetSize() const {
+    if (!is_active_) {
+        return sf::Vector2f(0, 0);
+    }
     return phases_.at(active_phase_)[active_sprite_].getGlobalBounds().getSize();
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
-    if (!is_active_ || (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
+    if (!is_active_ ||
+        (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
         is_active_ = true;
         active_phase_ = new_phase;
         active_sprite_ = 0;
@@ -168,18 +188,6 @@ bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
     }
 
     return false;
-}
-
-void GameObject::AddChild(object_ptr child, const std::optional<std::string>& phase) {
-    if (!phase.has_value()) {
-        for (auto& [tag, _] : phases_) {
-            children_[tag].push_back(child);
-        }
-
-        return;
-    }
-
-    children_[phase.value()].push_back(child);
 }
 
 void GameObject::ResetUnactivePhaseAnimations() {

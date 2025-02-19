@@ -3,6 +3,7 @@
 
 #include "SFML/Window/Event.hpp"
 #include "blackjack_close.hpp"
+#include "game_state.hpp"
 #include "poker_close.hpp"
 #include "state_manager.h"
 #include "work_room.hpp"
@@ -32,10 +33,10 @@ void PokerScreenHandler(StateManager* manager, IGameState* state, json& data) {
     manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["child_tag"])]);
 }
 
-WorkRoomState::WorkRoomState(StateManager* manager)
-    : root_game_object_(ParseGameObjects(kWorkRoomGameObjects)) {
+WorkRoomState::WorkRoomState(StateManager* manager) : AbstractGameState(kWorkRoomGameObjects) {
     tables_.emplace_back(std::make_shared<BlackjackClose>(manager));
     tables_.emplace_back(std::make_shared<PokerClose>(manager));
+    std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
 
     root_game_object_->Resize(manager->GetWindowSize());
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed, BlackjackScreenHandler, "screen0");
@@ -51,11 +52,11 @@ void WorkRoomState::HandleEvent(const sf::Event& event) {
     event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
     event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
     event_data["event"]["type"] = event.type;
-    root_game_object_->TriggerHandler(&StateManager::Instance(), this, event_data);
+    objects_manager_.HandleEvent(this, event_data);
 }
 
 void WorkRoomState::Update(sf::Time delta) {}
 
 void WorkRoomState::Draw(StateManager* manager) {
-    root_game_object_->Draw(manager->GetOriginWindow());
+    objects_manager_.DrawAll(manager->GetOriginWindow());
 }

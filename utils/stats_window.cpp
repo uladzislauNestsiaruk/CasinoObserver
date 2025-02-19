@@ -4,9 +4,9 @@
 #include <type_traits>
 
 #include "SFML/System/Vector2.hpp"
-#include "json.hpp"
-#include "stats_window.hpp"
 #include <game_object.hpp>
+#include <json.hpp>
+#include <stats_window.hpp>
 
 template <class Row>
     requires std::is_base_of_v<GameObject, Row>
@@ -41,7 +41,7 @@ void StatsWindow<Row>::OnMouseMoveHandler(StateManager& manager, IGameState* sta
 
     sf::Vector2f mouse_position =
         sf::Vector2f(data["x"].template get<int32_t>(), data["y"].template get<int32_t>());
-    root_object_->Move(mouse_position - mouse_pressed_cords);
+    Move(mouse_position - mouse_pressed_cords);
     mouse_pressed_cords = mouse_position;
 }
 
@@ -59,10 +59,9 @@ void StatsWindow<Row>::OnMouseScrolledHandler(StateManager& manager, IGameState*
     }
 
     float delta = data["delta"].template get<float>();
-    sf::Vector2f window_position =
-        static_cast<sf::Vector2f>(root_object_->GetPosition());
-    sf::Vector2f window_y_borders = sf::Vector2f(
-        window_position.y, window_position.y + root_object_->GetSize().y);
+    sf::Vector2f window_position = GetPosition();
+    sf::Vector2f window_y_borders =
+        sf::Vector2f(window_position.y, window_position.y + GetSize().y);
 
     auto prefix_deleted = [&]() {
         ++first_visible_row_;
@@ -70,7 +69,7 @@ void StatsWindow<Row>::OnMouseScrolledHandler(StateManager& manager, IGameState*
         sf::Vector2f row_pos = static_cast<sf::Vector2f>(row.GetSpriteRect().getPosition());
 
         row.Move(sf::Vector2f(window_position.x, window_y_borders.y) - row_pos);
-        root_object_->AddChild(row);
+        AddChild(row);
     };
     auto suffix_deleted = [&]() {
         first_visible_row_ = std::max(0ul, first_visible_row_ - 1);
@@ -78,17 +77,16 @@ void StatsWindow<Row>::OnMouseScrolledHandler(StateManager& manager, IGameState*
         sf::Vector2f row_pos = static_cast<sf::Vector2f>(row.GetSpriteRect().getPosition());
 
         row.Move(window_position - row_pos);
-        root_object_->AddChild(row);
+        AddChild(row);
     };
 
     for (size_t ind = first_visible_row_;
          ind < min(first_visible_row_ + visible_rows_, data_.size()); ind++) {
-         std::shared_ptr<GameObject> row = root_object_->FindGameObjectByTag("row" + std::to_string(ind)); 
+        std::shared_ptr<GameObject> row = FindGameObjectByTag("row" + std::to_string(ind));
         row->Move(sf::Vector2f(0, delta));
         float new_row_y = row->GetPosition().y;
         if (new_row_y > window_y_borders.y || new_row_y < window_y_borders.x) {
-            root_object_->RemoveChild("default_phase",
-                                      "row" + std::to_string(ind));
+            RemoveChild("default_phase", "row" + std::to_string(ind));
             delta > 0 ? prefix_deleted() : suffix_deleted();
         }
     }

@@ -13,7 +13,7 @@
 
 using json = nlohmann::json;
 
-class WorkRoomState : public IGameState {
+class WorkRoomState : public AbstractGameState {
     const static std::string kWorkRoomGameObjects;
 
 public:
@@ -27,7 +27,6 @@ public:
 
 private:
     std::vector<std::shared_ptr<IGameState>> tables_;
-    std::shared_ptr<GameObject> root_game_object_;
 
     mutable size_t total_tables = 12;
 

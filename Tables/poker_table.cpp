@@ -4,8 +4,8 @@
 
 namespace {
 constexpr uint32_t num_iterations = 1000;
-constexpr std::array<std::string, 4> type_names = {"hearts", "clubs", "diamonds", "spades"};
-constexpr std::array<std::string, 13> value_names = {
+const std::array<std::string, 4> type_names = {"hearts", "clubs", "diamonds", "spades"};
+const std::array<std::string, 13> value_names = {
     "two", "three", "four", "five", "six", "seven", "eight", 
     "nine", "ten", "jack", "queen", "king", "ace"
 };

@@ -6,12 +6,14 @@
 
 #include <game_object.hpp>
 
-template <class Row>
+class DefaultRow : public GameObject {};
+
+template <class Row = DefaultRow>
     requires std::is_base_of_v<GameObject, Row>
-class StatsWindow {
+class StatsWindow : public GameObject {
     static constexpr size_t kDefaultVisibleRows = 10;
 
- public:
+public:
     StatsWindow() = delete;
 
     explicit StatsWindow(const std::vector<Row>& data)
@@ -21,8 +23,7 @@ class StatsWindow {
 
     ~StatsWindow() {}
 
- private:
-    std::shared_ptr<GameObject> root_object_;
+private:
     std::vector<Row> data_;
     size_t visible_rows_ = kDefaultVisibleRows;
     size_t first_visible_row_;

@@ -28,8 +28,10 @@ public:
 
     GameObject() = delete;
 
-    explicit GameObject(const std::string& tag, double scale, std::optional<std::string> default_phase)
-        : tag_(tag), scale_(scale), active_phase_((default_phase.has_value() ? default_phase.value() : "")),
+    explicit GameObject(const std::string& tag, sf::Vector2f scale,
+                        std::optional<std::string> default_phase)
+        : tag_(tag), scale_(scale),
+          active_phase_((default_phase.has_value() ? default_phase.value() : "")),
           is_active_(default_phase.has_value()) {}
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
@@ -46,8 +48,9 @@ public:
     std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state,
                                               nlohmann::json& data);
 
-    void Resize(sf::Vector2u size, sf::Vector2f scale = {-1, -1}, sf::Vector2f new_parent_size = {1, 1},
-                                    sf::Vector2f new_parent_pos = {0, 0}, sf::Vector2f parent_delta = {1, 1});
+    void Resize(sf::Vector2u size, sf::Vector2f scale = {-1, -1},
+                sf::Vector2f new_parent_size = {1, 1}, sf::Vector2f new_parent_pos = {0, 0},
+                sf::Vector2f parent_delta = {1, 1});
 
     sf::Vector2f GetPosition() const;
 
@@ -66,9 +69,10 @@ private:
 
 public:
     bool is_active_ = false;
-private:
     std::string tag_;
-    double scale_;
+
+private:
+    sf::Vector2f scale_;
 
     std::unordered_map<sf::Event::EventType, event_handler> handlers_;
     std::unordered_map<std::string, std::vector<object_ptr>> children_;

@@ -8,7 +8,7 @@
             }
         },
         "coords":[0,0],
-        "scale":1.0
+        "scale":[1.0,1.0]
     },
     "close_button":{
         "parent":"root",
@@ -20,7 +20,7 @@
             }
         },
         "coords":[0,0],
-        "scale":1.0
+        "scale":[1.0,1.0]
     },
     "row1":{
         "parent":"root",
@@ -31,8 +31,8 @@
                 "type":"image"
             }
         },
-        "coords":[0,1.3],
-        "scale":1.0
+        "coords":[0.02,0.08],
+        "scale":[0.96,1.0]
     },
     "cell1":{
         "parent":"row1",
@@ -43,8 +43,8 @@
                 "type":"image"
             }
         },
-        "coords":[0,0],
-        "scale":1.0
+        "coords":[0.01,0],
+        "scale":[1.0, 1.0]
     },
     "cell2":{
         "parent":"row1",
@@ -55,7 +55,7 @@
                 "type":"image"
             }
         },
-        "coords":[0.3,0],
-        "scale":1.0
+        "coords":[0.25,0],
+        "scale":[1.0, 1.0]
     }
 }

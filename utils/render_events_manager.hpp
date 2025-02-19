@@ -1,20 +1,18 @@
 #pragma once
 
 #include <game_object.hpp>
-#include <iostream>
 #include <json.hpp>
+#include <optional>
 #include <string>
 #include <thread_safe_queue.hpp>
 
 using nlohmann::json;
 
-template <typename T>
-class RenderEventsManager {
+template <typename T> class RenderEventsManager {
 public:
-    using event_handler = bool(*)(RenderEventsManager* render_manager, const json& data);
+    using event_handler = bool (*)(RenderEventsManager* render_manager, const json& data);
 
-    RenderEventsManager(IGameState* state) : state_(state) {
-    }
+    RenderEventsManager(IGameState* state) : state_(state) {}
 
     void AddHandler(const std::string& event_type, event_handler handler) {
         handlers_[event_type] = handler;
@@ -42,25 +40,18 @@ public:
         }
     }
 
-    const IGameState* GetState() const {
-        return state_;
-    }
+    const IGameState* GetState() const { return state_; }
 
-    TSQueue<T>& GetRenderQueue() {
-        return render_queue_;
-    }
+    TSQueue<T>& GetRenderQueue() { return render_queue_; }
 
-    size_t GetSize() const {
-        return render_queue_.size();
-    }
+    size_t GetSize() const { return render_queue_.size(); }
 
-    bool IsEmpty() const {
-        return render_queue_.empty();
-    }
+    bool IsEmpty() const { return render_queue_.empty(); }
 
 private:
     IGameState* state_;
     TSQueue<T> render_queue_;
     std::optional<json> current_render_event_;
     std::unordered_map<std::string, event_handler> handlers_;
+    std::optional<json> current_render_event = std::nullopt;
 };

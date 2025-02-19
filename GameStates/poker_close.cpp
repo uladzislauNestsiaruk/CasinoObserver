@@ -7,6 +7,7 @@
 #include "state_manager.h"
 #include <common_render_handlers.hpp>
 #include <game_object.hpp>
+#include <memory>
 #include <textures_loader.hpp>
 
 #include <iostream>
@@ -15,14 +16,15 @@ const std::string PokerClose::kPokerCloseGameObjects =
     GetAssetPrefix() + "game_objects/poker_close_objects.json";
 
 PokerClose::PokerClose(StateManager* manager)
-    : AbstractGameState(kPokerCloseGameObjects), stop_game_thread_(false), run_game_(false), game_exec_thr_(([this] { GameExecutor(); })) {
+    : AbstractGameState(kPokerCloseGameObjects), stop_game_thread_(false), run_game_(false),
+      game_exec_thr_(([this] { GameExecutor(); })) {
     table_ = std::make_unique<PokerTable>(logs_, render_events_manager_.GetRenderQueue());
+    std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
     root_game_object_->Resize(manager->GetWindowSize());
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
                                   CommonGOEventHandlers::ReturnButtonHandler, "return_button");
 
-    render_events_manager_.AddHandler("change_phase",
-                                      CommonREMEventHandlers::ChangePhaseHandler);
+    render_events_manager_.AddHandler("change_phase", CommonREMEventHandlers::ChangePhaseHandler);
 }
 
 PokerClose::~PokerClose() {
@@ -48,7 +50,7 @@ void PokerClose::HandleEvent(const sf::Event& event) {
     event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
     event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
     event_data["event"]["type"] = event.type;
-    root_game_object_->TriggerHandler(&StateManager::Instance(), this, event_data);
+    objects_manager_.HandleEvent(this, event_data);
 }
 
 void PokerClose::Update(sf::Time delta) {
@@ -56,6 +58,7 @@ void PokerClose::Update(sf::Time delta) {
         run_game_.store(true);
     }
 
+    render_events_manager_.HandleEvent();
     while (!logs_.empty()) {
         std::optional<json> log_event = logs_.pop();
         if (log_event == std::nullopt) {
@@ -67,7 +70,6 @@ void PokerClose::Update(sf::Time delta) {
 }
 
 void PokerClose::Draw(StateManager* manager) {
-    render_events_manager_.HandleEvent();
     sf::sleep(sf::milliseconds(50));
-    root_game_object_->Draw(manager->GetOriginWindow());
+    objects_manager_.DrawAll(manager->GetOriginWindow());
 }

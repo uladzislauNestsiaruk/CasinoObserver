@@ -5,6 +5,7 @@
 #include <game_objects_loader.hpp>
 #include <json.hpp>
 #include <render_events_manager.hpp>
+#include <game_object_manager.hpp>
 
 using nlohmann::json;
 
@@ -28,13 +29,13 @@ public:
 class AbstractGameState : public IGameState {
 public:
     AbstractGameState(std::string_view game_objects_path)
-        : render_events_manager_(this), root_game_object_(ParseGameObjects(game_objects_path)) {}
+        : objects_manager_(game_objects_path), render_events_manager_(this) {}
 
     virtual ~AbstractGameState() {}
 
     std::shared_ptr<GameObject> FindGameObjectByTag(const std::string& tag) const;
 
 protected:
-    std::shared_ptr<GameObject> root_game_object_;
+    GEManager objects_manager_; 
     RenderEventsManager<json> render_events_manager_;
 };

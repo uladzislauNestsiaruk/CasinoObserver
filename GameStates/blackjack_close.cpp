@@ -21,6 +21,7 @@ BlackjackClose::BlackjackClose(StateManager* manager)
     : AbstractGameState(kBlackjackCloseGameObjects), run_game_(false), stop_game_thread_(false),
       game_executor_(([this] { GameExecutor(); })) {
     table_ = std::make_unique<BlackjackTable>(logs_, render_events_manager_.GetRenderQueue());
+    std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
     root_game_object_->Resize(manager->GetWindowSize());
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
                                   CommonGOEventHandlers::ReturnButtonHandler, "return_button");
@@ -51,7 +52,7 @@ void BlackjackClose::HandleEvent(const sf::Event& event) {
     event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
     event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
     event_data["event"]["type"] = event.type;
-    root_game_object_->TriggerHandler(&StateManager::Instance(), this, event_data);
+    objects_manager_.HandleEvent(this, event_data);
 }
 
 void BlackjackClose::Update(sf::Time delta) {
@@ -59,6 +60,7 @@ void BlackjackClose::Update(sf::Time delta) {
         run_game_.store(true);
     }
 
+    render_events_manager_.HandleEvent();
     while (!logs_.empty()) {
         std::optional<json> log_event = logs_.pop();
         if (log_event == std::nullopt) {
@@ -69,7 +71,6 @@ void BlackjackClose::Update(sf::Time delta) {
 }
 
 void BlackjackClose::Draw(StateManager* manager) {
-    render_events_manager_.HandleEvent();
     sf::sleep(sf::milliseconds(50));
-    root_game_object_->Draw(manager->GetOriginWindow());
+    objects_manager_.DrawAll(manager->GetOriginWindow());
 }

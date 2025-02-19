@@ -67,7 +67,8 @@ void GameObject::Draw(sf::RenderWindow* window) {
 
     active_sprite_ = std::min(phases_[active_phase_].size() - 1, active_sprite_ + 1);
     window->draw(phases_[active_phase_][active_sprite_]);
-    if (active_sprite_ == phases_[active_phase_].size() - 1) {
+    if (active_sprite_ == phases_[active_phase_].size() - 1 && !is_finished_current_phase_) {
+        clock_.restart();
         is_finished_current_phase_ = true;
     }
 
@@ -170,7 +171,7 @@ sf::Vector2f GameObject::GetSize() const {
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
-    if (clock_.getElapsedTime() >= sf::milliseconds(delay)) {
+    if (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay)) {
         active_phase_ = new_phase;
         active_sprite_ = 0;
         is_finished_current_phase_ = false;

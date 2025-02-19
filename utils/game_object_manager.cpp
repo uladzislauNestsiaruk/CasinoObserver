@@ -39,17 +39,15 @@ void GEManager::DrawAll(sf::RenderWindow* window) {
     auto draw_order = GetOrder();
     for (int32_t priority = kMaxPriority - 1; priority >= 0; priority--) {
         std::for_each(draw_order[priority].begin(), draw_order[priority].end(),
-                      [window, this](size_t ind) { 
-                      objects_[ind]->Draw(window);
-        });
+                      [window, this](size_t ind) { objects_[ind]->Draw(window); });
     }
 }
 
 std::shared_ptr<GameObject> GEManager::FindObjectByTag(const std::string& tag) const {
-    for (auto& object : objects_) {
+    for (auto object : objects_) {
         std::shared_ptr<GameObject> result = object->FindGameObjectByTag(tag);
-        if (object) {
-            return object;
+        if (result != nullptr) {
+            return result;
         }
     }
 
@@ -60,13 +58,13 @@ void GEManager::HandleEvent(IGameState* state, nlohmann::json& event_data) {
     auto handle_order = GetOrder();
     for (int32_t priority = kMaxPriority - 1; priority >= 0; priority--) {
         std::optional<std::string> handled;
-        std::for_each(handle_order[priority].begin(), handle_order[priority].end(),
-                      [&handled, &event_data, state, this](size_t ind) {
-                          if (!handled.has_value()) {
-                              handled = objects_[ind]->TriggerHandler(&StateManager::Instance(),
-                                                                      state, event_data);
-                          }
-                      });
+        for (size_t ind : handle_order[priority]) {
+            handled = objects_[ind]->TriggerHandler(&StateManager::Instance(), state, event_data);
+            if (handled.has_value()) {
+                break;
+            }
+        }
+
         if (handled.has_value()) {
             break;
         }

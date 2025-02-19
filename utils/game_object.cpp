@@ -162,16 +162,10 @@ GameObject::object_ptr GameObject::FindGameObjectByTag(const std::string& tag) {
 }
 
 sf::Vector2f GameObject::GetPosition() const {
-    if (!is_active_) {
-        return sf::Vector2f(0, 0);
-    }
     return phases_.at(active_phase_)[active_sprite_].getPosition();
 }
 
 sf::Vector2f GameObject::GetSize() const {
-    if (!is_active_) {
-        return sf::Vector2f(0, 0);
-    }
     return phases_.at(active_phase_)[active_sprite_].getGlobalBounds().getSize();
 }
 

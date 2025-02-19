@@ -1,6 +1,5 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include <filesystem>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -8,10 +7,10 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
-#include "Utils/stats_window.hpp"
+
 #include <game_object.hpp>
 #include <game_objects_loader.hpp>
-
+#include <stats_window.hpp>
 #include <textures_loader.hpp>
 
 int main(int argc, char** argv) {

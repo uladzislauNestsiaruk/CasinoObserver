@@ -4,10 +4,10 @@
 #include <unordered_map>
 #include <utility>
 
-#include "deck.h"
 #include "poker_table.hpp"
 #include "table.h"
 #include <constants.hpp>
+#include <deck.hpp>
 
 using json = nlohmann::json;
 
@@ -34,10 +34,12 @@ class BlackjackTable : public AbstractTable {
 
 public:
     BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-        : AbstractTable(GameType::Blackjack), deck_(true), is_game_finished_(true), hands_(),
-          settings_{100, true}, logs_(logs), render_queue_(render_queue) {
-        AddPlayer(std::make_shared<HumbleGambler>(0, GameType::Blackjack, false, 1000));
-        AddPlayer(std::make_shared<HumbleGambler>(0, GameType::Blackjack, false, 2000));
+        : AbstractTable(GameType::Blackjack, render_queue), deck_(true), is_game_finished_(true),
+          hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
+        AddPlayer(
+            std::make_shared<HumbleGambler>(0, 0, GameType::Blackjack, false, 1000, "dummy_tag"));
+        AddPlayer(
+            std::make_shared<HumbleGambler>(0, 1, GameType::Blackjack, false, 2000, "dummy_tag"));
     }
 
     void GameIteration() override;

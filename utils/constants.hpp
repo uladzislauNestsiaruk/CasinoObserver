@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <vector>
 
 enum class GameType : uint8_t { Blackjack, Poker };
 
@@ -125,6 +126,29 @@ struct PokerMoveState {
 // Animation constants
 constexpr size_t default_delay = 50;
 constexpr size_t default_antimation_end_delay = 2000;
+
+// Poker places game object names
+const std::array<std::vector<std::string>, 6> gamblers_places = {
+    {{"first_place_woman1_1", "first_place_woman3_2", "first_place_woman1_2",
+      "first_place_woman3_1", "first_place_man2_1", "first_place_man2_2", "first_place_woman2_1",
+      "first_place_man1_1", "first_place_man3_2", "first_place_man1_2", "first_place_man3_1",
+      "first_place_woman2_2"},
+     {"second_place_woman3_1", "second_place_woman1_1", "second_place_woman2_1",
+      "second_place_man1_1", "second_place_man3_1", "second_place_man2_1"},
+     {
+         "third_place_woman3_1",
+         "third_place_woman1_1",
+         "third_place_woman2_1",
+         "third_place_man1_1",
+         "third_place_man2_1",
+         "third_place_man3_1",
+     },
+     {"fourth_place_woman3_1", "fourth_place_woman1_1", "fourth_place_woman2_1",
+      "fourth_place_man1_1", "fourth_place_man2_1", "fourth_place_man3_1"},
+     {"fivth_place_woman1_1", "fivth_place_woman3_1", "fivth_place_man2_1", "fivth_place_woman2_1",
+      "fivth_place_man1_1", "fivth_place_man3_1"},
+     {"sixth_place_woman1_1", "sixth_place_woman3_1", "sixth_place_man2_1", "sixth_place_woman2_1",
+      "sixth_place_man1_1", "sixth_place_man3_1"}}};
 
 #undef D
 #undef H

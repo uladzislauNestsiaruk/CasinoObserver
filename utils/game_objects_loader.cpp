@@ -52,10 +52,21 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
         throw std::runtime_error("There is no \"root\" in " + std::string(game_objects_path));
     }
 
+    if (data.contains("__extend__")) {
+        std::vector<std::string> extensions =
+            GetJsonValue<std::vector<std::string>>(data, "__extend__");
+        for (const auto& item : extensions) {
+            std::ifstream file(item);
+            json result;
+            file >> result;
+            data.merge_patch(result);
+        }
+    }
+
     std::unordered_map<std::string, std::vector<std::pair<std::string, std::optional<std::string>>>>
         objects_graph;
     for (const auto& item : data.items()) {
-        if (item.key() == "root") {
+        if (item.key() == "root" || item.key().substr(0, 2) == "__") {
             continue;
         }
 

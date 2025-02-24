@@ -1,10 +1,13 @@
 #pragma once
 
-#include "deck.h"
-#include "json.hpp"
 #include "table.h"
-#include "thread_safe_queue.hpp"
+#include <common.hpp>
+#include <constants.hpp>
+#include <deck.hpp>
+#include <json.hpp>
+#include <thread_safe_queue.hpp>
 
+#include <iostream>
 #include <string_view>
 #include <vector>
 
@@ -12,12 +15,7 @@ using json = nlohmann::json;
 
 class PokerTable : public AbstractTable {
 public:
-    PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-        : AbstractTable(), deck_(true), min_bet_(100), min_raise_(50), small_blind_(50),
-          big_blind_(min_bet_), logs_(logs), render_queue_(render_queue) {
-        AddPlayer(std::make_shared<HumbleGambler>(0, GameType::Poker, false, 1000));
-        AddPlayer(std::make_shared<HumbleGambler>(0, GameType::Poker, false, 2000));
-    }
+    PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue);
 
     void GameIteration() override;
 
@@ -63,5 +61,4 @@ private:
     size_t big_blind_;
 
     TSQueue<json>& logs_;
-    TSQueue<json>& render_queue_;
 };

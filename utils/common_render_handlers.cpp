@@ -17,6 +17,9 @@ bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* rende
     std::shared_ptr<GameObject> target_object =
         static_cast<const AbstractGameState*>(render_manager->GetState())
             ->FindGameObjectByTag(data["tag"].template get<std::string>());
+    std::cout << "trying: " << (target_object != nullptr) << '\n';
+    std::cout << data["tag"].template get<std::string>() << ' '
+              << data["new_phase"].template get<std::string>() << '\n';
     std::string new_phase = data["new_phase"].template get<std::string>();
     uint64_t delay = data["delay"].template get<uint64_t>();
     return target_object->TryUpdatePhase(new_phase, delay);

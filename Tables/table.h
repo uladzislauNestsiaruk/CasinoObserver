@@ -1,14 +1,16 @@
-// "Copyright [2024] Netsiaruk Uladzislau"
-#ifndef CASINOOBSERVER_BRAINMANAGER_TABLE_H
-#define CASINOOBSERVER_BRAINMANAGER_TABLE_H
+#pragma once
 
 #include <climits>
 #include <memory>
-#include <shared_mutex>
 #include <vector>
+
+#include <json.hpp>
+#include <thread_safe_queue.hpp>
 
 #include "../Gamblers/gambler.h"
 #include "SFML/System/Time.hpp"
+
+using nlohmann::json;
 
 class ITable {
 public:
@@ -29,37 +31,22 @@ class AbstractTable : public ITable {
     sf::Time time_per_action_ = sf::seconds(1);
 
 public:
-    AbstractTable() : whose_move_{0} {}
+    AbstractTable(TSQueue<json>& render_queue) : whose_move_{0}, render_queue_(render_queue) {}
 
-    // Ctor for dealer specialization
-    explicit AbstractTable(GameType table_type)
-        : whose_move_{0}, players_(1, std::make_shared<HumbleGambler>(0, table_type, 0, INT_MAX)) {}
+    explicit AbstractTable(GameType table_type, TSQueue<json>& render_queue)
+        : whose_move_{0}, render_queue_(render_queue) {}
 
-    void AddPlayer(std::shared_ptr<IGambler> player) override { players_.emplace_back(player); }
+    void AddPlayer(std::shared_ptr<IGambler> player) override;
 
-    void RemovePlayer(const IGambler& player) override {
-        for (size_t ind = 0; ind < players_.size(); ind++) {
-            if (&(*players_[ind]) == &player) {
-                players_.erase(players_.begin() + ind);
-                break;
-            }
-        }
-    }
+    void RemovePlayer(const IGambler& player) override;
 
     virtual void Clean() = 0;
 
-    void Update(sf::Time delta) {
-        elapsed_ += delta;
-        if (elapsed_ >= time_per_action_) {
-            elapsed_ -= time_per_action_;
-            GameIteration();
-        }
-    }
+    void Update(sf::Time delta);
 
 protected:
     size_t whose_move_; // index of the active player
     std::vector<std::shared_ptr<IGambler>> players_;
     sf::Time elapsed_ = sf::Time::Zero;
+    TSQueue<json>& render_queue_;
 };
-
-#endif // !CASINOOBSERVER_BRAINMANAGER_TABLE_H

@@ -61,6 +61,10 @@ void GameObject::Move(sf::Vector2f offset) {
 }
 
 void GameObject::Draw(sf::RenderWindow* window) {
+    // Don't draw objects which are in "empty" phase
+    if (active_phase_ == "empty") {
+        return;
+    }
     if (phases_[active_phase_].empty()) {
         throw std::logic_error("draw called on empty game_object");
     }
@@ -108,6 +112,11 @@ void GameObject::AddHandler(const sf::Event::EventType type, event_handler handl
 
 std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGameState* state,
                                                       nlohmann::json& data) {
+    // Don't trigger game object handler if it's in empty phase
+    if (active_phase_ == "empty") {
+        return std::nullopt;
+    }
+
     sf::Vector2f point =
         sf::Vector2f(data["event"]["mouse_button"]["x"], data["event"]["mouse_button"]["y"]);
     for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0; ind--) {
@@ -171,7 +180,8 @@ sf::Vector2f GameObject::GetSize() const {
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
-    if (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay)) {
+    if (active_phase_ == "empty" ||
+        (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
         active_phase_ = new_phase;
         active_sprite_ = 0;
         is_finished_current_phase_ = false;

@@ -1,4 +1,5 @@
-#include "deck.h"
+#include <deck.hpp>
+
 #include <iterator>
 
 Deck::Deck(bool without_jokers) : random_generator_{std::random_device{}()} {

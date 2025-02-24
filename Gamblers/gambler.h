@@ -31,6 +31,9 @@ public:
     virtual std::vector<Card> TakeAllCards() = 0;
     virtual const std::vector<Card>& ShowCards() const = 0;
 
+    virtual uint8_t GetTableSeatId() const = 0;
+    virtual const std::string& GetPersonTag() const = 0;
+
     virtual size_t GetBalance() const = 0;
     virtual bool PerformBet(size_t amount) = 0; // return true if Gambler can perform bet and
                                                 // substracts amount from his money
@@ -39,11 +42,14 @@ public:
 
 class BaseGambler : public IGambler {
 public:
-    BaseGambler() : skill_{0}, game_type_{GameType::Blackjack}, still_in_game_{true}, money_{0} {}
+    BaseGambler(uint8_t table_seat_id, const std::string& person_tag)
+        : still_in_game_{true}, table_seat_id_(table_seat_id), game_type_{GameType::Blackjack},
+          skill_{0}, money_{0}, person_tag_(person_tag) {}
 
-    BaseGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
-        : skill_(skill), game_type_(game_type), still_in_game_(still_in_game), money_(money),
-          cards_() {}
+    BaseGambler(bool still_in_game, uint8_t table_seat_id, GameType game_type, int16_t skill,
+                size_t money, const std::string& person_tag)
+        : still_in_game_(still_in_game), table_seat_id_(table_seat_id), game_type_(game_type),
+          skill_(skill), money_(money), cards_(), person_tag_(person_tag) {}
 
     // game status equal true if player did't fold(that's for poker)
     // or didn't stand(thats's for blackjack)
@@ -58,6 +64,10 @@ public:
     }
     const std::vector<Card>& ShowCards() const override { return cards_; }
     std::vector<Card> TakeAllCards() override;
+
+    uint8_t GetTableSeatId() const override { return table_seat_id_; }
+
+    const std::string& GetPersonTag() const override { return person_tag_; }
 
     size_t GetBalance() const override { return money_; }
 
@@ -75,19 +85,23 @@ public:
     ~BaseGambler() override {}
 
 private:
-    int16_t skill_;
-    GameType game_type_;
     bool still_in_game_;
+    uint8_t table_seat_id_;
+    GameType game_type_;
+    int16_t skill_;
     size_t money_;
     std::vector<Card> cards_;
+    std::string person_tag_;
 };
 
 class HumbleGambler : public BaseGambler {
 public:
-    HumbleGambler() : BaseGambler() {}
+    HumbleGambler(uint8_t table_seat_id, const std::string& person_tag)
+        : BaseGambler(table_seat_id, person_tag) {}
 
-    HumbleGambler(int16_t skill, GameType game_type, bool still_in_game, size_t money)
-        : BaseGambler(skill, game_type, still_in_game, money) {}
+    HumbleGambler(bool still_in_game, uint8_t table_seat_id, GameType game_type, int16_t skill,
+                  size_t money, const std::string& person_tag)
+        : BaseGambler(still_in_game, table_seat_id, game_type, skill, money, person_tag) {}
 
     enum BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
                                          const Hand&) override;

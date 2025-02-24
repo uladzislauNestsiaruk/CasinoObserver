@@ -1,13 +1,11 @@
-// Copyright [2024] Nestsiarul Uladzislau
-
-#include "poker_close.hpp"
 #include "SFML/System/Time.hpp"
 #include "SFML/Window/Event.hpp"
+
 #include "game_state.hpp"
+#include "poker_close.hpp"
 #include "state_manager.h"
 #include <common_render_handlers.hpp>
 #include <game_object.hpp>
-#include <memory>
 #include <textures_loader.hpp>
 
 #include <iostream>

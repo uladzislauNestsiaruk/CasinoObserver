@@ -8,6 +8,9 @@
 
 struct CommonGOEventHandlers {
     static void ReturnButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
+    static void BanButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
+    static void SelectButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
+    static void DealButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
 };
 
 struct CommonREMEventHandlers {

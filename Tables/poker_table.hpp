@@ -7,7 +7,6 @@
 #include <json.hpp>
 #include <thread_safe_queue.hpp>
 
-#include <iostream>
 #include <string_view>
 #include <vector>
 
@@ -24,6 +23,9 @@ public:
     void Clean() override;
 
 private:
+    void AddPlayers(uint8_t num_players, uint16_t left_money_bound = 100,
+                    uint16_t right_money_bound = 500);
+
     void Dealing() override;
 
     void ApplyBets();

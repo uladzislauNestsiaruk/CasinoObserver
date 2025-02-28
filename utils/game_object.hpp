@@ -53,6 +53,8 @@ public:
 
     sf::Vector2f GetSize() const;
 
+    const std::string& GetActivePhase() const { return active_phase_; }
+
     void Move(sf::Vector2f offset);
 
     void Draw(sf::RenderWindow* window);

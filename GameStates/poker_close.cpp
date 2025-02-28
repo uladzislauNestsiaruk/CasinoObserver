@@ -21,6 +21,12 @@ PokerClose::PokerClose(StateManager* manager)
     root_game_object_->Resize(manager->GetWindowSize());
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
                                   CommonGOEventHandlers::ReturnButtonHandler, "return_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::SelectButtonHandler, "select_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::DealButtonHandler, "deal_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::BanButtonHandler, "ban_button");
 
     render_events_manager_.AddHandler("change_phase", CommonREMEventHandlers::ChangePhaseHandler);
 }

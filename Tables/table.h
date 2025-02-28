@@ -18,7 +18,7 @@ public:
 
     virtual void AddPlayer(std::shared_ptr<IGambler> player) = 0;
 
-    virtual void RemovePlayer(const IGambler& player) = 0;
+    virtual void RemovePlayer(size_t ind) = 0;
 
     virtual void GameIteration() = 0;
 
@@ -38,7 +38,7 @@ public:
 
     void AddPlayer(std::shared_ptr<IGambler> player) override;
 
-    void RemovePlayer(const IGambler& player) override;
+    void RemovePlayer(size_t ind) override;
 
     virtual void Clean() = 0;
 
@@ -47,6 +47,7 @@ public:
 protected:
     size_t whose_move_; // index of the active player
     std::vector<std::shared_ptr<IGambler>> players_;
+    std::array<bool, 6> occupied_places_;
     sf::Time elapsed_ = sf::Time::Zero;
     TSQueue<json>& render_queue_;
 };

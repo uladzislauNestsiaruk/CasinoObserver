@@ -62,9 +62,6 @@ void GameObject::Move(sf::Vector2f offset) {
 
 void GameObject::Draw(sf::RenderWindow* window) {
     // Don't draw objects which are in "empty" phase
-    if (active_phase_ == "empty") {
-        return;
-    }
     if (phases_[active_phase_].empty()) {
         throw std::logic_error("draw called on empty game_object");
     }
@@ -120,13 +117,14 @@ std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGa
     sf::Vector2f point =
         sf::Vector2f(data["event"]["mouse_button"]["x"], data["event"]["mouse_button"]["y"]);
     for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0; ind--) {
-        if (children_[active_phase_][ind]->Contains(point)) {
+        if (children_[active_phase_][ind]->active_phase_ != "empty" &&
+            children_[active_phase_][ind]->Contains(point)) {
             return children_[active_phase_][ind]->TriggerHandler(manager, state, data);
         }
     }
 
     if (Contains(point) && handlers_.contains(data["event"]["type"])) {
-        data["child_tag"] = tag_;
+        data["tag"] = tag_;
         handlers_[data["event"]["type"]](manager, state, data);
         return std::optional<std::string>(tag_);
     }

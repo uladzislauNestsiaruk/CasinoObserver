@@ -24,12 +24,8 @@ public:
     }
 
     void HandleEvent() {
-        std::cout << "Size: " << GetSize() << '\n';
         while (!render_queue_.empty() || current_render_event_.has_value()) {
             if (current_render_event_.has_value()) {
-                std::cout << current_render_event_.value()["tag"].template get<std::string>() << ' '
-                          << current_render_event_.value()["new_phase"].template get<std::string>()
-                          << '\n';
                 if (!TryHandle(current_render_event_.value()["event_type"],
                                current_render_event_.value())) {
                     break;
@@ -41,7 +37,6 @@ public:
             if (render_queue_.empty()) {
                 break;
             }
-            std::cout << "Change: " << "\n";
             current_render_event_ = render_queue_.pop();
         }
     }

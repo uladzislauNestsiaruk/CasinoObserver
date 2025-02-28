@@ -2,20 +2,20 @@
 
 void AbstractTable::AddPlayer(std::shared_ptr<IGambler> player) {
     players_.emplace_back(player);
-    uint8_t place = player->GetTableSeatId();
+    occupied_places_[player->GetTableSeatId()] = true;
     render_queue_.push({{"event_type", "change_phase"},
                         {"new_phase", "afk"},
                         {"tag", player->GetPersonTag()},
                         {"delay", 0}});
 }
 
-void AbstractTable::RemovePlayer(const IGambler& player) {
-    for (size_t ind = 0; ind < players_.size(); ind++) {
-        if (&(*players_[ind]) == &player) {
-            players_.erase(players_.begin() + ind);
-            break;
-        }
-    }
+void AbstractTable::RemovePlayer(size_t ind) {
+    render_queue_.push({{"event_type", "change_phase"},
+                        {"new_phase", "empty"},
+                        {"tag", players_[ind]->GetPersonTag()},
+                        {"delay", 0}});
+    occupied_places_[players_[ind]->GetTableSeatId()] = false;
+    players_.erase(players_.begin() + ind);
 }
 
 void AbstractTable::Update(sf::Time delta) {

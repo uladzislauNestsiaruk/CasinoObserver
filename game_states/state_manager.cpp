@@ -1,4 +1,3 @@
-// "Copyright [2024] Netsiaruk Uladzislau"
 #include <memory>
 #include <stdexcept>
 

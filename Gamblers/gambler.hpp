@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 
-// "Copyright [2024] Netsiaruk Uladzislau"
 #include "card.hpp"
 #include <constants.hpp>
 

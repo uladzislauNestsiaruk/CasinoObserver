@@ -1,6 +1,4 @@
-// "Copyright [2024] Netsiaruk Uladzislau"
-#ifndef CASINOOBSERVER_CARD_H_
-#define CASINOOBSERVER_CARD_H_
+#pragma once
 
 #include <constants.hpp>
 
@@ -25,5 +23,3 @@ public:
 private:
     uint8_t value_;
 };
-
-#endif // CASINOOBSERVER_CARD_H_

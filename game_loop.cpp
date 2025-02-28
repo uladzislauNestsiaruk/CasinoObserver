@@ -1,4 +1,3 @@
-// "Copyright [2024] Netsiaruk Uladzislau"
 #include "SFML/System/Clock.hpp"
 #include "game_states/state_manager.hpp"
 

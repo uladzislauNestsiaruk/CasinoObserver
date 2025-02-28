@@ -1,6 +1,4 @@
-// "Copyright [2024] Netsiaruk Uladzislau"
-#ifndef CASINOOBSERVER_STATE_MANAGER_H
-#define CASINOOBSERVER_STATE_MANAGER_H
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -56,5 +54,3 @@ private:
     StateManager() { Init(); }
     ~StateManager() {}
 };
-
-#endif // CASINOOBSERVER_STATE_MANAGER_H

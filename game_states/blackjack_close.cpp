@@ -30,7 +30,7 @@ BlackjackClose::BlackjackClose(StateManager* manager)
 }
 
 BlackjackClose::~BlackjackClose() {
-    stop_game_thread_.store(false);
+    stop_game_thread_.store(true);
     game_executor_.join();
 }
 

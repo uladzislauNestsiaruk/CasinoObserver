@@ -60,6 +60,63 @@
         ],
         "scale": [1.0, 1.0]
     },
+    "select_button": {
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_select_button"
+            },
+            "empty": {
+                "type": "image",
+                "source": "ui_buttons_empty_select_button"
+            }
+        },
+        "coords": [
+            0.89,
+            0.01
+        ],
+        "scale": [0.13, 0.13]
+    },
+    "ban_button": {
+        "default_phase": "empty",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_ban_button"
+            },
+            "empty": {
+                "type": "image",
+                "source": "ui_buttons_empty_select_button"
+            }
+        },
+        "coords": [
+            0.89,
+            0.01
+        ],
+        "scale": [0.13, 0.13]
+    },
+    "deal_button": {
+        "default_phase": "empty",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_deal_button"
+            },
+            "empty": {
+                "type": "image",
+                "source": "ui_buttons_empty_select_button"
+            }
+        },
+        "coords": [
+            0.75,
+            0.01
+        ],
+        "scale": [0.13, 0.13]
+    },
     "first_central_card": {
         "default_phase": "empty_card",
         "parent": "root:afk,flop_2,flop_3,turn_1,turn_2,river_1,river_2",

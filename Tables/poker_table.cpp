@@ -1,8 +1,7 @@
 #include "poker_table.hpp"
-#include "common.hpp"
+#include <common.hpp>
 #include <constants.hpp>
 #include <cstdint>
-#include <iostream>
 
 namespace {
 constexpr uint32_t num_iterations = 400;

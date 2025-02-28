@@ -5,7 +5,7 @@
 #include "blackjack_close.hpp"
 #include "game_state.hpp"
 #include "poker_close.hpp"
-#include "state_manager.h"
+#include "state_manager.hpp"
 #include "work_room.hpp"
 
 #include <game_objects_loader.hpp>

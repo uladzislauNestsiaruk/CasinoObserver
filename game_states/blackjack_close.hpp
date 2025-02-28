@@ -8,8 +8,7 @@
 
 #include "SFML/Window/Event.hpp"
 #include "game_state.hpp"
-#include <../Tables/blackjack_table.hpp>
-#include <drawer.hpp>
+#include <../tables/blackjack_table.hpp>
 #include <game_object.hpp>
 #include <json.hpp>
 #include <render_events_manager.hpp>

@@ -3,7 +3,7 @@
 #include <string>
 #include <thread>
 
-#include "../Tables/poker_table.hpp"
+#include "../tables/poker_table.hpp"
 #include "game_state.hpp"
 #include <game_object.hpp>
 #include <json.hpp>

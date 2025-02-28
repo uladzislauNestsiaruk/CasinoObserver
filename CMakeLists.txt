@@ -27,11 +27,11 @@ link_directories(${CMAKE_SOURCE_DIR}/SFML_ARM/lib)
 set(HEADERS ${HEADERS} ${CMAKE_SOURCE_DIR}/utils)
 
 # GameStates parsing
-add_subdirectory(GameStates)
+add_subdirectory(game_states)
 # Tables logic
-add_subdirectory(Tables)
+add_subdirectory(tables)
 # Gamblers
-add_subdirectory(Gamblers)
+add_subdirectory(gamblers)
 # Utils
 add_subdirectory(Utils)
 
@@ -48,7 +48,7 @@ else()
     enable_testing() 
 
     # Tests
-    add_subdirectory(Tests)
+    add_subdirectory(tests)
 
     #link and include gtest/gmock
     set(GTEST_LIBRARIES gtest_main gmock_main)

@@ -6,7 +6,7 @@
 
 #include "SFML/System/Time.hpp"
 #include "game_state.hpp"
-#include "state_manager.h"
+#include "state_manager.hpp"
 #include <game_object.hpp>
 #include <json.hpp>
 #include <thread_safe_queue.hpp>

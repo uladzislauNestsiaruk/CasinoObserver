@@ -1,12 +1,11 @@
 #include <algorithm>
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <optional>
 #include <queue>
 #include <stdexcept>
 
-#include "../GameStates/state_manager.h"
+#include "../game_states/state_manager.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Time.hpp"

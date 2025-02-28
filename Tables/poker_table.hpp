@@ -1,6 +1,6 @@
 #pragma once
 
-#include "table.h"
+#include "table.hpp"
 #include <common.hpp>
 #include <constants.hpp>
 #include <deck.hpp>

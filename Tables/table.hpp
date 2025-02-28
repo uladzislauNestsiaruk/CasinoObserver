@@ -1,13 +1,12 @@
 #pragma once
 
-#include <climits>
 #include <memory>
 #include <vector>
 
 #include <json.hpp>
 #include <thread_safe_queue.hpp>
 
-#include "../Gamblers/gambler.h"
+#include "../gamblers/gambler.hpp"
 #include "SFML/System/Time.hpp"
 
 using nlohmann::json;

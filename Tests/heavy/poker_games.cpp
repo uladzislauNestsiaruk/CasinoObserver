@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "../../Tables/poker_table.hpp"
+#include "../../tables/poker_table.hpp"
 
 TEST(PokerGame, TwoPlayers) {
     TSQueue<json> logs;

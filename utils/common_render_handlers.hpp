@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
-
-#include <../GameStates/game_state.hpp>
+#include <../game_states/game_state.hpp>
 #include <game_object.hpp>
 #include <render_events_manager.hpp>
 

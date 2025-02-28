@@ -1,4 +1,4 @@
-#include "table.h"
+#include "table.hpp"
 
 void AbstractTable::AddPlayer(std::shared_ptr<IGambler> player) {
     players_.emplace_back(player);

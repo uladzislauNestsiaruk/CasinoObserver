@@ -1,11 +1,9 @@
 #pragma once
 
 #include <list>
-#include <unordered_map>
 #include <utility>
 
-#include "poker_table.hpp"
-#include "table.h"
+#include "table.hpp"
 #include <constants.hpp>
 #include <deck.hpp>
 

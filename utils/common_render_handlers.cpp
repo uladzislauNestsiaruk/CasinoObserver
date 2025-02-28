@@ -2,11 +2,8 @@
 #include <memory>
 #include <string>
 
-#include "SFML/System/Sleep.hpp"
-#include "SFML/System/Time.hpp"
 #include "common_render_handlers.hpp"
-#include "constants.hpp"
-#include <../GameStates/poker_close.hpp>
+#include <../game_states/poker_close.hpp>
 #include <game_object.hpp>
 #include <render_events_manager.hpp>
 

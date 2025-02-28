@@ -1,12 +1,10 @@
 #pragma once
 
 #include <atomic>
-#include <new>
 #include <optional>
 
 namespace {
-template <typename T>
-struct Node {
+template <typename T> struct Node {
     Node() : nxt(nullptr), data() {}
 
     explicit Node(const T& val) : nxt(nullptr), data(val) {}
@@ -62,7 +60,6 @@ public:
         }
     }
 
-    
     void push(const T& value) {
         Node* new_element = new Node(value);
         while (true) {

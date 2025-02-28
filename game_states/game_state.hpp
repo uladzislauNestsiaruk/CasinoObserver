@@ -2,10 +2,10 @@
 
 #include "SFML/Window/Event.hpp"
 
+#include <game_object_manager.hpp>
 #include <game_objects_loader.hpp>
 #include <json.hpp>
 #include <render_events_manager.hpp>
-#include <game_object_manager.hpp>
 
 using nlohmann::json;
 
@@ -36,6 +36,6 @@ public:
     std::shared_ptr<GameObject> FindGameObjectByTag(const std::string& tag) const;
 
 protected:
-    GEManager objects_manager_; 
+    GOManager objects_manager_;
     RenderEventsManager<json> render_events_manager_;
 };

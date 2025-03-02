@@ -76,7 +76,7 @@ public:
     }
 
     void AddRow(std::shared_ptr<Row> row) {
-        row->Resize(sf::Vector2f(GetSize().x, GetSize().y / visible_rows_));
+        row->Resize(GetRowSizeVec());
         row->Move(sf::Vector2f(GetPosition().x - row->GetPosition().x, 0));
         data_.emplace_back(row);
 
@@ -88,12 +88,22 @@ public:
         }
     }
 
+    sf::Vector2f GetYBorders() {
+        return sf::Vector2f(GetPosition().y + GetSize().y * vert_padding.x,
+                            GetPosition().y + GetSize().y * vert_padding.y);
+    }
+
     ~StatsWindow() override {}
 
 private:
     void InitRowPos(size_t ind) {
         data_[ind]->Move(
-            {0, GetPosition().y + data_[ind]->GetSize().y * ind - data_[ind]->GetPosition().y});
+            {0, GetYBorders().x + GetRowSizeVec().y * ind - data_[ind]->GetPosition().y});
+    }
+
+    sf::Vector2f GetRowSizeVec() {
+        return sf::Vector2f(GetSize().x,
+                            (vert_padding.y - vert_padding.x) * GetSize().y / visible_rows_);
     }
 
 private:
@@ -104,6 +114,7 @@ private:
     size_t window_id_;
 
     size_t visible_rows_ = 10;
+    sf::Vector2f vert_padding = {0.03, 0.98};
 };
 
 template <typename Row>
@@ -141,20 +152,18 @@ void OnMouseMoveHandler(StateManager* manager, IGameState* state, GameObject* ob
     casted_object->mouse_pressed_cords_ = mouse_position;
 }
 
-void UpdateRowSubRect(GameObject* row, GameObject* stats_window) {
+template <typename Row>
+void UpdateRowSubRect(GameObject* row, StatsWindow<Row>* stats_window, sf::Vector2f row_size_vec) {
     sf::Vector2f row_pos = row->GetPosition();
     sf::IntRect original_rect =
         sf::Sprite(GetTextute("stats_subwindow_row_background")).getTextureRect();
-    sf::Vector2f window_y_borderes = {stats_window->GetPosition().y,
-                                      stats_window->GetPosition().y + stats_window->GetSize().y};
-    if (row_pos.y < window_y_borderes.x) {
-        float delta = fmax(0.0, window_y_borderes.x - row_pos.y) / row->GetSize().y;
-        original_rect.top = delta * original_rect.height;
-        original_rect.height *= 1.0 - delta;
-    } else {
-        float delta = fmax(0.0, window_y_borderes.y - row_pos.y) / row->GetSize().y;
-        original_rect.height *= delta;
-    }
+    sf::Vector2f window_y_borders = stats_window->GetYBorders();
+    float row_height =
+        fmin(row_pos.y + row_size_vec.y, window_y_borders.y) - fmax(row_pos.y, window_y_borders.x);
+    float inv_prefix_delta = 2 * fmax(0.0, window_y_borders.x - row_pos.y);
+    original_rect.top = inv_prefix_delta;
+    std::cout << row->GetTag() << " " << original_rect.top << "\n";
+    original_rect.height *= row_height / row_size_vec.y;
 
     row->SetVisibleRect(original_rect);
 }
@@ -177,11 +186,8 @@ void OnMouseScrolledHandler(StateManager* manager, IGameState* state, GameObject
     }
 
     sf::Vector2f window_position = casted_object->GetPosition();
-    sf::Vector2f window_y_borders =
-        sf::Vector2f(window_position.y, window_position.y + casted_object->GetSize().y);
-    sf::Vector2f row_size_vec =
-        sf::Vector2f(casted_object->GetSize().x,
-                     (window_y_borders.y - window_y_borders.x) / casted_object->visible_rows_);
+    sf::Vector2f window_y_borders = casted_object->GetYBorders();
+    sf::Vector2f row_size_vec = casted_object->GetRowSizeVec();
 
     float delta = data["event"]["delta"].get<float>();
     float max_delta = window_y_borders.x -
@@ -209,15 +215,12 @@ void OnMouseScrolledHandler(StateManager* manager, IGameState* state, GameObject
         row->Move(sf::Vector2f(0, delta));
         float new_row_y = row->GetPosition().y;
         if (new_row_y >= window_y_borders.y || new_row_y + row_size_vec.y <= window_y_borders.x) {
-            std::cout << "delete row " << row->GetTag() << "\n";
             casted_object->RemoveChild("afk", row->GetTag());
             row->Move(sf::Vector2f(-1, 0));
             continue;
         }
 
-        if (new_row_y + row->GetSize().y > window_y_borders.y || new_row_y < window_y_borders.x) {
-            // UpdateRowSubRect(row.get(), object);
-        }
+        UpdateRowSubRect<Row>(row.get(), casted_object, row_size_vec);
     }
 
     while (casted_object->first_visible_row_ > 0 && delta > 0) {
@@ -232,7 +235,7 @@ void OnMouseScrolledHandler(StateManager* manager, IGameState* state, GameObject
         row->Resize(row_size_vec);
         row->Move(sf::Vector2f(window_position.x - row->GetPosition().x,
                                row_pos.y - row_size_vec.y - row->GetPosition().y));
-        // UpdateRowSubRect(row.get(), object);
+        UpdateRowSubRect<Row>(row.get(), casted_object, row_size_vec);
         casted_object->AddChild(row, "afk");
         --casted_object->first_visible_row_;
     }
@@ -242,12 +245,11 @@ void OnMouseScrolledHandler(StateManager* manager, IGameState* state, GameObject
            delta < 0) {
         ++casted_object->first_visible_row_;
     }
-    std::cout << "new first visible " << casted_object->first_visible_row_ << "\n";
 
     while (last_updated_row < casted_object->data_.size() - 1 && delta < 0) {
         std::shared_ptr<GameObject> prev_row = casted_object->data_[last_updated_row];
         sf::Vector2f prev_row_pos = prev_row->GetPosition();
-        if (prev_row_pos.y + prev_row->GetSize().y >= window_y_borders.y) {
+        if (prev_row_pos.y + row_size_vec.y >= window_y_borders.y) {
             break;
         }
 
@@ -255,7 +257,7 @@ void OnMouseScrolledHandler(StateManager* manager, IGameState* state, GameObject
         row->Resize(row_size_vec);
         row->Move(sf::Vector2f(window_position.x - row->GetPosition().x,
                                prev_row_pos.y + row_size_vec.y - row->GetPosition().y));
-        // UpdateRowSubRect(row.get(), object);
+        UpdateRowSubRect<Row>(row.get(), casted_object, row_size_vec);
         casted_object->AddChild(row, "afk");
         ++last_updated_row;
     }

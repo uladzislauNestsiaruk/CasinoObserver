@@ -25,11 +25,11 @@ size_t ExtractTableId(const std::string& tag) {
     return atoll(tag.data() + strlen("screen"));
 }
 
-void BlackjackScreenHandler(StateManager* manager, IGameState* state, json& data) {
+void BlackjackScreenHandler(StateManager* manager, IGameState* state, GameObject* object, json& data) {
     manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["child_tag"])]);
 }
 
-void PokerScreenHandler(StateManager* manager, IGameState* state, json& data) {
+void PokerScreenHandler(StateManager* manager, IGameState* state, GameObject* object, json& data) {
     manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["child_tag"])]);
 }
 
@@ -49,8 +49,8 @@ void WorkRoomState::HandleEvent(const sf::Event& event) {
     }
 
     json event_data;
-    event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
-    event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
+    event_data["event"]["x"] = event.mouseButton.x;
+    event_data["event"]["y"] = event.mouseButton.y;
     event_data["event"]["type"] = event.type;
     objects_manager_.HandleEvent(this, event_data);
 }

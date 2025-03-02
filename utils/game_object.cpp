@@ -15,46 +15,47 @@
 #include "game_object.hpp"
 #include "json.hpp"
 
-void GameObject::Resize(sf::Vector2u size, sf::Vector2f scale, sf::Vector2f new_parent_size,
-                        sf::Vector2f new_parent_pos, sf::Vector2f parent_delta) {
-    sf::Vector2f old_pos = GetPosition();
+void GameObject::Resize(sf::Vector2f size, bool according_to_parent) {
     sf::Vector2f old_size = GetSize();
-    bool is_root = scale == sf::Vector2f(-1, -1);
+    sf::Vector2f position = GetPosition();
+    sf::Vector2f old_scale = scale_;
     for (auto& [tag, sprites] : phases_) {
         for (auto& sprite : sprites) {
-            if (!is_root) {
-                sprite.setPosition({new_parent_pos.x + parent_delta.x * new_parent_size.x,
-                                    new_parent_pos.y + parent_delta.y * new_parent_size.y});
+            if (!according_to_parent) {
+                scale_ = {static_cast<float>(size.x) / sprite.getTexture()->getSize().x,
+                          static_cast<float>(size.y) / sprite.getTexture()->getSize().y};
             } else {
-                scale = {static_cast<float>(size.x) / sprite.getTexture()->getSize().x,
-                         static_cast<float>(size.y) / sprite.getTexture()->getSize().y};
+                scale_ = {parent_->scale_.x * scale_.x, parent_->scale_.y * scale_.y};
             }
-            sprite.setScale({scale.x * scale_.x, scale.y * scale_.y});
+            sprite.setScale(scale_);
         }
     }
-    resized_ = true;
 
-    sf::Vector2f new_size = GetSize();
-    sf::Vector2f new_pos = GetPosition();
     for (auto& [phase, phased_children] : children_) {
         for (auto phased_child : phased_children) {
-            if (phased_child->resized_) {
-                continue;
-            }
-
-            sf::Vector2f delta = phased_child->GetPosition() - old_pos;
-            delta = {delta.x / old_size.x, delta.y / old_size.y};
-            phased_child->Resize(size, scale, new_size, new_pos, delta);
+            sf::Vector2f dist = phased_child->GetPosition() - position;
+            sf::Vector2f delta = {dist.x / old_size.x, dist.y / old_size.y};
+            sf::Vector2f offset = sf::Vector2f(position.x + delta.x * GetSize().x,
+                                               position.y + delta.y * GetSize().y) -
+                                  phased_child->GetPosition();
+            phased_child->MoveSprites(offset);
+            phased_child->Resize(size, true);
         }
     }
 }
 
-void GameObject::Move(sf::Vector2f offset) {
+void GameObject::MoveSprites(sf::Vector2f offset) {
     for (auto& phase_pair : phases_) {
         std::for_each(phase_pair.second.begin(), phase_pair.second.end(),
-                      [offset](sf::Sprite& sprite) { sprite.move(offset); });
+                      [offset, this](sf::Sprite& sprite) {
+                          sprite.move(offset);
+                      });
     }
-    for (auto& child_pair : children_) {
+}
+
+void GameObject::Move(sf::Vector2f offset) {
+    MoveSprites(offset);
+    for (auto child_pair : children_) {
         std::for_each(child_pair.second.begin(), child_pair.second.end(),
                       [offset](object_ptr child) { child->Move(offset); });
     }
@@ -66,6 +67,7 @@ void GameObject::Draw(sf::RenderWindow* window) {
     }
 
     active_sprite_ = std::min(phases_[active_phase_].size() - 1, active_sprite_ + 1);
+    phases_[active_phase_][active_sprite_].setTextureRect(visible_rect_);
     window->draw(phases_[active_phase_][active_sprite_]);
     if (active_sprite_ == phases_[active_phase_].size() - 1) {
         is_finished_current_phase_ = true;
@@ -77,15 +79,14 @@ void GameObject::Draw(sf::RenderWindow* window) {
 }
 
 void GameObject::RemoveChild(const std::string& phase_tag, const std::string& child_tag) {
-    for (size_t child_ind = 0; child_ind < children_.size(); child_ind++) {
+    for (size_t child_ind = 0; child_ind < children_[phase_tag].size(); child_ind++) {
         if (children_[phase_tag][child_ind]->tag_ == child_tag) {
-            children_[phase_tag][child_ind]->~GameObject();
             children_[phase_tag].erase(children_[phase_tag].begin() + child_ind);
             return;
         }
     }
 
-    for (auto& child_pair : children_) {
+    for (auto child_pair : children_) {
         std::for_each(
             child_pair.second.begin(), child_pair.second.end(),
             [phase_tag, child_tag](object_ptr child) { child->RemoveChild(phase_tag, child_tag); });
@@ -107,17 +108,17 @@ void GameObject::AddHandler(const sf::Event::EventType type, event_handler handl
 
 std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGameState* state,
                                                       nlohmann::json& data) {
-    sf::Vector2f point =
-        sf::Vector2f(data["event"]["mouse_button"]["x"], data["event"]["mouse_button"]["y"]);
-    for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0; ind--) {
+    sf::Vector2f point = sf::Vector2f(data["event"]["x"], data["event"]["y"]);
+    std::optional<std::string> handle_result;
+    for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0 && !handle_result.has_value();
+         ind--) {
         if (children_[active_phase_][ind]->Contains(point)) {
-            return children_[active_phase_][ind]->TriggerHandler(manager, state, data);
+            handle_result = children_[active_phase_][ind]->TriggerHandler(manager, state, data);
         }
     }
 
     if (Contains(point) && handlers_.contains(data["event"]["type"])) {
-        data["child_tag"] = tag_;
-        handlers_[data["event"]["type"]](manager, state, data);
+        handlers_[data["event"]["type"]](manager, state, this, data);
         return std::optional<std::string>(tag_);
     }
 
@@ -135,12 +136,14 @@ bool GameObject::Contains(sf::Vector2f point) noexcept {
 void GameObject::AddChild(object_ptr child, const std::optional<std::string>& phase) {
     if (!phase.has_value()) {
         for (auto& [tag, _] : phases_) {
+            child->parent_ = this;
             children_[tag].push_back(child);
         }
 
         return;
     }
 
+    child->parent_ = this;
     children_[phase.value()].push_back(child);
 }
 
@@ -215,4 +218,23 @@ void GameObject::ResetUnactivePhaseAnimations() {
             }
         }
     }
+}
+
+bool CorrectEvent(const nlohmann::json& data) noexcept {
+    if (!data.contains("event") || !data["event"].contains("type")) {
+        return false;
+    }
+
+    sf::Event::EventType event_type =
+        static_cast<sf::Event::EventType>(data["event"]["type"].template get<int32_t>());
+    if (event_type == sf::Event::MouseMoved || event_type == sf::Event::MouseButtonPressed ||
+        event_type == sf::Event::MouseButtonReleased) {
+        return data["event"].contains("x") && data["event"].contains("y");
+    }
+
+    if (event_type == sf::Event::MouseWheelScrolled) {
+        return data["event"].contains("delta");
+    }
+
+    return false;
 }

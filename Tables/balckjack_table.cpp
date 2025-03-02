@@ -213,15 +213,15 @@ void BlackjackTable::GameIteration() {
     }
     is_game_finished_.store(false);
     Dealing();
+    json event;
+    event["event"]["type"] = "change_phase";
+    event["new_phase"] = "players_dealing";
+    event["tag"] = "root";
+    event["delay"] = 2000;
 
-    render_queue_.push({{"event_type", "change_phase"},
-                        {"new_phase", "players_dealing"},
-                        {"tag", "root"},
-                        {"delay", 2000}});
-    render_queue_.push({{"event_type", "change_phase"},
-                        {"new_phase", "dealer_dealing"},
-                        {"tag", "root"},
-                        {"delay", 2000}});
+    render_queue_.push(event);
+    event["new_phase"] = "dealer_dealing";
+    render_queue_.push(event);
     while (hands_iterator_ != hands_.end()) {
         size_t current_player_score = GetBestPlayerScore(players_, *hands_iterator_);
         if (!hands_iterator_->bet || current_player_score >= 21) {

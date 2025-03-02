@@ -47,8 +47,8 @@ void PokerClose::HandleEvent(const sf::Event& event) {
     }
 
     json event_data;
-    event_data["event"]["mouse_button"]["x"] = event.mouseButton.x;
-    event_data["event"]["mouse_button"]["y"] = event.mouseButton.y;
+    event_data["event"]["x"] = event.mouseButton.x;
+    event_data["event"]["y"] = event.mouseButton.y;
     event_data["event"]["type"] = event.type;
     objects_manager_.HandleEvent(this, event_data);
 }

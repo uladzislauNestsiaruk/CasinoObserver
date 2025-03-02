@@ -85,7 +85,6 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
         [&objects_graph, &data, &dfs, &tags](std::string vertex,
                                              const sf::Rect<float>& parent_sprites_rect) {
             std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
-            std::array<float, 2> scale = GetJsonValue<std::array<float, 2>>(data[vertex], "scale");
             std::array<float, 2> coords =
                 GetJsonValue<std::array<float, 2>>(data[vertex], "coords");
 
@@ -94,7 +93,7 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             }
 
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>(
-                vertex, sf::Vector2f(scale[0], scale[1]), default_phase);
+                vertex, default_phase);
             tags[vertex] = object;
 
             sf::Vector2f pos = {
@@ -108,7 +107,6 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
                     sf::Sprite sprite(
                         GetTextute(GetJsonValue<std::string>(item.value(), "source")));
                     sprite.setPosition(pos);
-                    sprite.setScale(sf::Vector2f(scale[0], scale[1]));
                     object->AddPhase({std::move(sprite)}, item.key());
                 } else if (type == "animation") {
                     std::string source_dir = GetJsonValue<std::string>(item.value(), "source_dir");
@@ -118,7 +116,6 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
                     for (auto source : textures) {
                         sf::Sprite sprite(source.get());
                         sprite.setPosition(pos);
-                        sprite.setScale(sf::Vector2f(scale[0], scale[1]));
                         animation.push_back(std::move(sprite));
                     }
                     object->AddPhase(std::move(animation), item.key());

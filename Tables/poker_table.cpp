@@ -5,10 +5,9 @@
 namespace {
 constexpr uint32_t num_iterations = 1000;
 const std::array<std::string, 4> type_names = {"hearts", "clubs", "diamonds", "spades"};
-const std::array<std::string, 13> value_names = {
-    "two", "three", "four", "five", "six", "seven", "eight", 
-    "nine", "ten", "jack", "queen", "king", "ace"
-};
+const std::array<std::string, 13> value_names = {"two",   "three", "four", "five", "six",
+                                                 "seven", "eight", "nine", "ten",  "jack",
+                                                 "queen", "king",  "ace"};
 
 struct PokerComboInfo {
     int combo_id;
@@ -287,7 +286,7 @@ void PokerTable::DistributionPhase(std::string_view phase) {
         for (const std::string& card_id : {"first", "second", "third"}) {
             Card card = deck_.GetTopCard();
             json render_event;
-            render_event["event_type"] = "change_phase";
+            render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = GetPhaseByCard(card);
             render_event["tag"] = card_id + "_central_card";
             render_event["delay"] = 0;
@@ -298,7 +297,7 @@ void PokerTable::DistributionPhase(std::string_view phase) {
     } else {
         Card card = deck_.GetTopCard();
         json render_event;
-        render_event["event_type"] = "change_phase";
+        render_event["event"]["type"] = "change_phase";
         render_event["new_phase"] = GetPhaseByCard(card);
         render_event["tag"] = (phase == "turn" ? "fourth_central_card" : "fivth_central_card");
         render_event["delay"] = 0;
@@ -416,13 +415,14 @@ void PokerTable::GameIteration() {
         return;
     }
 
-    for (const auto& [phase, part] : std::vector<std::pair<std::string, int>>{{"preflop", 1}, {"flop", 3}, {"turn", 2}, {"river", 2}}) {
+    for (const auto& [phase, part] : std::vector<std::pair<std::string, int>>{
+             {"preflop", 1}, {"flop", 3}, {"turn", 2}, {"river", 2}}) {
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
         for (size_t i = 1; i <= part; ++i) {
             json render_event;
-            render_event["event_type"] = "change_phase";
+            render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = phase + "_" + std::to_string(i);
             render_event["tag"] = "root";
             render_event["delay"] = (i == 1 ? default_antimation_end_delay : default_delay);

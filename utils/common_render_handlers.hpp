@@ -7,7 +7,7 @@
 #include <render_events_manager.hpp>
 
 struct CommonGOEventHandlers {
-    static void ReturnButtonHandler(StateManager* manager, IGameState* state, nlohmann::json& data);
+    static DEFINE_GOHANDLER(ReturnButtonHandler);
 };
 
 struct CommonREMEventHandlers {

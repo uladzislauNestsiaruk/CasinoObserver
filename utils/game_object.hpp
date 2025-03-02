@@ -1,13 +1,16 @@
 #pragma once
 
+#include <algorithm>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "../GameStates/state_manager.h"
+#include "SFML/Graphics/Rect.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Clock.hpp"
@@ -16,7 +19,7 @@
 #include "json.hpp"
 
 #define DEFINE_GOHANDLER(NAME)                                                                     \
-    void NAME(StateManager& manager, IGameState* state, const nlohmann::json& data);
+    void NAME(StateManager* manager, IGameState* state, GameObject* object, json& data);
 
 using nlohmann::json;
 
@@ -24,12 +27,22 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
     using object_ptr = std::shared_ptr<GameObject>;
 
 public:
-    using event_handler = void (*)(StateManager* manager, IGameState* state, json& data);
+    using event_handler = void (*)(StateManager* manager, IGameState* state, GameObject* object,
+                                   json& data);
 
     GameObject() = delete;
 
-    explicit GameObject(const std::string& tag, sf::Vector2f scale, std::string default_phase)
-        : tag_(tag), scale_(scale), active_phase_(default_phase) {}
+    GameObject(const std::string& tag, const std::string& default_phase)
+        : tag_(tag), scale_(1, 1), active_phase_(default_phase) {}
+
+    GameObject(const std::string& tag, const std::string& default_phase,
+               std::vector<sf::Sprite>&& sprite)
+        : GameObject(tag, default_phase) {
+        if (!sprite.empty()) {
+            visible_rect_ = sprite[0].getTextureRect();
+        }
+        phases_[default_phase] = {std::move(sprite)};
+    }
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
         phases_[phase] = {std::move(sprite)};
@@ -45,13 +58,19 @@ public:
     std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state,
                                               nlohmann::json& data);
 
-    void Resize(sf::Vector2u size, sf::Vector2f scale = {-1, -1},
-                sf::Vector2f new_parent_size = {1, 1}, sf::Vector2f new_parent_pos = {0, 0},
-                sf::Vector2f parent_delta = {1, 1});
+    void Resize(sf::Vector2f size, bool according_to_parent = false);
+
+    void SetVisibleRect(sf::IntRect visible_rect) { visible_rect_ = visible_rect; }
+
+    sf::IntRect GetVisibleRect() { return visible_rect_; }
 
     sf::Vector2f GetPosition() const;
 
     sf::Vector2f GetSize() const;
+
+    const std::string GetTag() const { return tag_; }
+
+    sf::Vector2f GetScale() const { return scale_; }
 
     void Move(sf::Vector2f offset);
 
@@ -61,17 +80,23 @@ public:
 
     bool TryUpdatePhase(const std::string&, uint64_t delay);
 
+    virtual ~GameObject() {}
+
 private:
     void ResetUnactivePhaseAnimations();
 
+    void MoveSprites(sf::Vector2f);
+
 private:
     std::string tag_;
-    sf::Vector2f scale_;
     bool resized_ = false;
+    sf::Vector2f scale_;
+    sf::IntRect visible_rect_;
 
     std::unordered_map<sf::Event::EventType, event_handler> handlers_;
     std::unordered_map<std::string, std::vector<object_ptr>> children_;
     std::unordered_map<std::string, std::vector<sf::Sprite>> phases_;
+    GameObject* parent_ = nullptr;
 
     size_t active_sprite_ = 0;
     bool is_finished_current_phase_ = false;
@@ -81,3 +106,5 @@ private:
 
     bool Contains(sf::Vector2f point) noexcept;
 };
+
+bool CorrectEvent(const nlohmann::json& data) noexcept;

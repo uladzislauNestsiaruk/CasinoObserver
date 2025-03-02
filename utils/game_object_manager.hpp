@@ -35,4 +35,5 @@ private:
     std::vector<size_t> priority_;
 
     std::array<std::vector<size_t>, kMaxPriority> GetOrder();
+    void UpdateObjectPriority(size_t object_ind, size_t new_priority);
 };

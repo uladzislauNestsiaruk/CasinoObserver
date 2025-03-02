@@ -25,7 +25,8 @@ public:
     void HandleEvent() {
         while (!render_queue_.empty() || current_render_event_ != std::nullopt) {
             if (current_render_event_ != std::nullopt) {
-                if(!TryHandle(current_render_event_.value()["event_type"], current_render_event_.value())) {
+                if (!TryHandle(current_render_event_.value()["event"]["type"],
+                               current_render_event_.value())) {
                     break;
                 }
 

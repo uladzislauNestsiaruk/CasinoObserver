@@ -1,8 +1,10 @@
+#include <algorithm>
 #include <array>
 #include <iostream>
 #include <memory>
 #include <optional>
 #include <stdexcept>
+#include <string>
 #include <string_view>
 
 #include "SFML/Graphics/RenderWindow.hpp"
@@ -54,19 +56,46 @@ std::shared_ptr<GameObject> GEManager::FindObjectByTag(const std::string& tag) c
     return nullptr;
 }
 
-void GEManager::HandleEvent(IGameState* state, nlohmann::json& event_data) {
+void GEManager::UpdateObjectPriority(size_t object_ind, size_t new_priority) {
+    priority_[object_ind] = new_priority;
     auto handle_order = GetOrder();
-    for (int32_t priority = kMaxPriority - 1; priority >= 0; priority--) {
-        std::optional<std::string> handled;
+    size_t min_priority = 0;
+
+    for (size_t priority = 0; priority < kMaxPriority; priority++) {
+        if (handle_order[priority].empty()) {
+            continue;
+        }
+        if (priority == min_priority) {
+            ++min_priority;
+            continue;
+        }
+        std::for_each(handle_order[priority].begin(), handle_order[priority].end(),
+                      [this, min_priority](size_t ind) { priority_[ind] = min_priority; });
+        ++min_priority;
+    }
+}
+
+void GEManager::HandleEvent(IGameState* state, nlohmann::json& event_data) {
+    if (!CorrectEvent(event_data)) {
+        return;
+    }
+
+    auto handle_order = GetOrder();
+    std::optional<std::string> handled_tag;
+    size_t handled_ind;
+    for (int32_t priority = kMaxPriority - 1; priority >= 0 && !handled_tag.has_value();
+         priority--) {
         for (size_t ind : handle_order[priority]) {
-            handled = objects_[ind]->TriggerHandler(&StateManager::Instance(), state, event_data);
-            if (handled.has_value()) {
+            handled_tag =
+                objects_[ind]->TriggerHandler(&StateManager::Instance(), state, event_data);
+            if (handled_tag.has_value()) {
+                handled_ind = ind;
                 break;
             }
         }
+    }
 
-        if (handled.has_value()) {
-            break;
-        }
+    if (handled_tag.has_value()) {
+        UpdateObjectPriority(handled_ind, kMaxPriority - 1);
     }
 }

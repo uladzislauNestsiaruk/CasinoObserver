@@ -44,7 +44,7 @@ public:
 
     void DrawSprite(const sf::Sprite& sprite) { game_window_.draw(sprite); }
 
-    sf::Vector2u GetWindowSize() { return game_window_.getSize(); }
+    sf::Vector2f GetWindowSize() { return static_cast<sf::Vector2f>(game_window_.getSize()); }
 
     sf::RenderWindow* GetOriginWindow() { return &game_window_; }
 

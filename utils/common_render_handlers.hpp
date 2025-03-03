@@ -5,10 +5,16 @@
 #include <render_events_manager.hpp>
 
 struct CommonGOEventHandlers {
-    static void ReturnButtonHandler(StateManager* manager, IGameState* state, GameObject* object, nlohmann::json& data);
-    static void BanButtonHandler(StateManager* manager, IGameState* state, GameObject* object, nlohmann::json& data);
-    static void SelectButtonHandler(StateManager* manager, IGameState* state, GameObject* object, nlohmann::json& data);
-    static void DealButtonHandler(StateManager* manager, IGameState* state, GameObject* object, nlohmann::json& data);
+    static void ReturnButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
+                                    nlohmann::json& data);
+    static void BanButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
+                                 nlohmann::json& data);
+    static void SelectButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
+                                    nlohmann::json& data);
+    static void DealButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
+                                  nlohmann::json& data);
+    static void PlayerHandler(StateManager* manager, IGameState* state, GameObject* object,
+                              const json& data);
 };
 
 struct CommonREMEventHandlers {

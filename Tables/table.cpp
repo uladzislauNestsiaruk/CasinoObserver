@@ -7,6 +7,9 @@ void AbstractTable::AddPlayer(std::shared_ptr<IGambler> player) {
                         {"new_phase", "afk"},
                         {"tag", player->GetPersonTag()},
                         {"delay", 0}});
+    // render_queue_.push({{"event_type", "add_handler"},
+    //                     {"new_phase", "afk"},
+    //                     {"tag", player->GetPersonTag()}});
 }
 
 void AbstractTable::RemovePlayer(size_t ind) {

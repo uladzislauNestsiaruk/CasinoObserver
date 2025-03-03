@@ -34,17 +34,37 @@ void CommonGOEventHandlers::SelectButtonHandler(StateManager* manager, IGameStat
     deal_button_object->TryUpdatePhase("afk", delay);
 }
 
+
 void CommonGOEventHandlers::BanButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                             nlohmann::json& data) {
-    std::cout << "Ban!\n";
+                                             const json& data) {
+    std::shared_ptr<GameObject> ban_button_object =
+        static_cast<AbstractGameState*>(state)->FindGameObjectByTag("ban_button");
+
+    uint64_t delay = 0;
+    if (data.contains("delay")) {
+        delay = data["delay"].template get<uint64_t>();
+    }
+
+    if (ban_button_object->TryUpdatePhase("pressed", delay)) {
+        // позже вынести общее двух столов в AbstractTableState и поменять здесь каст
+        static_cast<PokerClose*>(state)->SetIsBanPressed(true);
+    }
 }
 
 void CommonGOEventHandlers::DealButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                              nlohmann::json& data) {
+                                              const json& data) {
     std::cout << "Deal!\n";
 }
 
-bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* render_manager, 
+void CommonGOEventHandlers::PlayerHandler(StateManager* manager, IGameState* state, GameObject* object, 
+                                          const json& data) {
+    bool is_ban_pressed = static_cast<PokerClose*>(state)->GetIsBanPressed();
+    //     if (is_ban_pressed) {
+
+    //     }
+}
+
+bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* render_manager,
                                                 const json& data) {
     std::shared_ptr<GameObject> target_object =
         static_cast<const AbstractGameState*>(render_manager->GetState())

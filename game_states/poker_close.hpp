@@ -14,6 +14,7 @@ using json = nlohmann::json;
 
 class PokerClose : public AbstractGameState {
     static const std::string kPokerCloseGameObjects;
+
 public:
     explicit PokerClose(StateManager* manager);
 
@@ -23,10 +24,16 @@ public:
 
     ~PokerClose() override;
 
+    void SetIsBanPressed(bool value) { is_ban_pressed_ = value; }
+
+    bool GetIsBanPressed() const { return is_ban_pressed_; }
+
 private:
     void GameExecutor();
 
 private:
+    bool is_ban_pressed_ = false;
+
     std::atomic<bool> stop_game_thread_;
     std::atomic<bool> run_game_;
     std::thread game_exec_thr_;

@@ -37,6 +37,8 @@ private:
 
     void SelectWinners();
 
+    void RollbackGame();
+
 private:
     size_t active_players_ = 0; // Number of players which can make bets
     size_t all_in_players_ = 0; // Number of players which are all in
@@ -50,7 +52,6 @@ private:
         size_t num_raises = 0;
     };
 
-    Deck deck_;
     std::vector<Card> table_cards_;
 
     std::vector<BetState> bets_;
@@ -62,4 +63,5 @@ private:
     size_t big_blind_;
 
     TSQueue<json>& logs_;
+    std::queue<json> rollback_logs_;
 };

@@ -40,7 +40,6 @@ public:
     bool IsGameFinished() const override;
 
 private:
-    Deck deck_;
     std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;
     std::list<Hand>::iterator hands_iterator_;

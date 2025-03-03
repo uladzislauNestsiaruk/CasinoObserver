@@ -4,6 +4,8 @@
 #include <utility>
 
 #include "blackjack_table.hpp"
+#include "common.hpp"
+#include "constants.hpp"
 
 // cards through 2 to 10 rate as their face value
 // J Q K = 10
@@ -148,6 +150,12 @@ void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json& log) {
     log["doubled"];
 
     SplitAction(table, hand, log);
+}
+
+BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
+    : AbstractTable(GameType::Blackjack, render_queue), deck_(true), is_game_finished_(true),
+      hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
+    GenPlayers(get_random_number(2, kGamblersPlaces), kGamblersPlaces - 1, GameType::Blackjack);
 }
 
 bool BlackjackTable::IsGameFinished() const { return is_game_finished_.load(); }

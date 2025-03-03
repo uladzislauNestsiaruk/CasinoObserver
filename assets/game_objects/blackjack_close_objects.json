@@ -33,5 +33,69 @@
         },
         "coords" : [0.01, 0.01],
         "scale" : [1.0, 1.0]
-    }
+    },
+    "select_button": {
+        "default_phase": "afk",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_select_button"
+            },
+            "empty": {
+                "type": "image",
+                "source": "ui_buttons_empty_select_button"
+            }
+        },
+        "coords": [
+            0.89,
+            0.01
+        ],
+        "scale": [0.13, 0.13]
+    },
+    "ban_button": {
+        "default_phase": "empty",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_ban_button"
+            },
+            "pressed": {
+                "type": "image",
+                "source": "ui_buttons_ban_pressed_button"
+            },
+            "empty": {
+                "type": "image",
+                "source": "ui_buttons_empty_select_button"
+            }
+        },
+        "coords": [
+            0.89,
+            0.01
+        ],
+        "scale": [0.13, 0.13]
+    },
+    "deal_button": {
+        "default_phase": "empty",
+        "parent": "root",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "ui_buttons_deal_button"
+            },
+            "empty": {
+                "type": "image",
+                "source": "ui_buttons_empty_select_button"
+            }
+        },
+        "coords": [
+            0.75,
+            0.01
+        ],
+        "scale": [0.13, 0.13]
+    },
+    "__extend__": [
+        "./assets/game_objects/utils/gamblers_phases.json"
+    ]
 }

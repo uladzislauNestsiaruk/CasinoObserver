@@ -182,23 +182,7 @@ PokerTable::PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
       small_blind_(50), big_blind_(min_bet_), logs_(logs) {
 
     occupied_places_.fill(false);
-    AddPlayers(get_random_number(2, 6));
-}
-
-void PokerTable::AddPlayers(uint8_t num_players, uint16_t left_money_bound,
-                            uint16_t right_money_bound) {
-    for (size_t i = 0; i < num_players; ++i) {
-        uint8_t place;
-        do {
-            place = get_random_number(0, 5);
-        } while (occupied_places_[place]);
-
-        std::string person_tag =
-            kGamblersPlaces[place][get_random_number(0, kGamblersPlaces[place].size() - 1)];
-        AddPlayer(std::make_shared<HumbleGambler>(
-            false, place, GameType::Poker, 0,
-            get_random_number(left_money_bound, right_money_bound), person_tag));
-    }
+    GenPlayers(get_random_number(2, 6), kGamblersPlaces - 1, GameType::Poker);
 }
 
 void PokerTable::MakeBet(size_t amount, size_t player_ind) {
@@ -446,7 +430,7 @@ void PokerTable::GameIteration() {
     if (active_players_ < 2) {
         assert(active_players_ != 0);
         Clean();
-        AddPlayers(get_random_number(1, 6 - players_.size()));
+        GenPlayers(get_random_number(1, 6 - players_.size()), kGamblersPlaces - 1, GameType::Poker);
         return;
     }
 

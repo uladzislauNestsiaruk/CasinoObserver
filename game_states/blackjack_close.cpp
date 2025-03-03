@@ -23,8 +23,15 @@ BlackjackClose::BlackjackClose(StateManager* manager)
     table_ = std::make_unique<BlackjackTable>(logs_, render_events_manager_.GetRenderQueue());
     std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
     root_game_object_->Resize(manager->GetWindowSize());
+
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
                                   CommonGOEventHandlers::ReturnButtonHandler, "return_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::SelectButtonHandler, "select_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::DealButtonHandler, "deal_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::BanButtonHandler, "ban_button");
 
     render_events_manager_.AddHandler("change_phase", CommonREMEventHandlers::ChangePhaseHandler);
 }

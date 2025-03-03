@@ -80,6 +80,10 @@ public:
 
     sf::Vector2f GetScale() const { return scale_; }
 
+    void SetProportion(sf::Vector2f init_scale) {
+        init_scale_ = init_scale;
+    }
+
     const std::string& GetActivePhase() const { return active_phase_; }
 
     void Move(sf::Vector2f offset);

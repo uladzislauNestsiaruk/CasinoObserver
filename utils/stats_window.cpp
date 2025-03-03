@@ -1,5 +1,6 @@
 #include "stats_window.hpp"
 #include "SFML/Graphics/Rect.hpp"
+#include "SFML/System/Vector2.hpp"
 #include "game_object.hpp"
 
 DEFINE_GOHANDLER(OnMouseMoveHandler);
@@ -22,19 +23,17 @@ StatsWindow::StatsWindow(const std::string& sprite_code, size_t window_id)
 
 void StatsWindow::AddRow(std::shared_ptr<BasicRow> row) {
     row->Resize(GetRowSizeVec());
+    row->SetProportion(row->GetScale());
     row->Move(sf::Vector2f(GetPosition().x - row->GetPosition().x, 0));
     data_.emplace_back(row);
 
     if (data_.size() <= visible_rows_) {
         AddChild(row, "afk");
         InitRowPos(data_.size() - 1);
+        first_visible_row_y_ = fmin(first_visible_row_y_, row->GetPosition().y);
     } else {
         row->Move(sf::Vector2f(-1, 0));
     }
-    std::cout << row->GetTag() << "\n";
-    std::cout << "Window position: " << GetPosition().x << " " << GetPosition().y << "\n";
-    std::cout << "row size: " << row->GetSize().y << "\n";
-    std::cout << "row position "<< row->GetPosition().x << " " << row->GetPosition().y << "\n";
 }
 
 DEFINE_GOHANDLER(OnMousePressedHandler) {
@@ -50,7 +49,7 @@ DEFINE_GOHANDLER(OnMouseReleasedHandler) {
     casted_object->mouse_pressed_cords_ = sf::Vector2f(0, 0);
 }
 
-DEFINE_GOHANDLER(OnMouseMoveHandler){
+DEFINE_GOHANDLER(OnMouseMoveHandler) {
     StatsWindow* casted_object = static_cast<StatsWindow*>(object);
     if (!casted_object->mouse_pressed_) {
         return;
@@ -60,6 +59,7 @@ DEFINE_GOHANDLER(OnMouseMoveHandler){
                                                data["event"]["y"].template get<float>());
 
     object->Move(mouse_position - casted_object->mouse_pressed_cords_);
+    casted_object->first_visible_row_y_ += mouse_position.y - casted_object->mouse_pressed_cords_.y;
     casted_object->mouse_pressed_cords_ = mouse_position;
 }
 
@@ -95,12 +95,10 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
     sf::Vector2f row_size_vec = casted_object->GetRowSizeVec();
 
     float delta = data["event"]["delta"].get<float>();
-    float max_delta = window_y_borders.x -
-                      casted_object->data_[casted_object->first_visible_row_]->GetPosition().y +
+    float max_delta = window_y_borders.x - casted_object->first_visible_row_y_ +
                       casted_object->first_visible_row_ * row_size_vec.y;
     float min_delta =
-        window_y_borders.y -
-        casted_object->data_[casted_object->first_visible_row_]->GetPosition().y -
+        window_y_borders.y - casted_object->first_visible_row_y_ -
         row_size_vec.y * (casted_object->data_.size() - casted_object->first_visible_row_);
     delta = fmin(delta, max_delta);
     delta = fmax(delta, min_delta);
@@ -108,6 +106,9 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
     if (delta == 0) {
         return;
     }
+    casted_object->data_[casted_object->first_visible_row_]->Move(sf::Vector2f(
+        0, casted_object->first_visible_row_y_ -
+               casted_object->data_[casted_object->first_visible_row_]->GetPosition().y));
 
     size_t last_updated_row = 0;
     for (size_t ind = casted_object->first_visible_row_; ind < casted_object->data_.size(); ind++) {
@@ -151,6 +152,7 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
            delta < 0) {
         ++casted_object->first_visible_row_;
     }
+    int32_t first_visible_row = casted_object->first_visible_row_;
 
     while (last_updated_row < casted_object->data_.size() - 1 && delta < 0) {
         std::shared_ptr<GameObject> prev_row = casted_object->data_[last_updated_row];
@@ -168,4 +170,8 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
         casted_object->AddChild(row, "afk");
         ++last_updated_row;
     }
+
+    casted_object->first_visible_row_y_ = casted_object->data_[first_visible_row]->GetPosition().y;
+    casted_object->data_[first_visible_row]->Move(
+        sf::Vector2f(0, window_y_borders.x - casted_object->first_visible_row_y_));
 }

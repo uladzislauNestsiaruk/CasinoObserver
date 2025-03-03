@@ -13,6 +13,7 @@
 using json = nlohmann::json;
 
 class PokerTable : public AbstractTable {
+    static constexpr size_t kGamblersPlaces = 6;
 public:
     PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue);
 
@@ -23,8 +24,6 @@ public:
     void Clean() override;
 
 private:
-    void AddPlayers(uint8_t num_players, uint16_t left_money_bound = 100,
-                    uint16_t right_money_bound = 500);
 
     void Dealing() override;
 

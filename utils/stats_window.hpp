@@ -34,6 +34,7 @@ private:
 
 class DefaultRow : public BasicRow {
     static const std::string kBackgroundSpriteTag;
+
 public:
     explicit DefaultRow(size_t row_id) : BasicRow(kBackgroundSpriteTag, row_id) {}
 
@@ -43,7 +44,6 @@ public:
 
 private:
 };
-
 
 class StatsWindow : public GameObject {
     static constexpr char kTagPrefix[] = "stats_window";
@@ -58,7 +58,7 @@ public:
 
     explicit StatsWindow(const std::string& sprite_code, size_t window_id);
 
-    void AddRow(std::shared_ptr<BasicRow> row); 
+    void AddRow(std::shared_ptr<BasicRow> row);
 
     sf::Vector2f GetYBorders() {
         return sf::Vector2f(GetPosition().y + GetSize().y * vert_padding.x,
@@ -87,4 +87,5 @@ private:
 
     size_t visible_rows_ = 10;
     sf::Vector2f vert_padding = {0.03, 0.98};
+    float first_visible_row_y_ = INT16_MAX;
 };

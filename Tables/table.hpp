@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -8,6 +9,7 @@
 
 #include "../gamblers/gambler.hpp"
 #include "SFML/System/Time.hpp"
+#include "constants.hpp"
 
 using nlohmann::json;
 
@@ -42,6 +44,9 @@ public:
     void AddPlayer(std::shared_ptr<IGambler> player) override;
 
     void RemovePlayer(size_t ind) override;
+
+    void GenPlayers(uint8_t num_players, uint8_t max_places, GameType type,
+                    uint16_t left_money_bound = 100, uint16_t right_money_bound = 500);
 
     virtual void Clean() = 0;
 

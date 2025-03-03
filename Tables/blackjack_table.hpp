@@ -24,21 +24,14 @@ struct Hand {
 // Player by zero index is always a dealer
 // Also whose_move iterating through hands, not players!!!
 class BlackjackTable : public AbstractTable {
-    size_t max_players_amount_ = 6;
+    static constexpr size_t kGamblersPlaces = 4;
     struct TableSetting {
         size_t min_bet;
         bool das; // is double after split enabled
     };
 
 public:
-    BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-        : AbstractTable(GameType::Blackjack, render_queue), deck_(true), is_game_finished_(true),
-          hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
-        AddPlayer(
-            std::make_shared<HumbleGambler>(0, 0, GameType::Blackjack, false, 1000, "dummy_tag"));
-        AddPlayer(
-            std::make_shared<HumbleGambler>(0, 1, GameType::Blackjack, false, 2000, "dummy_tag"));
-    }
+    BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue);
 
     void GameIteration() override;
 

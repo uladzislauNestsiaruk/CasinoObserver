@@ -128,7 +128,7 @@ constexpr size_t default_delay = 50;
 constexpr size_t default_antimation_end_delay = 2000;
 
 // Poker places game object names
-const std::array<std::vector<std::string>, 6> gamblers_places = {
+const std::array<std::vector<std::string>, 6> kGamblersPlaces = {
     {{"first_place_woman1_1", "first_place_woman3_2", "first_place_woman1_2",
       "first_place_woman3_1", "first_place_man2_1", "first_place_man2_2", "first_place_woman2_1",
       "first_place_man1_1", "first_place_man3_2", "first_place_man1_2", "first_place_man3_1",

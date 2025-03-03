@@ -30,6 +30,6 @@ private:
 
     mutable size_t total_tables = 12;
 
-    friend void BlackjackScreenHandler(StateManager* manager, IGameState* state, json& data);
-    friend void PokerScreenHandler(StateManager* manager, IGameState* state, json& data);
+    friend void BlackjackScreenHandler(StateManager* manager, IGameState* state, const json& data);
+    friend void PokerScreenHandler(StateManager* manager, IGameState* state, const json& data);
 };

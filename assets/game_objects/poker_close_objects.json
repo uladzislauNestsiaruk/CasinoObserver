@@ -87,6 +87,10 @@
                 "type": "image",
                 "source": "ui_buttons_ban_button"
             },
+            "pressed": {
+                "type": "image",
+                "source": "ui_buttons_ban_pressed_button"
+            },
             "empty": {
                 "type": "image",
                 "source": "ui_buttons_empty_select_button"

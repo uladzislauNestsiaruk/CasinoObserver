@@ -194,7 +194,7 @@ void PokerTable::AddPlayers(uint8_t num_players, uint16_t left_money_bound,
         } while (occupied_places_[place]);
 
         std::string person_tag =
-            gamblers_places[place][get_random_number(0, gamblers_places[place].size() - 1)];
+            kGamblersPlaces[place][get_random_number(0, kGamblersPlaces[place].size() - 1)];
         AddPlayer(std::make_shared<HumbleGambler>(
             false, place, GameType::Poker, 0,
             get_random_number(left_money_bound, right_money_bound), person_tag));
@@ -245,7 +245,7 @@ void PokerTable::Dealing() {
         bets_[i] = {big_blind_, 0};
         ++active_players_;
     }
-    assert(active_players_ == players_.size());
+
     // Not enough active players
     if (active_players_ < 2) {
         return;

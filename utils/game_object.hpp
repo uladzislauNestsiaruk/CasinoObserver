@@ -24,7 +24,7 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
     using object_ptr = std::shared_ptr<GameObject>;
 
 public:
-    using event_handler = void (*)(StateManager* manager, IGameState* state, json& data);
+    using event_handler = void (*)(StateManager* manager, IGameState* state, const json& data);
 
     GameObject() = delete;
 

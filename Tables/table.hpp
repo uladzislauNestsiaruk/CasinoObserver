@@ -15,6 +15,8 @@ class ITable {
 public:
     virtual ~ITable() {}
 
+    virtual const std::vector<std::shared_ptr<IGambler>>& GetPlayers() const = 0;
+
     virtual void AddPlayer(std::shared_ptr<IGambler> player) = 0;
 
     virtual void RemovePlayer(size_t ind) = 0;
@@ -34,6 +36,8 @@ public:
 
     explicit AbstractTable(GameType table_type, TSQueue<json>& render_queue)
         : whose_move_{0}, render_queue_(render_queue) {}
+
+    const std::vector<std::shared_ptr<IGambler>>& GetPlayers() const override { return players_; }
 
     void AddPlayer(std::shared_ptr<IGambler> player) override;
 

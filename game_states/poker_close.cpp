@@ -5,6 +5,7 @@
 #include "poker_close.hpp"
 #include "state_manager.hpp"
 #include <common_render_handlers.hpp>
+#include <constants.hpp>
 #include <game_object.hpp>
 #include <textures_loader.hpp>
 
@@ -19,6 +20,13 @@ PokerClose::PokerClose(StateManager* manager)
     table_ = std::make_unique<PokerTable>(logs_, render_events_manager_.GetRenderQueue());
     std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
     root_game_object_->Resize(manager->GetWindowSize());
+    // for (const auto& place : kGamblersPlaces) {
+    //     for (const auto& tag : place) {
+    //         root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+    //         CommonGOEventHandlers::PlayerHandler, tag);
+    //     }
+    // }
+
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
                                   CommonGOEventHandlers::ReturnButtonHandler, "return_button");
     root_game_object_->AddHandler(sf::Event::MouseButtonPressed,

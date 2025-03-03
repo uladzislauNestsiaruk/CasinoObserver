@@ -1,5 +1,6 @@
 #include "stats_window.hpp"
 #include "SFML/Graphics/Rect.hpp"
+#include "game_object.hpp"
 
 DEFINE_GOHANDLER(OnMouseMoveHandler);
 DEFINE_GOHANDLER(OnMousePressedHandler);
@@ -36,23 +37,20 @@ void StatsWindow::AddRow(std::shared_ptr<BasicRow> row) {
     std::cout << "row position "<< row->GetPosition().x << " " << row->GetPosition().y << "\n";
 }
 
-void OnMousePressedHandler(StateManager* manager, IGameState* state, GameObject* object,
-                           nlohmann::json& data) {
+DEFINE_GOHANDLER(OnMousePressedHandler) {
     StatsWindow* casted_object = static_cast<StatsWindow*>(object);
     casted_object->mouse_pressed_ = true;
     casted_object->mouse_pressed_cords_ = sf::Vector2f(data["event"]["x"].template get<float>(),
                                                        data["event"]["y"].template get<float>());
 }
 
-void OnMouseReleasedHandler(StateManager* manager, IGameState* state, GameObject* object,
-                            nlohmann::json& data) {
+DEFINE_GOHANDLER(OnMouseReleasedHandler) {
     StatsWindow* casted_object = static_cast<StatsWindow*>(object);
     casted_object->mouse_pressed_ = false;
     casted_object->mouse_pressed_cords_ = sf::Vector2f(0, 0);
 }
 
-void OnMouseMoveHandler(StateManager* manager, IGameState* state, GameObject* object,
-                        nlohmann::json& data) {
+DEFINE_GOHANDLER(OnMouseMoveHandler){
     StatsWindow* casted_object = static_cast<StatsWindow*>(object);
     if (!casted_object->mouse_pressed_) {
         return;
@@ -78,8 +76,7 @@ void UpdateRowSubRect(BasicRow* row, StatsWindow* stats_window, sf::Vector2f row
     row->SetVisibleRect(original_row_rect);
 }
 
-void OnMouseScrolledHandler(StateManager* manager, IGameState* state, GameObject* object,
-                            nlohmann::json& data) {
+DEFINE_GOHANDLER(OnMouseScrolledHandler) {
     // check is scroll event tagged on right wheel, without it some strange stuff can happen
     // on touchpads
     if (!data["event"].contains("wheel_id") || data["event"]["wheel_id"].get<int32_t>()) {

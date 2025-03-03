@@ -26,11 +26,11 @@ size_t ExtractTableId(const std::string& tag) {
     return atoll(tag.data() + strlen("screen"));
 }
 
-void BlackjackScreenHandler(StateManager* manager, IGameState* state, GameObject* object, json& data) {
+DEFINE_GOHANDLER(BlackjackScreenHandler) {
     manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["tag"])]);
 }
 
-void PokerScreenHandler(StateManager* manager, IGameState* state, GameObject* object, json& data) {
+DEFINE_GOHANDLER(PokerScreenHandler) {
     manager->Push(dynamic_cast<WorkRoomState*>(state)->tables_[ExtractTableId(data["tag"])]);
 }
 

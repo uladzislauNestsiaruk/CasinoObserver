@@ -20,7 +20,8 @@
 #include "json.hpp"
 
 #define DEFINE_GOHANDLER(NAME)                                                                     \
-    void NAME(StateManager* manager, IGameState* state, GameObject* object, json& data);
+    void NAME(StateManager* manager, IGameState* state, GameObject* object, const json& data)
+
 
 using nlohmann::json;
 
@@ -29,7 +30,7 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
 
 public:
     using event_handler = void (*)(StateManager* manager, IGameState* state, GameObject* object,
-                                   json& data);
+                                   const json& data);
 
     GameObject() = delete;
 

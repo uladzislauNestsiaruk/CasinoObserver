@@ -8,12 +8,12 @@
 #include <render_events_manager.hpp>
 
 void CommonGOEventHandlers::ReturnButtonHandler(StateManager* manager, IGameState* state,
-                                                GameObject* object, nlohmann::json& data) {
+                                                GameObject* object, const nlohmann::json& data) {
     manager->Pop();
 }
 
 void CommonGOEventHandlers::SelectButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                                nlohmann::json& data) {
+                                                const nlohmann::json& data) {
     std::shared_ptr<GameObject> select_button_object =
         static_cast<AbstractGameState*>(state)->FindGameObjectByTag("select_button");
     std::shared_ptr<GameObject> ban_button_object =

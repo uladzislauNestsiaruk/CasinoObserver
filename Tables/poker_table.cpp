@@ -2,6 +2,7 @@
 #include <common.hpp>
 #include <constants.hpp>
 #include <cstdint>
+#include <iostream>
 
 namespace {
 constexpr uint32_t num_iterations = 400;
@@ -178,8 +179,8 @@ std::string GetPhaseByCard(Card card) {
 } // namespace
 
 PokerTable::PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-    : AbstractTable(GameType::Poker, render_queue), deck_(true), min_bet_(100), min_raise_(50),
-      small_blind_(50), big_blind_(min_bet_), logs_(logs) {
+    : AbstractTable(GameType::Poker, render_queue), min_bet_(100), min_raise_(50), small_blind_(50),
+      big_blind_(min_bet_), logs_(logs) {
 
     occupied_places_.fill(false);
     AddPlayers(get_random_number(2, 6));
@@ -212,7 +213,8 @@ void PokerTable::MakeBet(size_t amount, size_t player_ind) {
 
 void PokerTable::ApplyBets() {
     for (size_t i = 0; i < players_.size(); ++i) {
-        if (players_[i]->GetGameStatus()) {
+        if (bets_[i].amount > 0) {
+            rollback_logs_.push({{"player_id", i}, {"amount", bets_[i].amount}});
             MakeBet(bets_[i].amount, i);
         }
     }
@@ -339,6 +341,10 @@ void PokerTable::BettingPhase() {
     for (size_t ind = 0;
          bets_[ind].amount != current_bet_ || (current_bet_ == 0 && moves_cnt < players_.size());
          ind = (ind + 1) % players_.size()) {
+        if (was_action_performed_.load()) {
+            return;
+        }
+
         if (active_players_ == all_in_players_) {
             show_all_cards_ = 1;
             break;
@@ -354,7 +360,7 @@ void PokerTable::BettingPhase() {
             PokerMoveState move_state = players_[ind]->PokerAction(
                 players_.size() - 1, table_cards_, players_[ind]->ShowCards(), current_bet_,
                 min_bet_, min_raise_, bets_[ind].num_raises);
-            json move_log = {{"type", "trade_move"}};
+            json move_log = {{"type", "trade_move"}, {"player_id", ind}};
 
             switch (static_cast<uint8_t>(move_state.move)) {
             case static_cast<uint8_t>(PokerMove::ALL_IN):
@@ -441,17 +447,22 @@ void PokerTable::Clean() {
 
 void PokerTable::GameIteration() {
     is_active_game.store(true);
-
+    std::cout << "HERE1";
     Dealing();
+    std::cout << "HERE2";
     if (active_players_ < 2) {
         assert(active_players_ != 0);
         Clean();
         AddPlayers(get_random_number(1, 6 - players_.size()));
         return;
     }
-
+    std::cout << "HERE3";
     for (const auto& [phase, part] : std::vector<std::pair<std::string, int>>{
              {"preflop", 1}, {"flop", 3}, {"turn", 2}, {"river", 2}}) {
+        if (was_action_performed_.load()) {
+            break;
+        }
+
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
@@ -468,11 +479,35 @@ void PokerTable::GameIteration() {
             continue;
         }
 
+        std::cout << "HERE4";
         BettingPhase();
         ApplyBets();
     }
-    SelectWinners();
-    Clean();
+
+    std::cout << "HERE5";
+    if (was_action_performed_.load()) {
+        std::cout << "HERE6";
+        RollbackGame();
+        std::cout << "HERE7";
+        while (!render_queue_.empty()) {
+            render_queue_.pop();
+        }
+        std::cout << "HERE8";
+        Clean();
+        was_action_performed_.store(false);
+    } else {
+        SelectWinners();
+        Clean();
+    }
 }
 
 bool PokerTable::IsGameFinished() const { return !is_active_game.load(); }
+
+void PokerTable::RollbackGame() {
+    while (!rollback_logs_.empty()) {
+        json log_event = rollback_logs_.front();
+        rollback_logs_.pop();
+        players_[log_event["player_id"].template get<size_t>()]->GetMoney(
+            log_event["amount"].template get<size_t>());
+    }
+}

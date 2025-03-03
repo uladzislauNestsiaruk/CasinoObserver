@@ -32,8 +32,8 @@ class BlackjackTable : public AbstractTable {
 
 public:
     BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-        : AbstractTable(GameType::Blackjack, render_queue), deck_(true), is_game_finished_(true),
-          hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
+        : AbstractTable(GameType::Blackjack, render_queue), is_game_finished_(true), hands_(),
+          settings_{100, true}, logs_(logs), render_queue_(render_queue) {
         AddPlayer(
             std::make_shared<HumbleGambler>(0, 0, GameType::Blackjack, false, 1000, "dummy_tag"));
         AddPlayer(
@@ -47,7 +47,6 @@ public:
     bool IsGameFinished() const override;
 
 private:
-    Deck deck_;
     std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;
     std::list<Hand>::iterator hands_iterator_;

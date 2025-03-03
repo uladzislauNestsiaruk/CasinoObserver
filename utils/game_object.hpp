@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <stdexcept>
@@ -9,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-#include "../GameStates/state_manager.h"
+#include "../game_states/state_manager.hpp"
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
@@ -33,7 +34,10 @@ public:
     GameObject() = delete;
 
     GameObject(const std::string& tag, const std::string& default_phase)
-        : tag_(tag), scale_(1, 1), active_phase_(default_phase) {}
+        : tag_(tag), scale_(1, 1), init_scale_(1, 1), active_phase_(default_phase) {}
+
+    GameObject(const std::string& tag, sf::Vector2f init_scale, const std::string& default_phase)
+        : tag_(tag), scale_(1, 1), init_scale_(init_scale), active_phase_(default_phase) {}
 
     GameObject(const std::string& tag, const std::string& default_phase,
                std::vector<sf::Sprite>&& sprite)
@@ -45,6 +49,9 @@ public:
     }
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
+        if (!sprite.empty()) {
+            visible_rect_ = sprite[0].getTextureRect();
+        }
         phases_[phase] = {std::move(sprite)};
     }
 
@@ -72,6 +79,8 @@ public:
 
     sf::Vector2f GetScale() const { return scale_; }
 
+    const std::string& GetActivePhase() const { return active_phase_; }
+
     void Move(sf::Vector2f offset);
 
     void Draw(sf::RenderWindow* window);
@@ -87,10 +96,15 @@ private:
 
     void MoveSprites(sf::Vector2f);
 
+    void ClearResizeTag();
+
+    void ResizeImpl(sf::Vector2f size, bool according_to_parent);
+
 private:
     std::string tag_;
     bool resized_ = false;
     sf::Vector2f scale_;
+    sf::Vector2f init_scale_;
     sf::IntRect visible_rect_;
 
     std::unordered_map<sf::Event::EventType, event_handler> handlers_;

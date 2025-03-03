@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <iostream>
 #include <memory>
 #include <string_view>
 #include <vector>
@@ -9,14 +10,14 @@
 #include "game_object.hpp"
 #include "game_objects_loader.hpp"
 
-class GEManager {
+class GOManager {
     static constexpr size_t kMaxPriority = 32;
 
 public:
-    GEManager() : objects_(), priority_() {}
+    GOManager() : objects_(), priority_() {}
 
-    explicit GEManager(std::string_view game_object_path)
-        : objects_(1, ParseGameObjects(game_object_path)), priority_(1, 1) {}
+    explicit GOManager(std::string_view game_object_path)
+        : objects_(ParseGameObjects(game_object_path)), priority_(1, 1) {}
 
     void AddObject(std::string_view game_object_path, size_t priority = 1);
 
@@ -28,7 +29,7 @@ public:
 
     void DrawAll(sf::RenderWindow* window);
 
-    ~GEManager() {}
+    ~GOManager() {}
 
 private:
     std::vector<std::shared_ptr<GameObject>> objects_;

@@ -12,7 +12,7 @@
 #include "game_object_manager.hpp"
 #include "json.hpp"
 
-std::array<std::vector<size_t>, GEManager::kMaxPriority> GEManager::GetOrder() {
+std::array<std::vector<size_t>, GOManager::kMaxPriority> GOManager::GetOrder() {
     std::array<std::vector<size_t>, kMaxPriority> order;
     for (size_t ind = 0; ind < objects_.size(); ind++) {
         order[priority_[ind]].emplace_back(ind);
@@ -20,16 +20,21 @@ std::array<std::vector<size_t>, GEManager::kMaxPriority> GEManager::GetOrder() {
     return order;
 }
 
-void GEManager::AddObject(std::string_view game_object_path, size_t priority) {
+void GOManager::AddObject(std::string_view game_object_path, size_t priority) {
     if (priority >= kMaxPriority) {
         throw std::invalid_argument("priority of the object exceeded max priority");
     }
 
-    objects_.emplace_back(ParseGameObjects(game_object_path));
+    std::vector<std::shared_ptr<GameObject>> objects = ParseGameObjects(game_object_path);
+    if(objects.size() > 1) {
+        throw std::logic_error("attempt to add multiple independent objects");
+    }
+
+    objects_.emplace_back(objects[0]);
     priority_.emplace_back(priority);
 }
 
-void GEManager::AddObject(std::shared_ptr<GameObject> game_object, size_t priority) {
+void GOManager::AddObject(std::shared_ptr<GameObject> game_object, size_t priority) {
     if (priority >= kMaxPriority) {
         throw std::invalid_argument("priority of the object exceeded max priority");
     }
@@ -37,7 +42,7 @@ void GEManager::AddObject(std::shared_ptr<GameObject> game_object, size_t priori
     priority_.emplace_back(priority);
 }
 
-void GEManager::DrawAll(sf::RenderWindow* window) {
+void GOManager::DrawAll(sf::RenderWindow* window) {
     auto draw_order = GetOrder();
     for (int32_t priority = kMaxPriority - 1; priority >= 0; priority--) {
         std::for_each(draw_order[priority].begin(), draw_order[priority].end(),
@@ -45,7 +50,7 @@ void GEManager::DrawAll(sf::RenderWindow* window) {
     }
 }
 
-std::shared_ptr<GameObject> GEManager::FindObjectByTag(const std::string& tag) const {
+std::shared_ptr<GameObject> GOManager::FindObjectByTag(const std::string& tag) const {
     for (auto object : objects_) {
         std::shared_ptr<GameObject> result = object->FindGameObjectByTag(tag);
         if (result != nullptr) {
@@ -56,7 +61,7 @@ std::shared_ptr<GameObject> GEManager::FindObjectByTag(const std::string& tag) c
     return nullptr;
 }
 
-void GEManager::UpdateObjectPriority(size_t object_ind, size_t new_priority) {
+void GOManager::UpdateObjectPriority(size_t object_ind, size_t new_priority) {
     priority_[object_ind] = new_priority;
     auto handle_order = GetOrder();
     size_t min_priority = 0;
@@ -75,11 +80,10 @@ void GEManager::UpdateObjectPriority(size_t object_ind, size_t new_priority) {
     }
 }
 
-void GEManager::HandleEvent(IGameState* state, nlohmann::json& event_data) {
+void GOManager::HandleEvent(IGameState* state, nlohmann::json& event_data) {
     if (!CorrectEvent(event_data)) {
         return;
     }
-
     auto handle_order = GetOrder();
     std::optional<std::string> handled_tag;
     size_t handled_ind;

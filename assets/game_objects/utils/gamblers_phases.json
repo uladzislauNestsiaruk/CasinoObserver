@@ -1,0 +1,926 @@
+{
+    "first_place_woman1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_woman1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_woman1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_woman3_2": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_woman3_2",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_woman3_2",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_woman1_2": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_woman1_2",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_woman1_2",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_woman3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_woman3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_woman3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_man2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_man2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_man2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_man2_2": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_man2_2",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_man2_2",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_woman2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_woman2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_woman2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_woman2_2": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_woman2_2",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_woman2_2",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_man1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_man1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_man1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_man3_2": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_man3_2",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_man3_2",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_man1_2": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_man1_2",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_man1_2",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "first_place_man3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_first_place_man3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_first_place_empty_man3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.006,
+            0.2
+        ]
+    },
+    "second_place_woman1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_second_place_woman1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_second_place_empty_woman1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.22,
+            0.85
+        ]
+    },
+    "second_place_woman3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_second_place_woman3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_second_place_empty_woman3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.22,
+            0.85
+        ]
+    },
+    "second_place_man2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_second_place_man2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_second_place_empty_man2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.22,
+            0.85
+        ]
+    },
+    "second_place_woman2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_second_place_woman2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_second_place_empty_woman2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.22,
+            0.85
+        ]
+    },
+    "second_place_man1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_second_place_man1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_second_place_empty_man1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.22,
+            0.85
+        ]
+    },
+    "second_place_man3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_second_place_man3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_second_place_empty_man3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.22,
+            0.85
+        ]
+    },
+    "third_place_woman1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_third_place_woman1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_third_place_empty_woman1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.42,
+            0.9
+        ]
+    },
+    "third_place_woman3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_third_place_woman3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_third_place_empty_woman3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.42,
+            0.9
+        ]
+    },
+    "third_place_man2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_third_place_man2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_third_place_empty_man2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.42,
+            0.9
+        ]
+    },
+    "third_place_woman2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_third_place_woman2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_third_place_empty_woman2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.42,
+            0.9
+        ]
+    },
+    "third_place_man1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_third_place_man1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_third_place_empty_man1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.42,
+            0.9
+        ]
+    },
+    "third_place_man3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_third_place_man3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_third_place_empty_man3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.42,
+            0.9
+        ]
+    },
+    "fourth_place_woman1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fourth_place_woman1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fourth_place_empty_woman1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.6,
+            0.85
+        ]
+    },
+    "fourth_place_woman3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fourth_place_woman3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fourth_place_empty_woman3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.6,
+            0.85
+        ]
+    },
+    "fourth_place_man2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fourth_place_man2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fourth_place_empty_man2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.6,
+            0.85
+        ]
+    },
+    "fourth_place_woman2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fourth_place_woman2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fourth_place_empty_woman2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.6,
+            0.85
+        ]
+    },
+    "fourth_place_man1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fourth_place_man1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fourth_place_empty_man1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.6,
+            0.85
+        ]
+    },
+    "fourth_place_man3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fourth_place_man3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fourth_place_empty_man3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.6,
+            0.85
+        ]
+    },
+    "fivth_place_woman1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fivth_place_woman1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fivth_place_empty_woman1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.77,
+            0.75
+        ]
+    },
+    "fivth_place_woman3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fivth_place_woman3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fivth_place_empty_woman3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.77,
+            0.75
+        ]
+    },
+    "fivth_place_man2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fivth_place_man2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fivth_place_empty_man2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.77,
+            0.75
+        ]
+    },
+    "fivth_place_woman2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fivth_place_woman2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fivth_place_empty_woman2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.77,
+            0.75
+        ]
+    },
+    "fivth_place_man1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fivth_place_man1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fivth_place_empty_man1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.77,
+            0.75
+        ]
+    },
+    "fivth_place_man3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_fivth_place_man3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_fivth_place_empty_man3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.77,
+            0.75
+        ]
+    },
+    "sixth_place_woman1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_sixth_place_woman1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_sixth_place_empty_woman1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.875,
+            0.21
+        ]
+    },
+    "sixth_place_woman3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_sixth_place_woman3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_sixth_place_empty_woman3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.875,
+            0.21
+        ]
+    },
+    "sixth_place_man2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_sixth_place_man2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_sixth_place_empty_man2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.875,
+            0.21
+        ]
+    },
+    "sixth_place_woman2_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_sixth_place_woman2_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_sixth_place_empty_woman2_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.875,
+            0.21
+        ]
+    },
+    "sixth_place_man1_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_sixth_place_man1_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_sixth_place_empty_man1_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.875,
+            0.21
+        ]
+    },
+    "sixth_place_man3_1": {
+        "parent": "root",
+        "default_phase": "empty",
+        "phases": {
+            "afk": {
+                "source": "gamblers_sixth_place_man3_1",
+                "type": "image"
+            },
+            "empty": {
+                "source": "gamblers_sixth_place_empty_man3_1",
+                "type": "image"
+            }
+        },
+        "scale": [
+            1.0,
+            1.0
+        ],
+        "coords": [
+            0.875,
+            0.21
+        ]
+    }
+}

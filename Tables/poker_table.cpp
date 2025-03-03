@@ -1,9 +1,10 @@
 #include "poker_table.hpp"
+#include <common.hpp>
 #include <constants.hpp>
 #include <cstdint>
 
 namespace {
-constexpr uint32_t num_iterations = 1000;
+constexpr uint32_t num_iterations = 400;
 const std::array<std::string, 4> type_names = {"hearts", "clubs", "diamonds", "spades"};
 const std::array<std::string, 13> value_names = {"two",   "three", "four", "five", "six",
                                                  "seven", "eight", "nine", "ten",  "jack",
@@ -176,6 +177,30 @@ std::string GetPhaseByCard(Card card) {
 }
 } // namespace
 
+PokerTable::PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
+    : AbstractTable(GameType::Poker, render_queue), deck_(true), min_bet_(100), min_raise_(50),
+      small_blind_(50), big_blind_(min_bet_), logs_(logs) {
+
+    occupied_places_.fill(false);
+    AddPlayers(get_random_number(2, 6));
+}
+
+void PokerTable::AddPlayers(uint8_t num_players, uint16_t left_money_bound,
+                            uint16_t right_money_bound) {
+    for (size_t i = 0; i < num_players; ++i) {
+        uint8_t place;
+        do {
+            place = get_random_number(0, 5);
+        } while (occupied_places_[place]);
+
+        std::string person_tag =
+            gamblers_places[place][get_random_number(0, gamblers_places[place].size() - 1)];
+        AddPlayer(std::make_shared<HumbleGambler>(
+            false, place, GameType::Poker, 0,
+            get_random_number(left_money_bound, right_money_bound), person_tag));
+    }
+}
+
 void PokerTable::MakeBet(size_t amount, size_t player_ind) {
     if (players_[player_ind]->PerformBet(amount)) {
         bank_ += amount;
@@ -199,7 +224,6 @@ void PokerTable::Dealing() {
         return;
     }
 
-    active_players_ = 0;
     is_all_in_.assign(players_.size(), 0);
     for (auto player : players_) {
         if (!player->GetGameStatus()) {
@@ -209,15 +233,19 @@ void PokerTable::Dealing() {
 
     bets_.assign(players_.size(), {0, 0});
     deck_.ReshuffleDeck();
-    for (size_t i = 0; i < players_.size(); ++i) {
+    size_t cnt = 0;
+    for (int i = 0; i < players_.size(); ++i) {
         if (players_[i]->GetBalance() < big_blind_) {
             players_[i]->ChangeGameStatus();
+            RemovePlayer(i);
+            --i;
             continue;
         }
+        cnt += players_[i]->GetBalance();
         bets_[i] = {big_blind_, 0};
         ++active_players_;
     }
-
+    assert(active_players_ == players_.size());
     // Not enough active players
     if (active_players_ < 2) {
         return;
@@ -261,7 +289,7 @@ PokerMoveState HumbleGambler::PokerAction(size_t num_opponents,
         current_bet + (raise != 0 && raise < min_raise ? min_raise : static_cast<size_t>(raise));
 
     if (total_bet > 0.95 * GetBalance()) {
-        if (GetBalance() == 0) {
+        if (GetBalance() < min_bet) {
             return {.move = PokerMove::FOLD};
         }
 
@@ -289,7 +317,7 @@ void PokerTable::DistributionPhase(std::string_view phase) {
             render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = GetPhaseByCard(card);
             render_event["tag"] = card_id + "_central_card";
-            render_event["delay"] = 0;
+            render_event["delay"] = default_antimation_end_delay;
             render_queue_.push(render_event);
 
             table_cards_.push_back(card);
@@ -300,20 +328,23 @@ void PokerTable::DistributionPhase(std::string_view phase) {
         render_event["event"]["type"] = "change_phase";
         render_event["new_phase"] = GetPhaseByCard(card);
         render_event["tag"] = (phase == "turn" ? "fourth_central_card" : "fivth_central_card");
-        render_event["delay"] = 0;
+        render_event["delay"] = default_antimation_end_delay;
         render_queue_.push(render_event);
         table_cards_.push_back(card);
     }
 }
 
 void PokerTable::BettingPhase() {
-    for (size_t ind = 0; bets_[ind].amount != current_bet_ || current_bet_ == 0;
+    size_t moves_cnt = 0;
+    for (size_t ind = 0;
+         bets_[ind].amount != current_bet_ || (current_bet_ == 0 && moves_cnt < players_.size());
          ind = (ind + 1) % players_.size()) {
         if (active_players_ == all_in_players_) {
             show_all_cards_ = 1;
             break;
         }
 
+        ++moves_cnt;
         if (players_[ind]->GetGameStatus() && !is_all_in_[ind]) {
             if (active_players_ == 1) {
                 show_all_cards_ = 1;
@@ -392,6 +423,8 @@ void PokerTable::Clean() {
     bank_ = 0;
     current_bet_ = 0;
     show_all_cards_ = 0;
+    active_players_ = 0;
+    all_in_players_ = 0;
 
     for (auto player : players_) {
         if (player->GetGameStatus()) {
@@ -411,7 +444,9 @@ void PokerTable::GameIteration() {
 
     Dealing();
     if (active_players_ < 2) {
+        assert(active_players_ != 0);
         Clean();
+        AddPlayers(get_random_number(1, 6 - players_.size()));
         return;
     }
 
@@ -425,9 +460,10 @@ void PokerTable::GameIteration() {
             render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = phase + "_" + std::to_string(i);
             render_event["tag"] = "root";
-            render_event["delay"] = (i == 1 ? default_antimation_end_delay : default_delay);
+            render_event["delay"] = (i == 1 ? 100 : default_delay);
             render_queue_.push(render_event);
         }
+
         if (show_all_cards_) {
             continue;
         }

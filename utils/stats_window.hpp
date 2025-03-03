@@ -160,9 +160,8 @@ void UpdateRowSubRect(GameObject* row, StatsWindow<Row>* stats_window, sf::Vecto
     sf::Vector2f window_y_borders = stats_window->GetYBorders();
     float row_height =
         fmin(row_pos.y + row_size_vec.y, window_y_borders.y) - fmax(row_pos.y, window_y_borders.x);
-    float inv_prefix_delta = 2 * fmax(0.0, window_y_borders.x - row_pos.y);
+    float inv_prefix_delta = fmax(0.0, window_y_borders.x - row_pos.y);
     original_rect.top = inv_prefix_delta;
-    std::cout << row->GetTag() << " " << original_rect.top << "\n";
     original_rect.height *= row_height / row_size_vec.y;
 
     row->SetVisibleRect(original_rect);

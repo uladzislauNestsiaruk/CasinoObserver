@@ -6,7 +6,7 @@
 #include <queue>
 #include <stdexcept>
 
-#include "../GameStates/state_manager.h"
+#include "../game_states/state_manager.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Time.hpp"
@@ -15,7 +15,7 @@
 #include "game_object.hpp"
 #include "json.hpp"
 
-void GameObject::Resize(sf::Vector2f size, bool according_to_parent) {
+void GameObject::ResizeImpl(sf::Vector2f size, bool according_to_parent) {
     sf::Vector2f old_size = GetSize();
     sf::Vector2f position = GetPosition();
     sf::Vector2f old_scale = scale_;
@@ -25,31 +25,49 @@ void GameObject::Resize(sf::Vector2f size, bool according_to_parent) {
                 scale_ = {static_cast<float>(size.x) / sprite.getTexture()->getSize().x,
                           static_cast<float>(size.y) / sprite.getTexture()->getSize().y};
             } else {
-                scale_ = {parent_->scale_.x * scale_.x, parent_->scale_.y * scale_.y};
+                scale_ = {parent_->scale_.x * init_scale_.x, parent_->scale_.y * init_scale_.y};
             }
             sprite.setScale(scale_);
         }
     }
+    resized_ = true;
 
     for (auto& [phase, phased_children] : children_) {
-        for (auto phased_child : phased_children) {
+        for (auto& phased_child : phased_children) {
+            if (phased_child->resized_) {
+                continue;
+            }
             sf::Vector2f dist = phased_child->GetPosition() - position;
             sf::Vector2f delta = {dist.x / old_size.x, dist.y / old_size.y};
             sf::Vector2f offset = sf::Vector2f(position.x + delta.x * GetSize().x,
                                                position.y + delta.y * GetSize().y) -
                                   phased_child->GetPosition();
             phased_child->MoveSprites(offset);
-            phased_child->Resize(size, true);
+            phased_child->ResizeImpl(size, true);
         }
     }
+}
+
+void GameObject::ClearResizeTag() {
+    resized_ = false;
+    for (auto& [phase, phased_children] : children_) {
+        for (auto phased_child : phased_children) {
+            if (phased_child->resized_) {
+                phased_child->ClearResizeTag();
+            }
+        }
+    }
+}
+
+void GameObject::Resize(sf::Vector2f size, bool according_to_parent) {
+    ResizeImpl(size, according_to_parent);
+    ClearResizeTag();
 }
 
 void GameObject::MoveSprites(sf::Vector2f offset) {
     for (auto& phase_pair : phases_) {
         std::for_each(phase_pair.second.begin(), phase_pair.second.end(),
-                      [offset, this](sf::Sprite& sprite) {
-                          sprite.move(offset);
-                      });
+                      [offset, this](sf::Sprite& sprite) { sprite.move(offset); });
     }
 }
 
@@ -62,6 +80,7 @@ void GameObject::Move(sf::Vector2f offset) {
 }
 
 void GameObject::Draw(sf::RenderWindow* window) {
+    // Don't draw objects which are in "empty" phase
     if (phases_[active_phase_].empty()) {
         throw std::logic_error("draw called on empty game_object");
     }
@@ -69,7 +88,8 @@ void GameObject::Draw(sf::RenderWindow* window) {
     active_sprite_ = std::min(phases_[active_phase_].size() - 1, active_sprite_ + 1);
     phases_[active_phase_][active_sprite_].setTextureRect(visible_rect_);
     window->draw(phases_[active_phase_][active_sprite_]);
-    if (active_sprite_ == phases_[active_phase_].size() - 1) {
+    if (active_sprite_ == phases_[active_phase_].size() - 1 && !is_finished_current_phase_) {
+        clock_.restart();
         is_finished_current_phase_ = true;
     }
 
@@ -108,21 +128,28 @@ void GameObject::AddHandler(const sf::Event::EventType type, event_handler handl
 
 std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGameState* state,
                                                       nlohmann::json& data) {
+    // Don't trigger game object handler if it's in empty phase
+    if (active_phase_ == "empty") {
+        return std::nullopt;
+    }
+
     sf::Vector2f point = sf::Vector2f(data["event"]["x"], data["event"]["y"]);
-    std::optional<std::string> handle_result;
-    for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0 && !handle_result.has_value();
+    std::optional<std::string> handler_tag;
+    for (int32_t ind = children_[active_phase_].size() - 1; ind >= 0 && !handler_tag.has_value();
          ind--) {
-        if (children_[active_phase_][ind]->Contains(point)) {
-            handle_result = children_[active_phase_][ind]->TriggerHandler(manager, state, data);
+        if (children_[active_phase_][ind]->active_phase_ != "empty" &&
+            children_[active_phase_][ind]->Contains(point)) {
+            handler_tag = children_[active_phase_][ind]->TriggerHandler(manager, state, data);
         }
     }
 
-    if (Contains(point) && handlers_.contains(data["event"]["type"])) {
+    if (Contains(point) && handlers_.contains(data["event"]["type"]) && !handler_tag.has_value()) {
+        data["tag"] = tag_;
         handlers_[data["event"]["type"]](manager, state, this, data);
-        return std::optional<std::string>(tag_);
+        handler_tag = tag_;
     }
 
-    return std::nullopt;
+    return handler_tag;
 }
 
 bool GameObject::Contains(sf::Vector2f point) noexcept {
@@ -173,7 +200,8 @@ sf::Vector2f GameObject::GetSize() const {
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
-    if (clock_.getElapsedTime() >= sf::milliseconds(delay)) {
+    if (active_phase_ == "empty" ||
+        (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
         active_phase_ = new_phase;
         active_sprite_ = 0;
         is_finished_current_phase_ = false;

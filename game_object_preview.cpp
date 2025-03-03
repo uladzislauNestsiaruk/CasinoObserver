@@ -9,8 +9,8 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
-#include "Utils/game_object_manager.hpp"
-#include "Utils/json.hpp"
+#include "utils/game_object_manager.hpp"
+#include "utils/json.hpp"
 
 #include <game_object.hpp>
 #include <game_objects_loader.hpp>
@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     }
 
     Preload();
-    GEManager objects_manager;
+    GOManager objects_manager;
     std::shared_ptr<StatsWindow<DefaultRow>> stats_window =
         std::make_shared<StatsWindow<DefaultRow>>("stats_subwindow_subwindow_background", 1);
     for (size_t ind = 0; ind < 20; ind++) {
@@ -56,10 +56,7 @@ int main(int argc, char** argv) {
                                       ? last_event.mouseMove.y
                                       : last_event.mouseButton.y;
             event["event"]["delta"] = last_event.mouseWheelScroll.delta;
-            if (last_event.type == sf::Event::MouseButtonReleased) {
-                std::cout << "Released button event triggired\n";
-                std::cout << last_event.mouseButton.x << " " << last_event.mouseButton.y << "\n";
-            }
+
             if (last_event.type == sf::Event::MouseWheelScrolled) {
                 event["event"]["x"] = last_event.mouseWheelScroll.x;
                 event["event"]["y"] = last_event.mouseWheelScroll.y;

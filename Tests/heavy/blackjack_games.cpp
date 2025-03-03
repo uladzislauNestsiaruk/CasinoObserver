@@ -4,7 +4,7 @@
 #include <optional>
 #include <queue>
 
-#include <../../Tables/blackjack_table.hpp>
+#include <../../tables/blackjack_table.hpp>
 #include <constants.hpp>
 /*
 struct TableOutput {

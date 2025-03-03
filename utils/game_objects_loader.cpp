@@ -9,6 +9,9 @@
 #include <textures_loader.hpp>
 
 using nlohmann::json;
+using dep_graph_t =
+    std::unordered_map<std::string,
+                       std::vector<std::pair<std::string, std::optional<std::string>>>>;
 
 namespace {
 template <typename T>
@@ -39,7 +42,41 @@ template <typename T> T GetJsonValue(const json& data, const std::string& key) {
 }
 } // namespace
 
-std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path) {
+void BuildDependencyGraph(const nlohmann::json& data, dep_graph_t& objects_graph,
+                          std::vector<std::string>& roots) {
+    for (const auto& item : data.items()) {
+        if (item.key().substr(0, 2) == "__") {
+            continue;
+        }
+
+        std::optional<std::string> parent =
+            GetOptionalJsonValue<std::string>(item.value(), "parent");
+        if (!parent.has_value()) {
+            roots.emplace_back(item.key());
+            continue;
+        }
+        std::optional<std::string> parent_phase;
+        size_t pos = parent->find(':');
+        if (pos != std::string::npos) {
+            std::string parent_phases = parent->substr(pos + 1, parent->size() - pos - 1);
+            parent = parent->substr(0, pos);
+            pos = 0;
+            while (pos < parent_phases.size()) {
+                size_t next_pos = parent_phases.find(',', pos);
+                if (next_pos == std::string::npos) {
+                    next_pos = parent_phases.size();
+                }
+                objects_graph[parent.value()].push_back(
+                    {item.key(), parent_phases.substr(pos, next_pos - pos)});
+                pos = next_pos + 1;
+            }
+        } else {
+            objects_graph[parent.value()].push_back({item.key(), std::nullopt});
+        }
+    }
+}
+
+std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_objects_path) {
     std::ifstream file(game_objects_path);
     if (!file.is_open()) {
         throw std::runtime_error("Can't open file " + std::string(game_objects_path));
@@ -48,43 +85,27 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
     json data;
     file >> data;
 
-    if (!data.contains("root")) {
-        throw std::runtime_error("There is no \"root\" in " + std::string(game_objects_path));
-    }
-
-    std::unordered_map<std::string, std::vector<std::pair<std::string, std::optional<std::string>>>>
-        objects_graph;
-    for (const auto& item : data.items()) {
-        if (item.key() == "root") {
-            continue;
-        }
-
-        std::string parent = GetJsonValue<std::string>(item.value(), "parent");
-        std::optional<std::string> parent_phase;
-        size_t pos = parent.find(':');
-        if (pos != std::string::npos) {
-            std::string parent_phases = parent.substr(pos + 1, parent.size() - pos - 1);
-            parent = parent.substr(0, pos);
-            pos = 0;
-            while (pos < parent_phases.size()) {
-                size_t next_pos = parent_phases.find(',', pos);
-                if (next_pos == std::string::npos) {
-                    next_pos = parent_phases.size();
-                }
-                objects_graph[parent].push_back(
-                    {item.key(), parent_phases.substr(pos, next_pos - pos)});
-                pos = next_pos + 1;
-            }
-        } else {
-            objects_graph[parent].push_back({item.key(), std::nullopt});
+    if (data.contains("__extend__")) {
+        std::vector<std::string> extensions =
+            GetJsonValue<std::vector<std::string>>(data, "__extend__");
+        for (const auto& item : extensions) {
+            std::ifstream file(item);
+            json result;
+            file >> result;
+            data.merge_patch(result);
         }
     }
+
+    dep_graph_t objects_graph;
+    std::vector<std::string> roots;
+    BuildDependencyGraph(data, objects_graph, roots);
 
     std::unordered_map<std::string, std::shared_ptr<GameObject>> tags;
     std::function<std::shared_ptr<GameObject>(std::string, const sf::Rect<float>&)> dfs =
         [&objects_graph, &data, &dfs, &tags](std::string vertex,
                                              const sf::Rect<float>& parent_sprites_rect) {
             std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
+            std::array<float, 2> scale = GetJsonValue<std::array<float, 2>>(data[vertex], "scale");
             std::array<float, 2> coords =
                 GetJsonValue<std::array<float, 2>>(data[vertex], "coords");
 
@@ -93,7 +114,7 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             }
 
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>(
-                vertex, default_phase);
+                vertex, sf::Vector2f(scale[0], scale[1]), default_phase);
             tags[vertex] = object;
 
             sf::Vector2f pos = {
@@ -107,6 +128,7 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
                     sf::Sprite sprite(
                         GetTextute(GetJsonValue<std::string>(item.value(), "source")));
                     sprite.setPosition(pos);
+                    sprite.setScale(sf::Vector2f(scale[0], scale[1]));
                     object->AddPhase({std::move(sprite)}, item.key());
                 } else if (type == "animation") {
                     std::string source_dir = GetJsonValue<std::string>(item.value(), "source_dir");
@@ -116,6 +138,7 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
                     for (auto source : textures) {
                         sf::Sprite sprite(source.get());
                         sprite.setPosition(pos);
+                        sprite.setScale(sf::Vector2f(scale[0], scale[1]));
                         animation.push_back(std::move(sprite));
                     }
                     object->AddPhase(std::move(animation), item.key());
@@ -134,5 +157,10 @@ std::shared_ptr<GameObject> ParseGameObjects(std::string_view game_objects_path)
             return object;
         };
 
-    return dfs("root", sf::Rect<float>());
+    std::vector<std::shared_ptr<GameObject>> result;
+    result.reserve(roots.size());
+    for (const std::string& root_rag : roots) {
+        result.emplace_back(dfs(root_rag, sf::Rect<float>()));
+    }
+    return result;
 }

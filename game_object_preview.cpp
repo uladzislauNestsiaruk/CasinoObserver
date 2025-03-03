@@ -28,8 +28,8 @@ int main(int argc, char** argv) {
 
     Preload();
     GOManager objects_manager;
-    std::shared_ptr<StatsWindow<DefaultRow>> stats_window =
-        std::make_shared<StatsWindow<DefaultRow>>("stats_subwindow_subwindow_background", 1);
+    std::shared_ptr<StatsWindow> stats_window =
+        std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", 1);
     for (size_t ind = 0; ind < 20; ind++) {
         stats_window->AddRow(std::make_shared<DefaultRow>(ind + 1));
     }
@@ -41,7 +41,6 @@ int main(int argc, char** argv) {
 
     while (true) {
         window.clear();
-        window.requestFocus();
         while (window.pollEvent(last_event)) {
             if (last_event.type == sf::Event::Closed) {
                 window.close();

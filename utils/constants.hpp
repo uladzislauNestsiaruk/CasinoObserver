@@ -116,6 +116,14 @@ constexpr std::array<std::array<BlackjackAction, 12>, 12> kPairSplitTable{{
     {D, D, SP, SP, SP, SP, SP, SP, SP, SP, SP, SP}  // 11
 }};
 
+#undef D
+#undef H
+#undef S
+#undef DH
+#undef DS
+#undef SP
+#undef SD
+
 enum class PokerMove : uint8_t { FOLD = 0, CALL, BET, RAISE, ALL_IN };
 
 struct PokerMoveState {
@@ -149,11 +157,3 @@ const std::array<std::vector<std::string>, 6> kGamblersPlaces = {
       "fivth_place_man1_1", "fivth_place_man3_1"},
      {"sixth_place_woman1_1", "sixth_place_woman3_1", "sixth_place_man2_1", "sixth_place_woman2_1",
       "sixth_place_man1_1", "sixth_place_man3_1"}}};
-
-#undef D
-#undef H
-#undef S
-#undef DH
-#undef DS
-#undef SP
-#undef SD

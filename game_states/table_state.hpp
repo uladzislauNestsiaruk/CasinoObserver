@@ -1,32 +1,29 @@
 #pragma once
 
-#include <string>
+#include <memory>
 #include <thread>
 #include <unordered_set>
 
-#include "../tables/poker_table.hpp"
+#include <../tables/table.hpp>
+#include <common_render_handlers.hpp>
+
 #include "game_state.hpp"
-#include <game_object.hpp>
-#include <json.hpp>
-#include <render_events_manager.hpp>
-#include <thread_safe_queue.hpp>
+#include "state_manager.hpp"
 
-using json = nlohmann::json;
-
-class PokerClose : public AbstractGameState {
-    static const std::string kPokerCloseGameObjects;
+class TableState : public AbstractGameState {
+    using table_creater_t = std::unique_ptr<ITable> (*)(TSQueue<json>& logs,
+                                                        TSQueue<json>& render_queue);
 
 public:
-    explicit PokerClose(StateManager* manager);
+    TableState() = delete;
+    TableState(const std::string& objects_path, StateManager* manager,
+               table_creater_t table_creater);
 
     void HandleEvent(const sf::Event& event) override;
     void Update(sf::Time delta) override;
     void Draw(StateManager* manager) override;
 
-    ~PokerClose() override;
-
     void SetIsSelectPressed(bool value) { is_select_pressed_ = value; }
-
     bool GetIsSelectPressed() const { return is_select_pressed_; }
 
     size_t SizeSelectPlayer() const { return selected_players_.size(); }
@@ -36,10 +33,11 @@ public:
     }
 
     void AddSelectPlayer(const std::string& player_tag) { selected_players_.insert(player_tag); }
-
     void EraseSelectPlayer(const std::string& player_tag) { selected_players_.erase(player_tag); }
 
     void BanPlayers();
+
+    ~TableState() override;
 
 private:
     void GameExecutor();

@@ -153,8 +153,9 @@ void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json& log) {
 }
 
 BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-    : AbstractTable(GameType::Blackjack, render_queue), deck_(true), is_game_finished_(true),
+    : AbstractTable(GameType::Blackjack, render_queue), is_game_finished_(true),
       hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
+    occupied_places_.fill(false);
     GenPlayers(get_random_number(2, kGamblersPlaces), kGamblersPlaces - 1, GameType::Blackjack);
 }
 

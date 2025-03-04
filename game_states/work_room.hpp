@@ -1,20 +1,26 @@
 #pragma once
 
-#include <memory>
 #include <string>
-#include <vector>
+
+#include <game_object.hpp>
+#include <json.hpp>
+#include <thread_safe_queue.hpp>
 
 #include "SFML/System/Time.hpp"
 #include "game_state.hpp"
 #include "state_manager.hpp"
-#include <game_object.hpp>
-#include <json.hpp>
-#include <thread_safe_queue.hpp>
+#include "table_state.hpp"
 
 using json = nlohmann::json;
 
 class WorkRoomState : public AbstractGameState {
     const static std::string kWorkRoomGameObjects;
+
+    template <typename TableType>
+        requires std::is_base_of_v<ITable, TableType>
+    static std::unique_ptr<ITable> CreateTable(TSQueue<json>& logs, TSQueue<json>& render_queue) {
+        return std::make_unique<TableType>(logs, render_queue);
+    }
 
 public:
     explicit WorkRoomState(StateManager* manager);
@@ -26,7 +32,7 @@ public:
     ~WorkRoomState() override {}
 
 private:
-    std::vector<std::shared_ptr<IGameState>> tables_;
+    std::vector<std::shared_ptr<TableState>> tables_;
 
     mutable size_t total_tables = 12;
 

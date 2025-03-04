@@ -22,7 +22,7 @@ public:
     virtual void Draw(StateManager* manager) = 0;
 
     void ChangeState();
-
+ 
     virtual ~IGameState() {}
 };
 

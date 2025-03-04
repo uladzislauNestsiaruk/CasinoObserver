@@ -3,7 +3,7 @@
 #include <string>
 
 #include "common_render_handlers.hpp"
-#include <../game_states/poker_close.hpp>
+#include <../game_states/table_state.hpp>
 #include <game_object.hpp>
 #include <render_events_manager.hpp>
 
@@ -32,8 +32,7 @@ void CommonGOEventHandlers::SelectButtonHandler(StateManager* manager, IGameStat
     select_button_object->TryUpdatePhase("empty", delay);
     ban_button_object->TryUpdatePhase("afk", delay);
     deal_button_object->TryUpdatePhase("afk", delay);
-    // позже вынести общее двух столов в AbstractTableState и поменять здесь каст
-    static_cast<PokerClose*>(state)->SetIsSelectPressed(true);
+    static_cast<TableState*>(state)->SetIsSelectPressed(true);
 }
 
 void CommonGOEventHandlers::BanButtonHandler(StateManager* manager, IGameState* state,
@@ -51,13 +50,13 @@ void CommonGOEventHandlers::BanButtonHandler(StateManager* manager, IGameState* 
     }
 
     std::cout << "HUY\n";
-    PokerClose* poker_close = static_cast<PokerClose*>(state);
-    if (poker_close->SizeSelectPlayer()) {
-        static_cast<PokerClose*>(state)->SetIsSelectPressed(false);
+    TableState* table_state = static_cast<TableState*>(state);
+    if (table_state->SizeSelectPlayer()) {
+        table_state->SetIsSelectPressed(false);
         select_button_object->TryUpdatePhase("afk", delay);
         ban_button_object->TryUpdatePhase("empty", delay);
         deal_button_object->TryUpdatePhase("empty", delay);
-        poker_close->BanPlayers();
+        table_state->BanPlayers();
     }
 }
 
@@ -68,21 +67,19 @@ void CommonGOEventHandlers::DealButtonHandler(StateManager* manager, IGameState*
 
 void CommonGOEventHandlers::PlayerHandler(StateManager* manager, IGameState* state,
                                           GameObject* object, const json& data) {
-    bool is_select_pressed = static_cast<PokerClose*>(state)->GetIsSelectPressed();
+    TableState* table_state = static_cast<TableState*>(state);
+    bool is_select_pressed = table_state->GetIsSelectPressed();
     if (is_select_pressed) {
-        PokerClose* poker_close = static_cast<PokerClose*>(state);
-        if (!poker_close->ContainsSelectPlayer(object->GetTag())) {
-            std::cout << "ADDDDDDD: " << poker_close->SizeSelectPlayer() << "\n";
-            poker_close->AddSelectPlayer(object->GetTag());
+        if (!table_state->ContainsSelectPlayer(object->GetTag())) {
+            std::cout << "ADDDDDDD: " << table_state->SizeSelectPlayer() << "\n";
+            table_state->AddSelectPlayer(object->GetTag());
         } else {
-            std::cout << "ERASE: " << poker_close->SizeSelectPlayer() << "\n";
-            poker_close->EraseSelectPlayer(object->GetTag());
+            std::cout << "ERASE: " << table_state->SizeSelectPlayer() << "\n";
+            table_state->EraseSelectPlayer(object->GetTag());
         }
 
         return;
     }
-
-    // Handle stats window
 }
 
 bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* render_manager,

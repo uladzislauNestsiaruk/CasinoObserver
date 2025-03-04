@@ -7,12 +7,24 @@
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/System/Vector2.hpp"
 
-const std::string kGameTitle = "Casino observer";
+constexpr char kGameTitle[] = "Casino observer";
 
 class IGameState;
 
-// I have no idea of situation when it's usefull to have multiple state managers
-// in the game, so it would be Singleton
+////////////////////////
+//////  StateManager responsible for game states(the same as scenes) managment.
+//////
+//////  Game states organized in a stack, in that way, that only top most state would be displayed
+/////   on
+//////  the screen.
+//////
+//////   Event handling would be done only for the top most state.
+//////
+//////   Update would be called for all states in the stack.
+//////
+//////   StateManager is singleton class, you can access it via Instance() method
+////////////////////////
+
 class StateManager {
 public:
     void Init();

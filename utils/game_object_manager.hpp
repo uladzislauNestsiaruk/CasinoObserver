@@ -4,37 +4,35 @@
 #include <iostream>
 #include <memory>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "game_object.hpp"
-#include "game_objects_loader.hpp"
 
 class GOManager {
-    static constexpr size_t kMaxPriority = 32;
+    static constexpr size_t kMaxPriority = 16;
 
 public:
-    GOManager() : objects_(), priority_() {}
+    GOManager() : objects_(), order_() {}
+    explicit GOManager(std::string_view game_object_path);
 
-    explicit GOManager(std::string_view game_object_path)
-        : objects_(ParseGameObjects(game_object_path)), priority_(1, 1) {}
+    GOManager(const GOManager& manager) = delete;
+    GOManager& operator=(const GOManager& rhs) = delete;
 
-    void AddObject(std::string_view game_object_path, size_t priority = 1);
-
+    void AddObjects(std::string_view game_objects_path, size_t shared_priority = 1);
+    void AddObjects(std::string_view game_objects_path, std::vector<size_t> priorities);
     void AddObject(std::shared_ptr<GameObject> game_object, size_t priority = 1);
 
     std::shared_ptr<GameObject> FindObjectByTag(const std::string& tag) const;
 
-    void HandleEvent(IGameState* state, nlohmann::json& event_data);
+    void UpdateObjectPriority(const std::string& object_tag, size_t new_priority);
+
+    void HandleEvent(IGameState* state, nlohmann::json& event_data, bool consider_cursor = true);
 
     void DrawAll(sf::RenderWindow* window);
 
-    ~GOManager() {}
-
 private:
-    std::vector<std::shared_ptr<GameObject>> objects_;
-    std::vector<size_t> priority_;
-
-    std::array<std::vector<size_t>, kMaxPriority> GetOrder();
-    void UpdateObjectPriority(size_t object_ind, size_t new_priority);
+    std::unordered_map<std::string, std::pair<std::shared_ptr<GameObject>, size_t>> objects_;
+    std::array<std::vector<std::string>, kMaxPriority> order_;
 };

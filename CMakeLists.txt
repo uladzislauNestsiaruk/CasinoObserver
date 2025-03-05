@@ -33,7 +33,9 @@ add_subdirectory(tables)
 # Gamblers
 add_subdirectory(gamblers)
 # Utils
-add_subdirectory(Utils)
+add_subdirectory(utils)
+# Game object
+add_subdirectory(game_object)
 
 # All libraries and subdirectories of the project
 set(LIBRARIES ${LIBRARIES} sfml-graphics sfml-window

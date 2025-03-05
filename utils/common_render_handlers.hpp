@@ -1,20 +1,17 @@
 #pragma once
 
 #include <../game_states/game_state.hpp>
-#include <game_object.hpp>
+#include <../game_object/game_object.hpp>
 #include <render_events_manager.hpp>
 
 struct CommonGOEventHandlers {
-    static void ReturnButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                    const nlohmann::json& data);
-    static void BanButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                 const nlohmann::json& data);
-    static void SelectButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                    const nlohmann::json& data);
-    static void DealButtonHandler(StateManager* manager, IGameState* state, GameObject* object,
-                                  const nlohmann::json& data);
-    static void PlayerHandler(StateManager* manager, IGameState* state, GameObject* object,
-                              const json& data);
+    static DEFINE_GOHANDLER(ReturnButtonHandler);
+
+    static DEFINE_GOHANDLER(BanButtonHandler);
+    static DEFINE_GOHANDLER(SelectButtonHandler);
+    static DEFINE_GOHANDLER(DealButtonHandler);
+
+    static DEFINE_GOHANDLER(PlayerHandler);
 };
 
 struct CommonREMEventHandlers {

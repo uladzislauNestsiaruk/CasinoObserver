@@ -9,11 +9,11 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
-#include "utils/game_object_manager.hpp"
 #include "utils/json.hpp"
 
-#include <game_object.hpp>
-#include <game_objects_loader.hpp>
+#include "game_object/game_object.hpp"
+#include "game_object/game_objects_loader.hpp"
+#include "game_object/game_object_manager.hpp"
 #include <stats_window.hpp>
 #include <textures_loader.hpp>
 

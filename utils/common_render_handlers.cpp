@@ -4,16 +4,14 @@
 
 #include "common_render_handlers.hpp"
 #include <../game_states/table_state.hpp>
-#include <game_object.hpp>
+#include <../game_object/game_object.hpp>
 #include <render_events_manager.hpp>
 
-void CommonGOEventHandlers::ReturnButtonHandler(StateManager* manager, IGameState* state,
-                                                GameObject* object, const nlohmann::json& data) {
+DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnButtonHandler) {
     manager->Pop();
 }
 
-void CommonGOEventHandlers::SelectButtonHandler(StateManager* manager, IGameState* state,
-                                                GameObject* object, const nlohmann::json& data) {
+DEFINE_GOHANDLER(CommonGOEventHandlers::SelectButtonHandler) {
     std::shared_ptr<GameObject> select_button_object =
         static_cast<AbstractGameState*>(state)->FindGameObjectByTag("select_button");
     std::shared_ptr<GameObject> ban_button_object =
@@ -35,8 +33,7 @@ void CommonGOEventHandlers::SelectButtonHandler(StateManager* manager, IGameStat
     static_cast<TableState*>(state)->SetIsSelectPressed(true);
 }
 
-void CommonGOEventHandlers::BanButtonHandler(StateManager* manager, IGameState* state,
-                                             GameObject* object, const json& data) {
+DEFINE_GOHANDLER(CommonGOEventHandlers::BanButtonHandler) {
     std::shared_ptr<GameObject> select_button_object =
         static_cast<AbstractGameState*>(state)->FindGameObjectByTag("select_button");
     std::shared_ptr<GameObject> ban_button_object =
@@ -60,13 +57,11 @@ void CommonGOEventHandlers::BanButtonHandler(StateManager* manager, IGameState* 
     }
 }
 
-void CommonGOEventHandlers::DealButtonHandler(StateManager* manager, IGameState* state,
-                                              GameObject* object, const json& data) {
+DEFINE_GOHANDLER(CommonGOEventHandlers::DealButtonHandler) {
     std::cout << "Deal!\n";
 }
 
-void CommonGOEventHandlers::PlayerHandler(StateManager* manager, IGameState* state,
-                                          GameObject* object, const json& data) {
+DEFINE_GOHANDLER(CommonGOEventHandlers::PlayerHandler) {
     TableState* table_state = static_cast<TableState*>(state);
     bool is_select_pressed = table_state->GetIsSelectPressed();
     if (is_select_pressed) {

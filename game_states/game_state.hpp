@@ -2,8 +2,8 @@
 
 #include "SFML/Window/Event.hpp"
 
-#include <game_object_manager.hpp>
-#include <game_objects_loader.hpp>
+#include <../game_object/game_object_manager.hpp>
+#include <../game_object/game_objects_loader.hpp>
 #include <json.hpp>
 #include <render_events_manager.hpp>
 

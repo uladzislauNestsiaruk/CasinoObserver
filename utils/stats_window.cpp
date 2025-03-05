@@ -1,7 +1,7 @@
 #include "stats_window.hpp"
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Vector2.hpp"
-#include "game_object.hpp"
+#include <../game_object/game_object.hpp>
 
 DEFINE_GOHANDLER(OnMouseMoveHandler);
 DEFINE_GOHANDLER(OnMousePressedHandler);

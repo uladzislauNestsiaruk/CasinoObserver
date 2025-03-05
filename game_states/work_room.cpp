@@ -2,7 +2,6 @@
 #include <memory>
 
 #include "SFML/Window/Event.hpp"
-#include "game_object.hpp"
 #include "game_state.hpp"
 #include "state_manager.hpp"
 #include "table_state.hpp"
@@ -10,7 +9,8 @@
 
 #include <../tables/blackjack_table.hpp>
 #include <../tables/poker_table.hpp>
-#include <game_objects_loader.hpp>
+#include <../game_object/game_object.hpp>
+#include <../game_object/game_objects_loader.hpp>
 #include <textures_loader.hpp>
 
 using nlohmann::json;

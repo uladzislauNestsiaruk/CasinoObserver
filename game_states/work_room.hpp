@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <game_object.hpp>
+#include <../game_object/game_object.hpp>
 #include <json.hpp>
 #include <thread_safe_queue.hpp>
 

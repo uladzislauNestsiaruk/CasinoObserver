@@ -11,8 +11,8 @@
 
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
-#include <game_object.hpp>
-#include <game_objects_loader.hpp>
+#include <../game_object/game_object.hpp>
+#include <../game_object/game_objects_loader.hpp>
 #include <textures_loader.hpp>
 
 class BasicRow : public GameObject {

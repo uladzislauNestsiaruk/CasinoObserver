@@ -55,9 +55,9 @@ void TableState::Draw(StateManager* manager) {
 void TableState::GameExecutor() {
     while (!stop_game_thread_) {
         if (run_game_.load()) {
-            selected_players_.clear();
-            table_->GameIteration();
+            table_->ClearRollback();
             run_game_.store(false);
+            table_->GameIteration();
         }
     }
 }
@@ -69,12 +69,30 @@ TableState::~TableState() {
 
 void TableState::BanPlayers() {
     table_->SetWasActionPerformed(true);
-    while (table_->GetWasActionPerformed()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    while (!table_->IsGameFinished()) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    table_->RollbackGame();
+    render_events_manager_.Clear();
+    while (!logs_.empty()) {
+        logs_.pop();
     }
 
     for (const auto& person_tag : selected_players_) {
         table_->RemovePlayer(person_tag);
     }
+
     selected_players_.clear();
+    table_->SetWasActionPerformed(false);
+    for (const std::string& card_id : {"first", "second", "third", "fourth", "fivth"}) {
+        json render_event;
+        render_event["event"]["type"] = "change_phase";
+        render_event["new_phase"] = "empty";
+        render_event["tag"] = card_id + "_central_card";
+        render_event["delay"] = 0;
+
+        objects_manager_.FindObjectByTag(card_id + "_central_card")->FinishPhase();
+        table_->AddRenderEvent(render_event);
+    }
 }

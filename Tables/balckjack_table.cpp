@@ -182,6 +182,8 @@ void BlackjackTable::Dealing() {
     hands_iterator_ = ++hands_.begin();
 }
 
+void BlackjackTable::ClearRollback() {}
+
 void BlackjackTable::Clean() {
     if (players_.empty()) {
         throw std::logic_error("attemt to restart game at the empty desck");

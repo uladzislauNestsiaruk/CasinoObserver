@@ -22,7 +22,6 @@
 #define DEFINE_GOHANDLER(NAME)                                                                     \
     void NAME(StateManager* manager, IGameState* state, GameObject* object, const json& data)
 
-
 using nlohmann::json;
 
 class GameObject : public std::enable_shared_from_this<GameObject> {
@@ -93,6 +92,8 @@ public:
     object_ptr FindGameObjectByTag(const std::string& tag);
 
     bool TryUpdatePhase(const std::string&, uint64_t delay);
+
+    void FinishPhase() { is_finished_current_phase_ = true; }
 
     virtual ~GameObject() {}
 

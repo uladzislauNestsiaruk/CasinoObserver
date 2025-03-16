@@ -35,6 +35,14 @@ public:
     virtual bool GetWasActionPerformed() const = 0;
 
     virtual void SetWasActionPerformed(bool value) = 0;
+
+    virtual void ClearRollback() = 0;
+
+    virtual void RollbackGame() = 0;
+
+    virtual void SetIsActiveGame(bool value) = 0;
+
+    virtual void AddRenderEvent(const json&) = 0;
 };
 
 class AbstractTable : public ITable {
@@ -65,6 +73,8 @@ public:
     bool GetWasActionPerformed() const override { return was_action_performed_.load(); }
 
     void SetWasActionPerformed(bool value) override { was_action_performed_.store(value); }
+
+    void AddRenderEvent(const json& render_event) override { render_queue_.push(render_event); }
 
 protected:
     std::atomic<bool> was_action_performed_ = false;

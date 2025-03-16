@@ -1,6 +1,7 @@
 #include "table.hpp"
-#include "common.hpp"
-#include "constants.hpp"
+
+#include <common.hpp>
+#include <constants.hpp>
 
 void AbstractTable::AddPlayer(std::shared_ptr<IGambler> player) {
     players_.emplace_back(player);

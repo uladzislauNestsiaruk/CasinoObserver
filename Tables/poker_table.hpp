@@ -38,7 +38,11 @@ private:
 
     void SelectWinners();
 
-    void RollbackGame();
+    void RollbackGame() override;
+
+    void ClearRollback() override;
+
+    void SetIsActiveGame(bool value) override { is_active_game_.store(value); }
 
 private:
     size_t active_players_ = 0; // Number of players which can make bets
@@ -46,7 +50,7 @@ private:
     bool show_all_cards_ = 0;   // true if all players are all in or there is only one active player
     std::vector<bool> is_all_in_; // true if player with this index is all in
 
-    std::atomic<bool> is_active_game = false;
+    std::atomic<bool> is_active_game_ = false;
 
     struct BetState {
         size_t amount = 0;

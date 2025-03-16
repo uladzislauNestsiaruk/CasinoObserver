@@ -39,6 +39,12 @@ public:
 
     bool IsGameFinished() const override;
 
+    void ClearRollback() override;
+
+    void RollbackGame() override {}
+
+    void SetIsActiveGame(bool value) override {}
+
 private:
     std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;

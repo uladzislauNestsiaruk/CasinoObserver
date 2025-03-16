@@ -94,7 +94,6 @@ void GOManager::HandleEvent(IGameState* state, nlohmann::json& event_data) {
                 objects_[ind]->TriggerHandler(&StateManager::Instance(), state, event_data);
             if (handled_tag.has_value()) {
                 handled_ind = ind;
-                std::cout << "after finding trigger\n";
                 break;
             }
         }

@@ -93,10 +93,7 @@ public:
 
     bool TryUpdatePhase(const std::string&, uint64_t delay);
 
-    void FinishPhase() {
-        is_finished_current_phase_ = true;
-        std::cout << tag_ << ' ' << is_finished_current_phase_;
-    }
+    void FinishPhase() { is_finished_current_phase_ = true; }
 
     virtual ~GameObject() {}
 

@@ -52,9 +52,7 @@ void AbstractTable::GenPlayers(uint8_t num_players, uint8_t max_places, GameType
 void AbstractTable::RemovePlayer(const std::string& person_tag) {
     for (size_t i = 0; i < players_.size(); ++i) {
         if (players_[i]->GetPersonTag() == person_tag) {
-            std::cout << "deleting\n";
             RemovePlayer(i);
-            std::cout << "after deleting\n";
             return;
         }
     }

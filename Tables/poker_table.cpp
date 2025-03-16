@@ -298,7 +298,6 @@ void PokerTable::DistributionPhase(std::string_view phase) {
         }
     } else if (phase == "flop") {
         for (const std::string& card_id : {"first", "second", "third"}) {
-            std::cout << "adding: " << card_id << '\n';
             Card card = deck_.GetTopCard();
             json render_event;
             render_event["event"]["type"] = "change_phase";
@@ -449,15 +448,13 @@ void PokerTable::GameIteration() {
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
-        std::cout << "applying table phases\n";
         for (size_t i = 1; i <= part; ++i) {
-            std::cout << render_queue_.size() << "\n";
             json render_event;
             render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = phase + "_" + std::to_string(i);
             render_event["tag"] = "root";
             render_event["delay"] = (i == 1 ? 100 : default_delay);
-            render_queue_.push(render_event);
+            AddRenderEvent(render_event);
         }
 
         if (show_all_cards_) {
@@ -469,7 +466,6 @@ void PokerTable::GameIteration() {
 
     SelectWinners();
     Clean();
-    std::cout << "end game iteration\n";
 }
 
 bool PokerTable::IsGameFinished() const { return !is_active_game_.load(); }

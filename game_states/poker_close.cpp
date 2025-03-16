@@ -48,7 +48,6 @@ PokerClose::~PokerClose() {
 void PokerClose::GameExecutor() {
     while (!stop_game_thread_) {
         if (run_game_.load()) {
-            std::cout << "checking2\n";
             table_->ClearRollback();
             run_game_.store(false);
             table_->GameIteration();
@@ -66,12 +65,9 @@ void PokerClose::HandleEvent(const sf::Event& event) {
     event_data["event"]["y"] = event.mouseButton.y;
     event_data["event"]["type"] = event.type;
     objects_manager_.HandleEvent(this, event_data);
-    std::cout << "after handler\n";
 }
 
 void PokerClose::Update(sf::Time delta) {
-    std::cout << table_->IsGameFinished() << ' ' << logs_.empty() << ' '
-              << render_events_manager_.IsEmpty() << '\n';
     if (table_->IsGameFinished() && logs_.empty() && render_events_manager_.IsEmpty()) {
         run_game_.store(true);
     }
@@ -95,30 +91,19 @@ void PokerClose::Draw(StateManager* manager) {
 void PokerClose::BanPlayers() {
     table_->SetWasActionPerformed(true);
     while (!table_->IsGameFinished()) {
-        std::cout << "checking game finished\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
-    std::cout << "before rollback\n";
-    table_->RollbackGame();
-    std::cout << "after rollback\n";
-    // auto start = std::chrono::steady_clock::now();
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    // auto end = std::chrono::steady_clock::now();
 
-    // std::cout << "Slept for "
-    //           << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
-    //           << " ms\n";
-    std::cout << "GOAAAL2\n";
-    std::cout << "Ban players!!!\n";
+    table_->RollbackGame();
     render_events_manager_.Clear();
     while (!logs_.empty()) {
         logs_.pop();
     }
+
     for (const auto& person_tag : selected_players_) {
-        std::cout << person_tag << '\n';
         table_->RemovePlayer(person_tag);
     }
-    std::cout << "Here: " << render_events_manager_.GetSize() << "\n";
+
     selected_players_.clear();
     table_->SetWasActionPerformed(false);
     for (const std::string& card_id : {"first", "second", "third", "fourth", "fivth"}) {
@@ -131,5 +116,4 @@ void PokerClose::BanPlayers() {
         objects_manager_.FindObjectByTag(card_id + "_central_card")->FinishPhase();
         table_->AddRenderEvent(render_event);
     }
-    std::cout << "Here: " << render_events_manager_.GetSize() << "\n";
 }

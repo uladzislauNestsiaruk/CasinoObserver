@@ -56,7 +56,7 @@ class StatsWindow : public GameObject {
 public:
     StatsWindow() = delete;
 
-    explicit StatsWindow(const std::string& sprite_code, size_t window_id);
+    StatsWindow(const std::string& sprite_code, const std::string& qualifier);
 
     void AddRow(std::shared_ptr<BasicRow> row);
 
@@ -83,7 +83,7 @@ private:
     int32_t first_visible_row_;
     bool mouse_pressed_;
     sf::Vector2f mouse_pressed_cords_;
-    size_t window_id_;
+    std::string qualifier_;
 
     size_t visible_rows_ = 10;
     sf::Vector2f vert_padding = {0.03, 0.98};

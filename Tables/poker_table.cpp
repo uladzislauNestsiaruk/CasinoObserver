@@ -431,16 +431,13 @@ void PokerTable::Clean() {
 
 void PokerTable::GameIteration() {
     is_active_game.store(true);
-    std::cout << "HERE1";
     Dealing();
-    std::cout << "HERE2";
     if (active_players_ < 2) {
         assert(active_players_ != 0);
         Clean();
         GenPlayers(get_random_number(1, 6 - players_.size()), kGamblersPlaces - 1, GameType::Poker);
         return;
     }
-    std::cout << "HERE3";
     for (const auto& [phase, part] : std::vector<std::pair<std::string, int>>{
              {"preflop", 1}, {"flop", 3}, {"turn", 2}, {"river", 2}}) {
         if (was_action_performed_.load()) {
@@ -463,20 +460,15 @@ void PokerTable::GameIteration() {
             continue;
         }
 
-        std::cout << "HERE4";
         BettingPhase();
         ApplyBets();
     }
 
-    std::cout << "HERE5";
     if (was_action_performed_.load()) {
-        std::cout << "HERE6";
         RollbackGame();
-        std::cout << "HERE7";
         while (!render_queue_.empty()) {
             render_queue_.pop();
         }
-        std::cout << "HERE8";
         Clean();
         was_action_performed_.store(false);
     } else {

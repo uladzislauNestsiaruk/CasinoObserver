@@ -23,7 +23,7 @@ std::optional<T> GetOptionalJsonValue(const json& data, const std::string& key) 
     if (std::is_same_v<T, json> && data[key].is_string()) {
         std::string value = data[key].template get<std::string>();
         if (value[0] == '{') {
-            std::ifstream file(value.substr(1, value.size() - 2));
+            std::ifstream file(GetAssetPrefix() + value.substr(1, value.size() - 2));
             json result;
             file >> result;
             return result;
@@ -89,7 +89,7 @@ std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_
         std::vector<std::string> extensions =
             GetJsonValue<std::vector<std::string>>(data, "__extend__");
         for (const auto& item : extensions) {
-            std::ifstream file(item);
+            std::ifstream file(GetAssetPrefix() + item);
             json result;
             file >> result;
             data.merge_patch(result);

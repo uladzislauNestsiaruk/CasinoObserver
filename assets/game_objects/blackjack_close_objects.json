@@ -96,6 +96,6 @@
         "scale": [0.13, 0.13]
     },
     "__extend__": [
-        "./assets/game_objects/utils/gamblers_phases.json"
+        "game_objects/utils/gamblers_phases.json"
     ]
 }

@@ -10,9 +10,9 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler);
 
 const std::string DefaultRow::kBackgroundSpriteTag = "stats_subwindow_row_background";
 
-StatsWindow::StatsWindow(const std::string& sprite_code, size_t window_id)
-    : window_id_(window_id),
-      GameObject(kTagPrefix + std::to_string(window_id), "afk",
+StatsWindow::StatsWindow(const std::string& sprite_code, const std::string& qualifier)
+    : qualifier_(qualifier),
+      GameObject(kTagPrefix + qualifier, "afk",
                  std::vector<sf::Sprite>(1, sf::Sprite(GetTextute(sprite_code)))),
       data_(), first_visible_row_(0), mouse_pressed_(false) {
     AddHandler(sf::Event::MouseMoved, OnMouseMoveHandler, GetTag());

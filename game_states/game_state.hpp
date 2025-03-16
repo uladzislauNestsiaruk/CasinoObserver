@@ -5,6 +5,7 @@
 #include <../game_object/game_object_manager.hpp>
 #include <../game_object/game_objects_loader.hpp>
 #include <json.hpp>
+#include <memory>
 #include <render_events_manager.hpp>
 
 using nlohmann::json;
@@ -22,7 +23,7 @@ public:
     virtual void Draw(StateManager* manager) = 0;
 
     void ChangeState();
- 
+
     virtual ~IGameState() {}
 };
 
@@ -32,6 +33,8 @@ public:
         : objects_manager_(game_objects_path), render_events_manager_(this) {}
 
     virtual ~AbstractGameState() {}
+
+    void AddIndependentObject(std::shared_ptr<GameObject> object) noexcept;
 
     std::shared_ptr<GameObject> FindGameObjectByTag(const std::string& tag) const;
 

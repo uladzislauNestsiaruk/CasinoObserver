@@ -9,11 +9,12 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
+#include "event_wrapper.hpp"
 #include "utils/json.hpp"
 
 #include "game_object/game_object.hpp"
-#include "game_object/game_objects_loader.hpp"
 #include "game_object/game_object_manager.hpp"
+#include "game_object/game_objects_loader.hpp"
 #include <stats_window.hpp>
 #include <textures_loader.hpp>
 
@@ -29,7 +30,7 @@ int main(int argc, char** argv) {
     Preload();
     GOManager objects_manager;
     std::shared_ptr<StatsWindow> stats_window =
-        std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", 1);
+        std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", "1");
     for (size_t ind = 0; ind < 20; ind++) {
         stats_window->AddRow(std::make_shared<DefaultRow>(ind + 1));
     }
@@ -47,20 +48,7 @@ int main(int argc, char** argv) {
                 return 0;
             }
             nlohmann::json event;
-            event["event"]["type"] = last_event.type;
-            event["event"]["x"] = last_event.type == sf::Event::MouseMoved
-                                      ? last_event.mouseMove.x
-                                      : last_event.mouseButton.x;
-            event["event"]["y"] = last_event.type == sf::Event::MouseMoved
-                                      ? last_event.mouseMove.y
-                                      : last_event.mouseButton.y;
-            event["event"]["delta"] = last_event.mouseWheelScroll.delta;
-
-            if (last_event.type == sf::Event::MouseWheelScrolled) {
-                event["event"]["x"] = last_event.mouseWheelScroll.x;
-                event["event"]["y"] = last_event.mouseWheelScroll.y;
-                event["event"]["wheel_id"] = last_event.mouseWheelScroll.wheel;
-            }
+            EventWrapper::Wrap(last_event, event);
             objects_manager.HandleEvent(nullptr, event);
         }
         objects_manager.DrawAll(&window);

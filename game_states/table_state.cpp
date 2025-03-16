@@ -1,42 +1,36 @@
 #include "table_state.hpp"
+#include "event_wrapper.hpp"
 
 TableState::TableState(const std::string& objects_path, StateManager* manager,
-               table_creater_t table_creater)
-        : AbstractGameState(objects_path), stop_game_thread_(false), run_game_(false),
-          game_exec_thr_(([this] { GameExecutor(); })) {
-        table_ = table_creater(logs_, render_events_manager_.GetRenderQueue());
-        std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
-        root_game_object_->Resize(manager->GetWindowSize());
-        for (const auto& place : kGamblersPlaces) {
-            for (const auto& person_tag : place) {
-                root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
-                                              CommonGOEventHandlers::PlayerHandler, person_tag);
-            }
+                       table_creater_t table_creater)
+    : AbstractGameState(objects_path), stop_game_thread_(false), run_game_(false),
+      game_exec_thr_(([this] { GameExecutor(); })) {
+    table_ = table_creater(logs_, render_events_manager_.GetRenderQueue());
+    std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
+    root_game_object_->Resize(manager->GetWindowSize());
+    for (const auto& place : kGamblersPlaces) {
+        for (const auto& person_tag : place) {
+            root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                          CommonGOEventHandlers::PlayerHandler, person_tag);
         }
-
-        root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
-                                      CommonGOEventHandlers::ReturnButtonHandler, "return_button");
-        root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
-                                      CommonGOEventHandlers::SelectButtonHandler, "select_button");
-        root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
-                                      CommonGOEventHandlers::DealButtonHandler, "deal_button");
-        root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
-                                      CommonGOEventHandlers::BanButtonHandler, "ban_button");
-
-        render_events_manager_.AddHandler("change_phase",
-                                          CommonREMEventHandlers::ChangePhaseHandler);
     }
+
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::ReturnButtonHandler, "return_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::SelectButtonHandler, "select_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::DealButtonHandler, "deal_button");
+    root_game_object_->AddHandler(sf::Event::MouseButtonPressed,
+                                  CommonGOEventHandlers::BanButtonHandler, "ban_button");
+
+    render_events_manager_.AddHandler("change_phase", CommonREMEventHandlers::ChangePhaseHandler);
+}
 
 void TableState::HandleEvent(const sf::Event& event) {
-    if (event.type != sf::Event::MouseButtonPressed) {
-        return;
-    }
-
     json event_data;
-    event_data["event"]["x"] = event.mouseButton.x;
-    event_data["event"]["y"] = event.mouseButton.y;
-    event_data["event"]["type"] = event.type;
-    objects_manager_.HandleEvent(this, event_data);
+    EventWrapper::Wrap(event, event_data);
+    objects_manager_.HandleEvent(this, event_data, true);
 }
 
 void TableState::Update(sf::Time delta) {

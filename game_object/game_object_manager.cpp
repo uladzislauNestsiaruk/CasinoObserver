@@ -77,7 +77,7 @@ void GOManager::UpdateObjectPriority(const std::string& object_tag, size_t new_p
             object_tag + "\"");
     }
 
-    if (objects_[object_tag].second == new_priority) {
+    if (objects_[object_tag].second == new_priority && order_[new_priority].back() == object_tag) {
         return;
     }
 
@@ -96,11 +96,11 @@ void GOManager::HandleEvent(IGameState* state, nlohmann::json& event_data, bool 
     std::optional<std::string> handled_tag;
     for (int32_t priority = kMaxPriority - 1; priority >= 0 && !handled_tag.has_value();
          priority--) {
-        for (const std::string& root_object_tag : order_[priority]) {
-            handled_tag = objects_[root_object_tag].first->TriggerHandler(&StateManager::Instance(),
-                                                                          state, event_data);
+        for (int64_t ind = order_[priority].size() - 1; ind >= 0; ind--) {
+            handled_tag = objects_[order_[priority][ind]].first->TriggerHandler(
+                &StateManager::Instance(), state, event_data);
             if (handled_tag.has_value()) {
-                handled_tag = root_object_tag;
+                handled_tag = order_[priority][ind];
                 break;
             }
         }

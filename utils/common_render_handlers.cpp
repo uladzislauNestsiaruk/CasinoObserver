@@ -1,15 +1,16 @@
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <string>
 
+#include "SFML/System/Vector2.hpp"
 #include "common_render_handlers.hpp"
-#include <../game_states/table_state.hpp>
 #include <../game_object/game_object.hpp>
+#include <../game_states/table_state.hpp>
 #include <render_events_manager.hpp>
+#include <stats_window.hpp>
 
-DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnButtonHandler) {
-    manager->Pop();
-}
+DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnButtonHandler) { manager->Pop(); }
 
 DEFINE_GOHANDLER(CommonGOEventHandlers::SelectButtonHandler) {
     std::shared_ptr<GameObject> select_button_object =
@@ -57,9 +58,7 @@ DEFINE_GOHANDLER(CommonGOEventHandlers::BanButtonHandler) {
     }
 }
 
-DEFINE_GOHANDLER(CommonGOEventHandlers::DealButtonHandler) {
-    std::cout << "Deal!\n";
-}
+DEFINE_GOHANDLER(CommonGOEventHandlers::DealButtonHandler) { std::cout << "Deal!\n"; }
 
 DEFINE_GOHANDLER(CommonGOEventHandlers::PlayerHandler) {
     TableState* table_state = static_cast<TableState*>(state);
@@ -74,6 +73,17 @@ DEFINE_GOHANDLER(CommonGOEventHandlers::PlayerHandler) {
         }
 
         return;
+    } else {
+        std::shared_ptr<StatsWindow> player_statistics =
+            std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", object->GetTag());
+
+        if (table_state->FindGameObjectByTag(player_statistics->GetTag())) {
+            return;
+        }
+        std::shared_ptr<GameObject> root = table_state->FindGameObjectByTag("root");
+        player_statistics->Resize(sf::Vector2f(root->GetSize().x / 4, root->GetSize().y / 2),
+                                  false);
+        table_state->AddIndependentObject(player_statistics);
     }
 }
 

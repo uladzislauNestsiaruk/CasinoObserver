@@ -153,8 +153,8 @@ void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json& log) {
 }
 
 BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-    : AbstractTable(GameType::Blackjack, render_queue), is_game_finished_(true),
-      hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
+    : AbstractTable(GameType::Blackjack, render_queue), is_game_finished_(true), hands_(),
+      settings_{100, true}, logs_(logs), render_queue_(render_queue) {
     occupied_places_.fill(false);
     GenPlayers(get_random_number(2, kGamblersPlaces), kGamblersPlaces - 1, GameType::Blackjack);
 }
@@ -224,7 +224,7 @@ void BlackjackTable::GameIteration() {
     event["event"]["type"] = "change_phase";
     event["new_phase"] = "players_dealing";
     event["tag"] = "root";
-    event["delay"] = 2000;
+    event["delay"] = default_antimation_end_delay;
 
     render_queue_.push(event);
     event["new_phase"] = "dealer_dealing";

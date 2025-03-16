@@ -129,7 +129,7 @@
             0.67
         ],
         "scale": [0.5, 0.5],
-        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+        "phases": "{game_objects/utils/cards_phases.json}"
     },
     "second_central_card": {
         "default_phase": "empty_card",
@@ -139,7 +139,7 @@
             0.67
         ],
         "scale": [0.5, 0.5],
-        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+        "phases": "{game_objects/utils/cards_phases.json}"
     },
     "third_central_card": {
         "default_phase": "empty_card",
@@ -149,7 +149,7 @@
             0.67
         ],
         "scale": [0.5, 0.5],
-        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+        "phases": "{game_objects/utils/cards_phases.json}"
     },
     "fourth_central_card": {
         "default_phase": "empty_card",
@@ -159,12 +159,12 @@
             0.67
         ],
         "scale": [0.5, 0.5],
-        "phases": "{./assets/game_objects/utils/cards_phases.json}"
+        "phases": "{game_objects/utils/cards_phases.json}"
     },
     "fivth_central_card": {
         "default_phase": "empty_card",
         "parent": "root:afk,river_2",
-        "phases": "{./assets/game_objects/utils/cards_phases.json}",
+        "phases": "{game_objects/utils/cards_phases.json}",
         "coords" : [
             0.45,
             0.67
@@ -172,6 +172,6 @@
         "scale": [0.5, 0.5]
     },
     "__extend__": [
-        "./assets/game_objects/utils/gamblers_phases.json"
+        "game_objects/utils/gamblers_phases.json"
     ]
 }

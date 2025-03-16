@@ -1,5 +1,5 @@
 {
-    "empty_card": {
+    "empty": {
         "type": "image",
         "source": "cards_empty_card"
     },

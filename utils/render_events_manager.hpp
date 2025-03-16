@@ -26,6 +26,11 @@ public:
     void HandleEvent() {
         while (!render_queue_.empty() || current_render_event_.has_value()) {
             if (current_render_event_.has_value()) {
+                std::cout
+                    << "Try handle: "
+                    << current_render_event_.value()["event"]["type"].template get<std::string>()
+                    << ' ' << current_render_event_.value()["tag"].template get<std::string>()
+                    << " " << GetSize() << "\n";
                 if (!TryHandle(current_render_event_.value()["event"]["type"],
                                current_render_event_.value())) {
                     break;
@@ -48,6 +53,13 @@ public:
     size_t GetSize() const { return render_queue_.size(); }
 
     bool IsEmpty() const { return render_queue_.empty(); }
+
+    void Clear() {
+        current_render_event_ = std::nullopt;
+        while (!render_queue_.empty()) {
+            render_queue_.pop();
+        }
+    }
 
 private:
     IGameState* state_;

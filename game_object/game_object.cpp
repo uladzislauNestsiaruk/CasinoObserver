@@ -146,6 +146,7 @@ std::optional<std::string> GameObject::TriggerHandler(StateManager* manager, IGa
         data["tag"] = tag_;
         handlers_[data["event"]["type"]](manager, state, this, data);
         handler_tag = tag_;
+        std::cout << "after trigger\n";
     }
 
     return handler_tag;
@@ -199,6 +200,7 @@ sf::Vector2f GameObject::GetSize() const {
 }
 
 bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
+    std::cout << active_phase_ << ' ' << is_finished_current_phase_ << '\n';
     if (active_phase_ == "empty" ||
         (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
         active_phase_ = new_phase;

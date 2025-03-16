@@ -78,13 +78,13 @@ add_executable(${PROJECT_NAME} ${SOURCES} game_loop.cpp)
 # Objects previewer
 add_executable(preview ${SOURCES} game_object_preview.cpp)
 
-# Include headers
-target_include_directories(${PROJECT_NAME} PRIVATE ${HEADERS})
-target_include_directories(preview PRIVATE ${HEADERS})
-
 # Link all
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
 target_link_libraries(preview PRIVATE ${LIBRARIES})
+
+# Include headers
+target_include_directories(${PROJECT_NAME} PRIVATE ${HEADERS})
+target_include_directories(preview PRIVATE ${HEADERS})
 
 # Compile options
 add_compile_options(${OPTIONS})

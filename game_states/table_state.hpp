@@ -37,6 +37,8 @@ public:
 
     void BanPlayers();
 
+    void DealPlayers(StateManager* manager);
+
     ~TableState() override;
 
 private:

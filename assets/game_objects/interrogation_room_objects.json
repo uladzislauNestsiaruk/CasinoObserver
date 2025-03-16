@@ -1,0 +1,13 @@
+{
+    "root":{
+        "default_phase": "afk",
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "interrogation_room_background"
+            }
+        },
+        "coords" : [0.0, 0.0],
+        "scale" : [1.0, 1.0]
+    }
+}

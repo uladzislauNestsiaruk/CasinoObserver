@@ -1,4 +1,7 @@
 #include "table_state.hpp"
+#include "interrogation_state.hpp"
+#include "state_manager.hpp"
+#include <constants.hpp>
 
 TableState::TableState(const std::string& objects_path, StateManager* manager,
                        table_creater_t table_creater)
@@ -100,4 +103,9 @@ void TableState::BanPlayers() {
         objects_manager_.FindObjectByTag(card_id + "_central_card")->FinishPhase();
         table_->AddRenderEvent(render_event);
     }
+}
+
+void TableState::DealPlayers(StateManager* manager) {
+    BanPlayers();
+    manager->Push(std::make_shared<InterrogationState>(kInterrogationRoomGameObjects, manager));
 }

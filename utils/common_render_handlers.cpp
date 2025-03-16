@@ -3,13 +3,12 @@
 #include <string>
 
 #include "common_render_handlers.hpp"
-#include <../game_states/table_state.hpp>
 #include <../game_object/game_object.hpp>
+#include <../game_states/interrogation_state.hpp>
+#include <../game_states/table_state.hpp>
 #include <render_events_manager.hpp>
 
-DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnButtonHandler) {
-    manager->Pop();
-}
+DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnButtonHandler) { manager->Pop(); }
 
 DEFINE_GOHANDLER(CommonGOEventHandlers::SelectButtonHandler) {
     std::shared_ptr<GameObject> select_button_object =
@@ -46,7 +45,6 @@ DEFINE_GOHANDLER(CommonGOEventHandlers::BanButtonHandler) {
         delay = data["delay"].template get<uint64_t>();
     }
 
-    std::cout << "HUY\n";
     TableState* table_state = static_cast<TableState*>(state);
     if (table_state->SizeSelectPlayer()) {
         table_state->SetIsSelectPressed(false);
@@ -58,7 +56,26 @@ DEFINE_GOHANDLER(CommonGOEventHandlers::BanButtonHandler) {
 }
 
 DEFINE_GOHANDLER(CommonGOEventHandlers::DealButtonHandler) {
-    std::cout << "Deal!\n";
+    std::shared_ptr<GameObject> select_button_object =
+        static_cast<AbstractGameState*>(state)->FindGameObjectByTag("select_button");
+    std::shared_ptr<GameObject> ban_button_object =
+        static_cast<AbstractGameState*>(state)->FindGameObjectByTag("ban_button");
+    std::shared_ptr<GameObject> deal_button_object =
+        static_cast<AbstractGameState*>(state)->FindGameObjectByTag("deal_button");
+
+    uint64_t delay = 0;
+    if (data.contains("delay")) {
+        delay = data["delay"].template get<uint64_t>();
+    }
+
+    TableState* table_state = static_cast<TableState*>(state);
+    if (table_state->SizeSelectPlayer()) {
+        table_state->SetIsSelectPressed(false);
+        select_button_object->TryUpdatePhase("afk", delay);
+        ban_button_object->TryUpdatePhase("empty", delay);
+        deal_button_object->TryUpdatePhase("empty", delay);
+        table_state->DealPlayers(manager);
+    }
 }
 
 DEFINE_GOHANDLER(CommonGOEventHandlers::PlayerHandler) {
@@ -89,4 +106,8 @@ bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* rende
     std::string new_phase = data["new_phase"].template get<std::string>();
     uint64_t delay = data["delay"].template get<uint64_t>();
     return target_object->TryUpdatePhase(new_phase, delay);
+}
+
+DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnHandler) {
+    static_cast<InterrogationState*>(state)->SetIsClosed(true);
 }

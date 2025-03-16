@@ -304,7 +304,7 @@ void PokerTable::DistributionPhase(std::string_view phase) {
             render_event["new_phase"] = GetPhaseByCard(card);
             render_event["tag"] = card_id + "_central_card";
             render_event["delay"] = default_antimation_end_delay;
-            render_queue_.push(render_event);
+            AddRenderEvent(render_event);
 
             table_cards_.push_back(card);
         }

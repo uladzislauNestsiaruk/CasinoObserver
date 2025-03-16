@@ -171,6 +171,240 @@
         ],
         "scale": [0.5, 0.5]
     },
+    "first_place_chips": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.12,
+            0.67
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "chips_1": {
+                "type": "image",
+                "source": "chips_1"
+            },
+            "chips_2": {
+                "type": "image",
+                "source": "chips_2"
+            },
+            "chips_3": {
+                "type": "image",
+                "source": "chips_3"
+            },
+            "chips_4": {
+                "type": "image",
+                "source": "chips_4"
+            },
+            "chips_5": {
+                "type": "image",
+                "source": "chips_5"
+            },
+            "chips_6": {
+                "type": "image",
+                "source": "chips_6"
+            },
+            "empty": {
+                "type": "image",
+                "source": "chips_empty_6"
+            }
+        }
+    },
+    "second_place_chips": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.26,
+            0.8
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "chips_1": {
+                "type": "image",
+                "source": "chips_1"
+            },
+            "chips_2": {
+                "type": "image",
+                "source": "chips_2"
+            },
+            "chips_3": {
+                "type": "image",
+                "source": "chips_3"
+            },
+            "chips_4": {
+                "type": "image",
+                "source": "chips_4"
+            },
+            "chips_5": {
+                "type": "image",
+                "source": "chips_5"
+            },
+            "chips_6": {
+                "type": "image",
+                "source": "chips_6"
+            },
+            "empty": {
+                "type": "image",
+                "source": "chips_empty_6"
+            }
+        }
+    },
+    "third_place_chips": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.45,
+            0.83
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "chips_1": {
+                "type": "image",
+                "source": "chips_1"
+            },
+            "chips_2": {
+                "type": "image",
+                "source": "chips_2"
+            },
+            "chips_3": {
+                "type": "image",
+                "source": "chips_3"
+            },
+            "chips_4": {
+                "type": "image",
+                "source": "chips_4"
+            },
+            "chips_5": {
+                "type": "image",
+                "source": "chips_5"
+            },
+            "chips_6": {
+                "type": "image",
+                "source": "chips_6"
+            },
+            "empty": {
+                "type": "image",
+                "source": "chips_empty_6"
+            }
+        }
+    },
+    "fourth_place_chips": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.59,
+            0.82
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "chips_1": {
+                "type": "image",
+                "source": "chips_1"
+            },
+            "chips_2": {
+                "type": "image",
+                "source": "chips_2"
+            },
+            "chips_3": {
+                "type": "image",
+                "source": "chips_3"
+            },
+            "chips_4": {
+                "type": "image",
+                "source": "chips_4"
+            },
+            "chips_5": {
+                "type": "image",
+                "source": "chips_5"
+            },
+            "chips_6": {
+                "type": "image",
+                "source": "chips_6"
+            },
+            "empty": {
+                "type": "image",
+                "source": "chips_empty_6"
+            }
+        }
+    },
+    "fivth_place_chips": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.75,
+            0.77
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "chips_1": {
+                "type": "image",
+                "source": "chips_1"
+            },
+            "chips_2": {
+                "type": "image",
+                "source": "chips_2"
+            },
+            "chips_3": {
+                "type": "image",
+                "source": "chips_3"
+            },
+            "chips_4": {
+                "type": "image",
+                "source": "chips_4"
+            },
+            "chips_5": {
+                "type": "image",
+                "source": "chips_5"
+            },
+            "chips_6": {
+                "type": "image",
+                "source": "chips_6"
+            },
+            "empty": {
+                "type": "image",
+                "source": "chips_empty_6"
+            }
+        }
+    },
+    "sixth_place_chips": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.82,
+            0.63
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "chips_1": {
+                "type": "image",
+                "source": "chips_1"
+            },
+            "chips_2": {
+                "type": "image",
+                "source": "chips_2"
+            },
+            "chips_3": {
+                "type": "image",
+                "source": "chips_3"
+            },
+            "chips_4": {
+                "type": "image",
+                "source": "chips_4"
+            },
+            "chips_5": {
+                "type": "image",
+                "source": "chips_5"
+            },
+            "chips_6": {
+                "type": "image",
+                "source": "chips_6"
+            },
+            "empty": {
+                "type": "image",
+                "source": "chips_empty_6"
+            }
+        }
+    },
     "__extend__": [
         "./assets/game_objects/utils/gamblers_phases.json"
     ]

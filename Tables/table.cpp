@@ -2,24 +2,30 @@
 
 #include <common.hpp>
 #include <constants.hpp>
+#include <iostream>
 
 void AbstractTable::AddPlayer(std::shared_ptr<IGambler> player) {
     players_.emplace_back(player);
     occupied_places_[player->GetTableSeatId()] = true;
-    render_queue_.push({{"event", {{"type", "change_phase"}}},
-                        {"new_phase", "afk"},
-                        {"tag", player->GetPersonTag()},
-                        {"delay", 0}});
-    // render_queue_.push({{"event_type", "add_handler"},
-    //                     {"new_phase", "afk"},
-    //                     {"tag", player->GetPersonTag()}});
+    AddRenderEvent({{"event", {{"type", "change_phase"}}},
+                    {"new_phase", "afk"},
+                    {"tag", player->GetPersonTag()},
+                    {"delay", 0}});
+    AddRenderEvent({{"event", {{"type", "change_phase"}}},
+                    {"new_phase", "chips_6"},
+                    {"tag", ExtractPersonPlace(player->GetPersonTag()) + "_chips"},
+                    {"delay", 0}});
 }
 
 void AbstractTable::RemovePlayer(size_t ind) {
-    render_queue_.push({{"event", {{"type", "change_phase"}}},
-                        {"new_phase", "empty"},
-                        {"tag", players_[ind]->GetPersonTag()},
-                        {"delay", 0}});
+    AddRenderEvent({{"event", {{"type", "change_phase"}}},
+                    {"new_phase", "empty"},
+                    {"tag", players_[ind]->GetPersonTag()},
+                    {"delay", 0}});
+    AddRenderEvent({{"event", {{"type", "change_phase"}}},
+                    {"new_phase", "empty"},
+                    {"tag", ExtractPersonPlace(players_[ind]->GetPersonTag()) + "_chips"},
+                    {"delay", 0}});
     occupied_places_[players_[ind]->GetTableSeatId()] = false;
     deck_.ReturnCards(players_[ind]->TakeAllCards());
     players_.erase(players_.begin() + ind);

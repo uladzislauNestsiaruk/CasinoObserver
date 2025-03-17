@@ -1,11 +1,19 @@
+#include <iostream>
 #include <memory>
 #include <numeric>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 #include "blackjack_table.hpp"
 #include "common.hpp"
 #include "constants.hpp"
+
+std::string GetPhaseByCard(Card card) {
+    uint8_t type = static_cast<uint8_t>(card.GetType());
+    uint8_t value = static_cast<uint8_t>(card.GetValue());
+    return value_names[value] + "_of_" + type_names[type];
+}
 
 // cards through 2 to 10 rate as their face value
 // J Q K = 10
@@ -161,9 +169,34 @@ BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
 
 bool BlackjackTable::IsGameFinished() const { return is_game_finished_.load(); }
 
+void BlackjackTable::AddDealingPhase(const std::string& phase, size_t delay) {
+    json render_event;
+    render_event["event"]["type"] = "change_phase";
+    render_event["new_phase"] = phase;
+    render_event["tag"] = "root";
+    render_event["delay"] = delay;
+    AddRenderEvent(render_event);
+}
+
+void BlackjackTable::AddCardPhase(Card card, size_t card_id, size_t delay) {
+    json render_event;
+    render_event["event"]["type"] = "change_phase";
+    render_event["new_phase"] = GetPhaseByCard(card);
+    if (!card_id) {
+        render_event["tag"] = "dealer_1";
+    } else {
+        render_event["tag"] =
+            "player_" + std::to_string((card_id + 1) / 2) + "_" + std::to_string(2 - (card_id & 1));
+    }
+    render_event["delay"] = delay;
+    AddRenderEvent(render_event);
+}
+
 void BlackjackTable::Dealing() {
     deck_.ReshuffleDeck();
     logs_.push({{"phase", "dealing"}});
+
+    AddDealingPhase("afk", default_delay);
 
     for (size_t ind = 0; ind < players_.size(); ind++) {
         players_[ind]->GetCard(deck_.GetTopCard());
@@ -178,6 +211,21 @@ void BlackjackTable::Dealing() {
                     {"bet", player_bet},
                     {"balance", players_[ind]->GetBalance()}});
     }
+
+    for (size_t ind = 1; ind < players_.size(); ind++) {
+        AddDealingPhase("players_dealing_" + std::to_string(2 * ind - 1), default_delay);
+        if (IsPlaceOccupied(ind - 1)) {
+            AddCardPhase(players_[ind]->ShowCards()[0], 2 * ind - 1, default_delay);
+        }
+        AddDealingPhase("players_dealing_" + std::to_string(2 * ind), default_delay);
+        if (IsPlaceOccupied(ind - 1)) {
+            AddCardPhase(players_[ind]->ShowCards()[1], 2 * ind, default_delay);
+        }
+    }
+
+    AddDealingPhase("dealer_dealing_1", default_delay);
+    AddCardPhase(players_[0]->ShowCards()[0], 0, default_antimation_end_delay);
+    AddDealingPhase("dealer_dealing_2", default_delay);
 
     hands_iterator_ = ++hands_.begin();
 }
@@ -222,15 +270,7 @@ void BlackjackTable::GameIteration() {
     }
     is_game_finished_.store(false);
     Dealing();
-    json event;
-    event["event"]["type"] = "change_phase";
-    event["new_phase"] = "players_dealing";
-    event["tag"] = "root";
-    event["delay"] = default_antimation_end_delay;
 
-    render_queue_.push(event);
-    event["new_phase"] = "dealer_dealing";
-    render_queue_.push(event);
     while (hands_iterator_ != hands_.end()) {
         size_t current_player_score = GetBestPlayerScore(players_, *hands_iterator_);
         if (!hands_iterator_->bet || current_player_score >= 21) {

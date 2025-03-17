@@ -38,6 +38,11 @@ enum class BlackjackAction : uint8_t {
     DUMMY // callback on it will just throw exception
 };
 
+const std::array<std::string, 4> type_names = {"hearts", "clubs", "diamonds", "spades"};
+const std::array<std::string, 13> value_names = {"two",   "three", "four", "five", "six",
+                                                 "seven", "eight", "nine", "ten",  "jack",
+                                                 "queen", "king",  "ace"};
+
 constexpr size_t kValueBits = 4;
 constexpr size_t kCardTypes = 4;
 constexpr size_t kCardValues = 14; // WITH JOKER

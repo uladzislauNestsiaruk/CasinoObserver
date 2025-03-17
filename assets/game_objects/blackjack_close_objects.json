@@ -1,38 +1,88 @@
 {
-    "root":{
+    "root": {
         "default_phase": "afk",
         "phases": {
-            "afk" : {
-                "type":"image",
-                "source":"dealing_animations_blackjack_players_dealing_1"
+            "afk": {
+                "type": "image",
+                "source": "dealing_animations_blackjack_players_dealing_1_1"
             },
-            "players_dealing": {
+            "players_dealing_1": {
                 "type": "animation",
-                "source_dir": "dealing_animations_blackjack_players_dealing"
+                "source_dir": "dealing_animations_blackjack_players_dealing_1"
             },
-            "dealer_dealing": {
+            "players_dealing_2": {
                 "type": "animation",
-                "source_dir": "dealing_animations_blackjack_dealer_dealing"
+                "source_dir": "dealing_animations_blackjack_players_dealing_2"
             },
-            "additional_cards": {
+            "players_dealing_3": {
                 "type": "animation",
-                "source_dir": "dealing_animations_blackjack_additional_cards"
+                "source_dir": "dealing_animations_blackjack_players_dealing_3"
+            },
+            "players_dealing_4": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_4"
+            },
+            "players_dealing_5": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_5"
+            },
+            "players_dealing_6": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_6"
+            },
+            "players_dealing_7": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_7"
+            },
+            "players_dealing_8": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_8"
+            },
+            "players_dealing_9": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_9"
+            },
+            "players_dealing_10": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_10"
+            },
+            "players_dealing_11": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_11"
+            },
+            "players_dealing_12": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_players_dealing_12"
+            },
+            "dealer_dealing_1": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_dealer_dealing_1"
+            },
+            "dealer_dealing_2": {
+                "type": "animation",
+                "source_dir": "dealing_animations_blackjack_dealer_dealing_2"
             }
         },
-        "coords" : [0.0, 0.0],
+        "coords": [
+            0.0,
+            0.0
+        ],
         "scale" : [1.0, 1.0]
     },
-    "return_button":{
+    "return_button": {
         "default_phase": "afk",
-        "parent":"root",
+        "parent": "root",
         "phases": {
             "afk": {
                 "type": "image",
                 "source": "ui_buttons_return_button"
             }
         },
-        "coords" : [0.01, 0.01],
-        "scale" : [1.0, 1.0]
+        "coords": [
+            0.01,
+            0.01
+        ],
+        "scale": [1.0, 1.0]
     },
     "select_button": {
         "default_phase": "afk",
@@ -95,6 +145,137 @@
         ],
         "scale": [0.13, 0.13]
     },
+    "player_1_1": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_1,players_dealing_2,players_dealing_3, players_dealing_4, players_dealing_5, players_dealing_6, players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.15,
+            0.6
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_1_2": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_2,players_dealing_3, players_dealing_4, players_dealing_5, players_dealing_6, players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.2,
+            0.4
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_2_1": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_3, players_dealing_4, players_dealing_5, players_dealing_6, players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.3,
+            0.8
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_2_2": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_4, players_dealing_5, players_dealing_6, players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.4,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_3_1": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_5, players_dealing_6, players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.5,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_3_2": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_6, players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.6,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_4_1": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_7, players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.7,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_4_2": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_8, players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.8,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_5_1": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_9, players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.85,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_5_2": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_10, players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.9,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_6_1": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_11, players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            0.95,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "player_6_2": {
+        "default_phase": "empty",
+        "parent": "root:players_dealing_12, dealer_dealing_1, dealer_dealing_2",
+        "coords": [
+            1,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+    "dealer_1": {
+        "default_phase": "empty",
+        "parent": "root:dealer_dealing_2",
+        "coords": [
+            0.3,
+            0.5
+        ],
+        "scale": [0.5, 0.5],
+        "phases": "{game_objects/utils/cards_phases.json}"
+    },
+
     "__extend__": [
         "game_objects/utils/gamblers_phases.json"
     ]

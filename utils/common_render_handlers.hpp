@@ -1,7 +1,7 @@
 #pragma once
 
-#include <../game_states/game_state.hpp>
 #include <../game_object/game_object.hpp>
+#include <../game_states/game_state.hpp>
 #include <render_events_manager.hpp>
 
 struct CommonGOEventHandlers {
@@ -12,6 +12,8 @@ struct CommonGOEventHandlers {
     static DEFINE_GOHANDLER(DealButtonHandler);
 
     static DEFINE_GOHANDLER(PlayerHandler);
+
+    static DEFINE_GOHANDLER(ReturnHandler);
 };
 
 struct CommonREMEventHandlers {

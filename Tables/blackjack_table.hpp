@@ -46,6 +46,10 @@ public:
     void SetIsActiveGame(bool value) override {}
 
 private:
+    void AddDealingPhase(const std::string& phase, size_t delay);
+    void AddCardPhase(Card card, size_t card_id, size_t delay);
+
+private:
     std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;
     std::list<Hand>::iterator hands_iterator_;

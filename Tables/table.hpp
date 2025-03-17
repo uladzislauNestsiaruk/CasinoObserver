@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -49,17 +51,18 @@ class AbstractTable : public ITable {
     sf::Time time_per_action_ = sf::seconds(1);
 
 public:
-    AbstractTable(TSQueue<json>& render_queue)
-        : whose_move_{0}, render_queue_(render_queue), deck_(false) {}
+    AbstractTable(TSQueue<json>& render_queue, bool without_jokers = true)
+        : whose_move_{0}, render_queue_(render_queue), deck_(without_jokers) {
+    }
 
     explicit AbstractTable(GameType table_type, TSQueue<json>& render_queue)
-        : deck_(table_type == GameType::Poker), whose_move_{0}, render_queue_(render_queue) {}
+        : deck_(true), whose_move_{0}, render_queue_(render_queue) {}
 
     const std::vector<std::shared_ptr<IGambler>>& GetPlayers() const override { return players_; }
 
     void AddPlayer(std::shared_ptr<IGambler> player) override;
 
-    void RemovePlayer(size_t ind) override; 
+    void RemovePlayer(size_t ind) override;
 
     void RemovePlayer(const std::string& person_tag) override;
 
@@ -76,6 +79,10 @@ public:
 
     void AddRenderEvent(const json& render_event) override { render_queue_.push(render_event); }
 
+    bool IsPlaceOccupied(size_t place_id) {
+        assert(place_id < 6);
+        return occupied_places_[place_id];
+    }
 protected:
     std::atomic<bool> was_action_performed_ = false;
     Deck deck_;

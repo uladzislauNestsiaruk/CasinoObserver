@@ -31,8 +31,7 @@ int RateCard(Card card, int AceValue = 11) {
     return 10;
 }
 
-int GetBestPlayerScore(const std::vector<std::shared_ptr<IGambler>>& players, const Hand& hand) {
-    const std::vector<Card>& player_cards = players[hand.player_ind]->ShowCards();
+int GetBestPlayerScore(const std::vector<Card>& player_cards, const Hand& hand) {
     size_t score = std::accumulate(player_cards.begin() + hand.cards_pos.first,
                                    player_cards.begin() + hand.cards_pos.second, 0,
                                    [&](size_t cur, Card card) { return cur + RateCard(card, 11); });
@@ -48,17 +47,13 @@ int GetBestPlayerScore(const std::vector<std::shared_ptr<IGambler>>& players, co
     return score;
 }
 
-BlackjackAction
-HumbleGambler::BlackjackAction(const std::vector<std::shared_ptr<IGambler>>& players,
-                               const Hand& hand) {
+BlackjackAction HumbleGambler::BlackjackAction(const std::vector<Card>& dealer_hand,
+                                               const Hand& hand) {
     const std::vector<Card>& cards = ShowCards();
     size_t total_cards = hand.cards_pos.second - hand.cards_pos.first;
-    if (players.size() < 2 || total_cards < 2 || hand.cards_pos.second > cards.size()) {
-        throw std::logic_error("ill formed state passed to BlackjackAction for HumbleGambler");
-    }
 
-    Card dealer_open = players[0]->ShowCards()[hand.cards_pos.first];
-    size_t player_score = GetBestPlayerScore(players, hand);
+    Card dealer_open = dealer_hand[0];
+    size_t player_score = GetBestPlayerScore(cards, hand);
 
     if (total_cards == 2 &&
         RateCard(cards[hand.cards_pos.first]) == RateCard(cards[hand.cards_pos.second])) {
@@ -164,7 +159,7 @@ BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
     : AbstractTable(GameType::Blackjack, render_queue), is_game_finished_(true), hands_(),
       settings_{100, true}, logs_(logs), render_queue_(render_queue) {
     occupied_places_.fill(false);
-    GenPlayers(get_random_number(2, kGamblersPlaces), kGamblersPlaces - 1, GameType::Blackjack);
+    GenPlayers(kGamblersPlaces, kGamblersPlaces - 1, GameType::Blackjack);
 }
 
 bool BlackjackTable::IsGameFinished() const { return is_game_finished_.load(); }
@@ -196,7 +191,7 @@ void BlackjackTable::Dealing() {
     deck_.ReshuffleDeck();
     logs_.push({{"phase", "dealing"}});
 
-    AddDealingPhase("afk", default_delay);
+    AddDealingPhase("afk", default_antimation_end_delay);
 
     for (size_t ind = 0; ind < players_.size(); ind++) {
         players_[ind]->GetCard(deck_.GetTopCard());
@@ -212,19 +207,22 @@ void BlackjackTable::Dealing() {
                     {"balance", players_[ind]->GetBalance()}});
     }
 
-    for (size_t ind = 1; ind < players_.size(); ind++) {
-        AddDealingPhase("players_dealing_" + std::to_string(2 * ind - 1), default_delay);
-        if (IsPlaceOccupied(ind - 1)) {
-            AddCardPhase(players_[ind]->ShowCards()[0], 2 * ind - 1, default_delay);
+    for (size_t ind = 0; ind < players_.size(); ind++) {
+        AddDealingPhase("players_dealing_" + std::to_string(2 * ind + 1), default_delay);
+        if (IsPlaceOccupied(ind)) {
+            AddCardPhase(players_[ind]->ShowCards()[0], 2 * ind + 1, default_delay);
         }
-        AddDealingPhase("players_dealing_" + std::to_string(2 * ind), default_delay);
-        if (IsPlaceOccupied(ind - 1)) {
-            AddCardPhase(players_[ind]->ShowCards()[1], 2 * ind, default_delay);
+        AddDealingPhase("players_dealing_" + std::to_string(2 * ind + 2), default_delay);
+        if (IsPlaceOccupied(ind)) {
+            AddCardPhase(players_[ind]->ShowCards()[1], 2 * ind + 2, default_delay);
         }
     }
 
+    dealer_cards_.emplace_back(deck_.GetTopCard());
+    dealer_cards_.emplace_back(deck_.GetTopCard());
+
     AddDealingPhase("dealer_dealing_1", default_delay);
-    AddCardPhase(players_[0]->ShowCards()[0], 0, default_antimation_end_delay);
+    AddCardPhase(dealer_cards_[0], 0, default_delay);
     AddDealingPhase("dealer_dealing_2", default_delay);
 
     hands_iterator_ = ++hands_.begin();
@@ -237,15 +235,16 @@ void BlackjackTable::Clean() {
         throw std::logic_error("attemt to restart game at the empty desck");
     }
 
-    size_t dealer_score = GetBestPlayerScore(players_, *hands_.begin());
-    std::vector<Card> dealer_cards = players_[0]->TakeAllCards();
+    size_t dealer_score = GetBestPlayerScore(dealer_cards_, *hands_.begin());
 
-    deck_.ReturnCards(dealer_cards);
+    deck_.ReturnCards(dealer_cards_);
+    dealer_cards_.clear();
     logs_.push({{"change_phase", "winners_selection"}});
 
     hands_iterator_ = ++hands_.begin();
     while (hands_iterator_ != hands_.end()) {
-        size_t player_score = GetBestPlayerScore(players_, *hands_iterator_);
+        size_t player_score = GetBestPlayerScore(players_[hands_iterator_->player_ind]->ShowCards(),
+                                                 *hands_iterator_);
         size_t player_prize =
             hands_iterator_->bet * (player_score >= dealer_score && player_score <= 21) +
             hands_iterator_->bet * (player_score > dealer_score && player_score <= 21);
@@ -255,8 +254,8 @@ void BlackjackTable::Clean() {
         ++hands_iterator_;
     }
 
-    for (size_t player_ind = 1; player_ind < players_.size(); player_ind++) {
-        std::vector<Card> cards = players_[player_ind]->TakeAllCards();
+    for (size_t player_ind = 0; player_ind < players_.size(); player_ind++) {
+        std::vector<Card> cards = players_[player_ind]->ReturnAllCards();
         deck_.ReturnCards(cards);
     }
 
@@ -265,21 +264,22 @@ void BlackjackTable::Clean() {
 }
 
 void BlackjackTable::GameIteration() {
-    if (players_.size() < 2) {
+    if (players_.empty()) {
         return;
     }
     is_game_finished_.store(false);
     Dealing();
 
     while (hands_iterator_ != hands_.end()) {
-        size_t current_player_score = GetBestPlayerScore(players_, *hands_iterator_);
+        size_t current_player_score = GetBestPlayerScore(
+            players_[hands_iterator_->player_ind]->ShowCards(), *hands_iterator_);
         if (!hands_iterator_->bet || current_player_score >= 21) {
             ++hands_iterator_;
             continue;
         }
 
-        BlackjackAction player_decision =
-            players_[hands_iterator_->player_ind]->BlackjackAction(players_, *hands_iterator_);
+        BlackjackAction player_decision = players_[hands_iterator_->player_ind]->BlackjackAction(
+            players_[hands_iterator_->player_ind]->ShowCards(), *hands_iterator_);
 
         json action_log = {{"player", hands_iterator_->player_ind},
                            {"score", current_player_score},

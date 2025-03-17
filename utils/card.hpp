@@ -16,9 +16,15 @@ public:
 
     bool operator==(const Card& other_card) const { return value_ == other_card.value_; }
 
-    bool operator<(const Card& other_card) const { return value_ < other_card.value_; }
+    bool operator<(const Card& other_card) const {
+        return GetValue() == other_card.GetValue() ? value_ < other_card.value_
+                                                   : GetValue() < other_card.GetValue();
+    }
 
-    bool operator>(const Card& other_card) const { return value_ > other_card.value_; }
+    bool operator>(const Card& other_card) const {
+        return GetValue() == other_card.GetValue() ? value_ > other_card.value_
+                                                   : GetValue() > other_card.GetValue();
+    }
 
 private:
     uint8_t value_;

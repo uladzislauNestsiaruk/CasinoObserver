@@ -21,10 +21,9 @@ struct Hand {
                                          // to this hand, [first, last)
 };
 
-// Player by zero index is always a dealer
-// Also whose_move iterating through hands, not players!!!
+// whose_move iterating through hands, not players!!!
 class BlackjackTable : public AbstractTable {
-    static constexpr size_t kGamblersPlaces = 4;
+    static constexpr size_t kGamblersPlaces = 6;
     struct TableSetting {
         size_t min_bet;
         bool das; // is double after split enabled
@@ -33,17 +32,14 @@ class BlackjackTable : public AbstractTable {
 public:
     BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue);
 
-    void GameIteration() override;
-
-    void Clean() override;
-
+    void SetIsActiveGame(bool value) override {}
     bool IsGameFinished() const override;
 
+    void GameIteration() override;
+    void Clean() override;
+
     void ClearRollback() override;
-
     void RollbackGame() override {}
-
-    void SetIsActiveGame(bool value) override {}
 
 private:
     void AddDealingPhase(const std::string& phase, size_t delay);
@@ -53,6 +49,7 @@ private:
     std::atomic<bool> is_game_finished_;
     std::list<Hand> hands_;
     std::list<Hand>::iterator hands_iterator_;
+    std::vector<Card> dealer_cards_;
     TableSetting settings_;
     TSQueue<json>& logs_;
     TSQueue<json>& render_queue_;

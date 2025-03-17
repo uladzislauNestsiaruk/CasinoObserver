@@ -27,7 +27,7 @@ void AbstractTable::RemovePlayer(size_t ind) {
                     {"tag", ExtractPersonPlace(players_[ind]->GetPersonTag()) + "_chips"},
                     {"delay", 0}});
     occupied_places_[players_[ind]->GetTableSeatId()] = false;
-    deck_.ReturnCards(players_[ind]->TakeAllCards());
+    deck_.ReturnCards(players_[ind]->ReturnAllCards());
     players_.erase(players_.begin() + ind);
 }
 

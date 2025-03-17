@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <memory>
 #include <vector>
 
 #include "card.hpp"
@@ -16,7 +15,7 @@ public:
 
     virtual ~IGambler() {}
 
-    virtual BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
+    virtual BlackjackAction BlackjackAction(const std::vector<Card>& dealer_hand,
                                             const Hand&) = 0;
     virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                        const std::vector<Card>& hand, size_t current_bet,
@@ -27,7 +26,7 @@ public:
 
     virtual void GetCard(Card card) = 0;
     virtual Card ReturnOneCard() = 0;
-    virtual std::vector<Card> TakeAllCards() = 0;
+    virtual std::vector<Card> ReturnAllCards() = 0;
     virtual const std::vector<Card>& ShowCards() const = 0;
 
     virtual uint8_t GetTableSeatId() const = 0;
@@ -56,13 +55,9 @@ public:
     void ChangeGameStatus() override { still_in_game_ ^= 1; }
 
     void GetCard(Card card) override { cards_.emplace_back(card); }
-    Card ReturnOneCard() override {
-        Card last_card = cards_.back();
-        cards_.pop_back();
-        return last_card;
-    }
+    Card ReturnOneCard() override; 
     const std::vector<Card>& ShowCards() const override { return cards_; }
-    std::vector<Card> TakeAllCards() override;
+    std::vector<Card> ReturnAllCards() override;
 
     uint8_t GetTableSeatId() const override { return table_seat_id_; }
 
@@ -70,14 +65,7 @@ public:
 
     size_t GetBalance() const override { return money_; }
 
-    bool PerformBet(size_t amount) override {
-        if (amount > money_) {
-            return false;
-        }
-
-        money_ -= amount;
-        return true;
-    }
+    bool PerformBet(size_t amount) override; 
 
     void GetMoney(size_t amount) override { money_ += amount; }
 
@@ -102,7 +90,7 @@ public:
                   size_t money, const std::string& person_tag)
         : BaseGambler(still_in_game, table_seat_id, game_type, skill, money, person_tag) {}
 
-    enum BlackjackAction BlackjackAction(const std::vector<std::shared_ptr<IGambler>>&,
+    enum BlackjackAction BlackjackAction(const std::vector<Card>& dealer_hand,
                                          const Hand&) override;
 
     PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,

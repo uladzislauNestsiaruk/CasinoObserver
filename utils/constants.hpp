@@ -9,8 +9,8 @@
 
 enum class GameType : uint8_t { Blackjack, Poker };
 
-enum class CardType : uint8_t { Hearts, Clubs, Diamonds, Spades };
-
+// order in this 2 enums is important for Card comparison operator's
+enum class CardType : uint8_t { Clubs, Diamonds, Hearts, Spades };
 enum class CardValue : uint8_t {
     Two,
     Three,

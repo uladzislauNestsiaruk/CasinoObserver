@@ -1,8 +1,6 @@
 #pragma once
 
-#include <cassert>
 #include <cstdint>
-#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -45,18 +43,18 @@ public:
     virtual void SetIsActiveGame(bool value) = 0;
 
     virtual void AddRenderEvent(const json&) = 0;
+
+    virtual GameType GetGameType() = 0;
 };
 
 class AbstractTable : public ITable {
     sf::Time time_per_action_ = sf::seconds(1);
 
 public:
-    AbstractTable(TSQueue<json>& render_queue, bool without_jokers = true)
-        : whose_move_{0}, render_queue_(render_queue), deck_(without_jokers) {
-    }
-
-    explicit AbstractTable(GameType table_type, TSQueue<json>& render_queue)
-        : deck_(true), whose_move_{0}, render_queue_(render_queue) {}
+    explicit AbstractTable(GameType game_type, TSQueue<json>& render_queue,
+                           bool without_jokers = true)
+        : game_type_(game_type), deck_(without_jokers), whose_move_{0},
+          render_queue_(render_queue) {}
 
     const std::vector<std::shared_ptr<IGambler>>& GetPlayers() const override { return players_; }
 
@@ -79,11 +77,12 @@ public:
 
     void AddRenderEvent(const json& render_event) override { render_queue_.push(render_event); }
 
-    bool IsPlaceOccupied(size_t place_id) {
-        assert(place_id < 6);
-        return occupied_places_[place_id];
-    }
+    bool IsPlaceOccupied(size_t place_id) { return occupied_places_[place_id]; }
+
+    GameType GetGameType() override { return game_type_; }
+
 protected:
+    GameType game_type_;
     std::atomic<bool> was_action_performed_ = false;
     Deck deck_;
     size_t whose_move_; // index of the active player

@@ -72,6 +72,7 @@ void GameObject::Draw(sf::RenderWindow* window) {
     phases_[active_phase_][active_sprite_].setTextureRect(visible_rect_);
     phases_[active_phase_][active_sprite_].setPosition(position_);
     phases_[active_phase_][active_sprite_].setScale(scale_);
+    phases_[active_phase_][active_sprite_].setRotation(rotation_);
 
     window->draw(phases_[active_phase_][active_sprite_]);
     if (active_sprite_ == phases_[active_phase_].size() - 1 && !is_finished_current_phase_) {
@@ -229,7 +230,7 @@ void GameObject::SetVisibleRect(sf::IntRect visible_rect) {
 }
 
 void GameObject::SetScale(sf::Vector2f scale) {
-    if (phases_.empty() || !parent_) {
+    if (phases_.empty()) {
         throw std::logic_error(
             "attempt to set proportion accroding to parent on the spritless or root game object");
     }

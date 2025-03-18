@@ -8,6 +8,7 @@
 #include <json.hpp>
 #include <stdexcept>
 #include <textures_loader.hpp>
+#include <xlocale/_stdio.h>
 
 using nlohmann::json;
 using dep_graph_t =
@@ -82,15 +83,16 @@ DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
               dep_graph_t& objects_graph, const nlohmann::json& data,
               std::unordered_map<std::string, std::shared_ptr<GameObject>>& tags) {
     std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
-    std::array<float, 2> scale = GetJsonValue<std::array<float, 2>>(data[vertex], "scale");
     std::array<float, 2> coords = GetJsonValue<std::array<float, 2>>(data[vertex], "coords");
+    std::optional<std::array<float, 2>> scale =
+        GetOptionalJsonValue<std::array<float, 2>>(data[vertex], "scale");
+    std::optional<float> rotation = GetOptionalJsonValue<float>(data[vertex], "rotation");
 
     if (tags.contains(vertex)) {
         return tags[vertex];
     }
 
-    std::shared_ptr<GameObject> object =
-        std::make_shared<GameObject>(vertex, sf::Vector2f(scale[0], scale[1]), default_phase);
+    std::shared_ptr<GameObject> object = std::make_shared<GameObject>(vertex, default_phase);
 
     sf::Vector2f pos = {parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
                         parent_sprites_rect.getPosition().y +
@@ -126,6 +128,15 @@ DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
             DependencyDfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize()),
                           objects_graph, data, tags);
         object->AddChild(ptr, child.second);
+    }
+
+    if (scale.has_value()) {
+        object->SetScale(sf::Vector2f(scale.value()[0], scale.value()[1]));
+    }
+
+    if (rotation.has_value()) {
+        object->SetRotation(rotation.value());
+        std::cout << object->GetTag() << " " << object->GetRotation() << "\n";
     }
 
     return object;

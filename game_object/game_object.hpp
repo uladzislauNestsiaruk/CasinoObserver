@@ -68,6 +68,9 @@ public:
     sf::Vector2f GetScale() const noexcept { return scale_; }
     void SetScale(sf::Vector2f scale);
 
+    float GetRotation() const noexcept { return rotation_; }
+    void SetRotation(float rotation) noexcept { rotation_ = rotation; }
+
     void Move(sf::Vector2f offset) noexcept;
 
     void Draw(sf::RenderWindow* window);
@@ -92,6 +95,8 @@ private:
     sf::Vector2f scale_;
     sf::IntRect visible_rect_;
     bool resized_ = false;
+
+    float rotation_;
 
     std::unordered_map<sf::Event::EventType, event_handler> handlers_;
     std::unordered_map<std::string, std::vector<object_ptr>> children_;

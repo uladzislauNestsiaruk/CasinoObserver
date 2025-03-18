@@ -18,9 +18,9 @@
 class BasicRow : public GameObject {
 public:
     explicit BasicRow(const std::string& background_path, size_t row_id)
-        : GameObject(background_path + std::to_string(row_id), "afk",
-                     std::vector<sf::Sprite>(1, sf::Sprite(GetTextute(background_path)))),
-          cells_() {}
+        : GameObject(background_path + std::to_string(row_id), "afk"), cells_() {
+        AddPhase(std::vector<sf::Sprite>(1, sf::Sprite(GetTexture(background_path))), "afk");
+    }
 
     void AddCell(std::shared_ptr<GameObject> cell) { cells_.emplace_back(cell); }
 

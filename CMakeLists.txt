@@ -6,6 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #for vim enjoyers and vs code too :(
 
+# make subfolders visible for include
+include_directories(${CMAKE_SOURCE_DIR})
+file(GLOB ROOT_SUBFOLDERS LIST_DERICTORIES true ${CMAKE_SOURCE_DIR}/*)
+foreach(SUBFOLDER ${ROOT_SUBFOLDERS})
+    if(IS_DIRECTORY ${SUBFOLDER} AND EXISTS ${SUBFOLDER}/CMakeLists.txt)
+        include_directories(${SUBFOLDER})
+        message("INCLUDE SUBDIRICTORY " ${SUBFOLDER})
+    endif()
+endforeach()
+
 include(FetchContent)
 
 # All sources
@@ -48,6 +58,9 @@ else()
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     add_subdirectory(googletest EXCLUDE_FROM_ALL)
     enable_testing() 
+
+    # Add sanitizers
+    set(OPTIONS ${OPTIONS} -fsanitize=address,undefined,thread -fno-omit-frame-pointer)
 
     # Tests
     add_subdirectory(tests)

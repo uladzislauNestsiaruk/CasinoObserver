@@ -1,10 +1,7 @@
 #pragma once
 
-#include <algorithm>
-#include <iostream>
 #include <memory>
 #include <optional>
-#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -34,18 +31,11 @@ public:
     GameObject() = delete;
 
     GameObject(const std::string& tag, const std::string& default_phase)
-        : tag_(tag), scale_(1, 1), init_scale_(1, 1), active_phase_(default_phase) {}
+        : tag_(tag), scale_(1, 1), active_phase_(default_phase) {}
 
-    GameObject(const std::string& tag, sf::Vector2f init_scale, const std::string& default_phase)
-        : tag_(tag), scale_(1, 1), init_scale_(init_scale), active_phase_(default_phase) {}
-
-    GameObject(const std::string& tag, const std::string& default_phase,
-               std::vector<sf::Sprite>&& sprite)
+    GameObject(const std::string& tag, sf::Vector2f scale, const std::string& default_phase)
         : GameObject(tag, default_phase) {
-        if (!sprite.empty()) {
-            visible_rect_ = sprite[0].getTextureRect();
-        }
-        phases_[default_phase] = {std::move(sprite)};
+        scale_ = scale;
     }
 
     void AddPhase(std::vector<sf::Sprite>&& sprite, const std::string& phase) {
@@ -56,43 +46,33 @@ public:
     }
 
     void AddChild(object_ptr child, const std::optional<std::string>& phase);
-
-    void RemoveChild(const std::string& phase_tag, const std::string& child_tag);
+    void RemoveChild(const std::string& child_tag, const std::optional<std::string>& phase);
+    object_ptr FindGameObjectByTag(const std::string& tag,
+                                   const std::optional<std::string>& phase = std::nullopt) noexcept;
 
     void AddHandler(const sf::Event::EventType event_type, event_handler handler,
                     const std::string& tag = "");
-
     std::optional<std::string> TriggerHandler(StateManager* manager, IGameState* state,
                                               nlohmann::json& data);
 
     void Resize(sf::Vector2f size, bool according_to_parent = false);
 
-    void SetVisibleRect(sf::IntRect visible_rect) { visible_rect_ = visible_rect; }
+    void SetVisibleRect(sf::IntRect visible_rect);
+    sf::IntRect GetVisibleRect() const noexcept { return visible_rect_; }
 
-    sf::IntRect GetVisibleRect() { return visible_rect_; }
-
-    sf::Vector2f GetPosition() const;
-
+    sf::Vector2f GetPosition() const noexcept { return position_; };
     sf::Vector2f GetSize() const;
+    const std::string& GetTag() const noexcept { return tag_; }
+    const std::string& GetActivePhase() const noexcept { return active_phase_; }
 
-    const std::string GetTag() const { return tag_; }
+    sf::Vector2f GetScale() const noexcept { return scale_; }
+    void SetScale(sf::Vector2f scale);
 
-    sf::Vector2f GetScale() const { return scale_; }
-
-    void SetProportion(sf::Vector2f init_scale) {
-        init_scale_ = init_scale;
-    }
-
-    const std::string& GetActivePhase() const { return active_phase_; }
-
-    void Move(sf::Vector2f offset);
+    void Move(sf::Vector2f offset) noexcept;
 
     void Draw(sf::RenderWindow* window);
 
-    object_ptr FindGameObjectByTag(const std::string& tag);
-
     bool TryUpdatePhase(const std::string&, uint64_t delay);
-
     void FinishPhase() { is_finished_current_phase_ = true; }
 
     virtual ~GameObject() {}
@@ -100,18 +80,18 @@ public:
 private:
     void ResetUnactivePhaseAnimations();
 
-    void MoveSprites(sf::Vector2f);
-
     void ClearResizeTag();
 
-    void ResizeImpl(sf::Vector2f size, bool according_to_parent);
+    void ResizeImpl(sf::Vector2f size, sf::Vector2f proportion_vector, bool according_to_parent);
 
 private:
     std::string tag_;
-    bool resized_ = false;
+
+    sf::Vector2f position_;
+
     sf::Vector2f scale_;
-    sf::Vector2f init_scale_;
     sf::IntRect visible_rect_;
+    bool resized_ = false;
 
     std::unordered_map<sf::Event::EventType, event_handler> handlers_;
     std::unordered_map<std::string, std::vector<object_ptr>> children_;

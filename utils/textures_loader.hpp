@@ -8,6 +8,6 @@ void Preload();
 
 const std::string& GetAssetPrefix();
 
-const sf::Texture& GetTextute(const std::string& texture_name);
+const sf::Texture& GetTexture(const std::string& texture_name);
 
 TexturesRef GetTextures(const std::string& textures_dir_name);

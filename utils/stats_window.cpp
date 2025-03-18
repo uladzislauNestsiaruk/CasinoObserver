@@ -2,6 +2,7 @@
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Vector2.hpp"
 #include <../game_object/game_object.hpp>
+#include <optional>
 
 DEFINE_GOHANDLER(OnMouseMoveHandler);
 DEFINE_GOHANDLER(OnMousePressedHandler);
@@ -11,10 +12,9 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler);
 const std::string DefaultRow::kBackgroundSpriteTag = "stats_subwindow_row_background";
 
 StatsWindow::StatsWindow(const std::string& sprite_code, const std::string& qualifier)
-    : qualifier_(qualifier),
-      GameObject(kTagPrefix + qualifier, "afk",
-                 std::vector<sf::Sprite>(1, sf::Sprite(GetTextute(sprite_code)))),
-      data_(), first_visible_row_(0), mouse_pressed_(false) {
+    : qualifier_(qualifier), GameObject(kTagPrefix + qualifier, "afk"), data_(),
+      first_visible_row_(0), mouse_pressed_(false) {
+    AddPhase(std::vector<sf::Sprite>(1, sf::Sprite(GetTexture(sprite_code))), "afk");
     AddHandler(sf::Event::MouseMoved, OnMouseMoveHandler, GetTag());
     AddHandler(sf::Event::MouseButtonPressed, OnMousePressedHandler, GetTag());
     AddHandler(sf::Event::MouseButtonReleased, OnMouseReleasedHandler, GetTag());
@@ -23,7 +23,7 @@ StatsWindow::StatsWindow(const std::string& sprite_code, const std::string& qual
 
 void StatsWindow::AddRow(std::shared_ptr<BasicRow> row) {
     row->Resize(GetRowSizeVec());
-    row->SetProportion(row->GetScale());
+    row->SetScale(row->GetScale());
     row->Move(sf::Vector2f(GetPosition().x - row->GetPosition().x, 0));
     data_.emplace_back(row);
 
@@ -121,13 +121,13 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
         row->Move(sf::Vector2f(0, delta));
         float new_row_y = row->GetPosition().y;
         if (new_row_y >= window_y_borders.y || new_row_y + row_size_vec.y <= window_y_borders.x) {
-            casted_object->RemoveChild("afk", row->GetTag());
+            casted_object->RemoveChild(row->GetTag(), std::nullopt);
             row->Move(sf::Vector2f(-1, 0));
             continue;
         }
 
         UpdateRowSubRect(row.get(), casted_object, row_size_vec,
-                         sf::Sprite(GetTextute(row->BackgroundPath())).getTextureRect());
+                         sf::Sprite(GetTexture(row->BackgroundPath())).getTextureRect());
     }
 
     while (casted_object->first_visible_row_ > 0 && delta > 0) {
@@ -142,7 +142,7 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
         row->Move(sf::Vector2f(window_position.x - row->GetPosition().x,
                                row_pos.y - row_size_vec.y - row->GetPosition().y));
         UpdateRowSubRect(row.get(), casted_object, row_size_vec,
-                         sf::Sprite(GetTextute(row->BackgroundPath())).getTextureRect());
+                         sf::Sprite(GetTexture(row->BackgroundPath())).getTextureRect());
         casted_object->AddChild(row, "afk");
         --casted_object->first_visible_row_;
     }
@@ -166,7 +166,7 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler) {
         row->Move(sf::Vector2f(window_position.x - row->GetPosition().x,
                                prev_row_pos.y + row_size_vec.y - row->GetPosition().y));
         UpdateRowSubRect(row.get(), casted_object, row_size_vec,
-                         sf::Sprite(GetTextute(row->BackgroundPath())).getTextureRect());
+                         sf::Sprite(GetTexture(row->BackgroundPath())).getTextureRect());
         casted_object->AddChild(row, "afk");
         ++last_updated_row;
     }

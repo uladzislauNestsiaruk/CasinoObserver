@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <memory>
 
 #include "SFML/System/Vector2.hpp"
@@ -76,6 +77,60 @@ void BuildDependencyGraph(const nlohmann::json& data, dep_graph_t& objects_graph
     }
 }
 
+std::shared_ptr<GameObject>
+DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
+              dep_graph_t& objects_graph, const nlohmann::json& data,
+              std::unordered_map<std::string, std::shared_ptr<GameObject>>& tags) {
+    std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
+    std::array<float, 2> scale = GetJsonValue<std::array<float, 2>>(data[vertex], "scale");
+    std::array<float, 2> coords = GetJsonValue<std::array<float, 2>>(data[vertex], "coords");
+
+    if (tags.contains(vertex)) {
+        return tags[vertex];
+    }
+
+    std::shared_ptr<GameObject> object =
+        std::make_shared<GameObject>(vertex, sf::Vector2f(scale[0], scale[1]), default_phase);
+
+    sf::Vector2f pos = {parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
+                        parent_sprites_rect.getPosition().y +
+                            parent_sprites_rect.height * coords[1]};
+    object->Move(pos - object->GetPosition());
+
+    tags[vertex] = object;
+
+    json phases = GetJsonValue<json>(data[vertex], "phases");
+    for (auto item : phases.items()) {
+        std::string type = GetJsonValue<std::string>(item.value(), "type");
+        if (type == "image") {
+            sf::Sprite sprite(GetTexture(GetJsonValue<std::string>(item.value(), "source")));
+            object->AddPhase({std::move(sprite)}, item.key());
+        } else if (type == "animation") {
+            std::string source_dir = GetJsonValue<std::string>(item.value(), "source_dir");
+            TexturesRef textures = GetTextures(source_dir);
+            std::vector<sf::Sprite> animation;
+            animation.reserve(textures.size());
+            for (auto source : textures) {
+                sf::Sprite sprite(source.get());
+                animation.push_back(std::move(sprite));
+            }
+            object->AddPhase(std::move(animation), item.key());
+        } else {
+            throw std::logic_error("Wrong value of \"type\" field in the " + item.key() +
+                                   " phase in " + vertex);
+        }
+    }
+
+    for (const auto& child : objects_graph[vertex]) {
+        std::shared_ptr<GameObject> ptr =
+            DependencyDfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize()),
+                          objects_graph, data, tags);
+        object->AddChild(ptr, child.second);
+    }
+
+    return object;
+}
+
 std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_objects_path) {
     std::ifstream file(game_objects_path);
     if (!file.is_open()) {
@@ -101,66 +156,11 @@ std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_
     BuildDependencyGraph(data, objects_graph, roots);
 
     std::unordered_map<std::string, std::shared_ptr<GameObject>> tags;
-    std::function<std::shared_ptr<GameObject>(std::string, const sf::Rect<float>&)> dfs =
-        [&objects_graph, &data, &dfs, &tags](std::string vertex,
-                                             const sf::Rect<float>& parent_sprites_rect) {
-            std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
-            std::array<float, 2> scale = GetJsonValue<std::array<float, 2>>(data[vertex], "scale");
-            std::array<float, 2> coords =
-                GetJsonValue<std::array<float, 2>>(data[vertex], "coords");
-
-            if (tags.contains(vertex)) {
-                return tags[vertex];
-            }
-
-            std::shared_ptr<GameObject> object = std::make_shared<GameObject>(
-                vertex, sf::Vector2f(scale[0], scale[1]), default_phase);
-            tags[vertex] = object;
-
-            sf::Vector2f pos = {
-                parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
-                parent_sprites_rect.getPosition().y + parent_sprites_rect.height * coords[1]};
-
-            json phases = GetJsonValue<json>(data[vertex], "phases");
-            for (auto item : phases.items()) {
-                std::string type = GetJsonValue<std::string>(item.value(), "type");
-                if (type == "image") {
-                    sf::Sprite sprite(
-                        GetTextute(GetJsonValue<std::string>(item.value(), "source")));
-                    sprite.setPosition(pos);
-                    sprite.setScale(sf::Vector2f(scale[0], scale[1]));
-                    object->AddPhase({std::move(sprite)}, item.key());
-                } else if (type == "animation") {
-                    std::string source_dir = GetJsonValue<std::string>(item.value(), "source_dir");
-                    TexturesRef textures = GetTextures(source_dir);
-                    std::vector<sf::Sprite> animation;
-                    animation.reserve(textures.size());
-                    for (auto source : textures) {
-                        sf::Sprite sprite(source.get());
-                        sprite.setPosition(pos);
-                        sprite.setScale(sf::Vector2f(scale[0], scale[1]));
-                        animation.push_back(std::move(sprite));
-                    }
-                    object->AddPhase(std::move(animation), item.key());
-                } else {
-                    throw std::logic_error("Wrong value of \"type\" field in the " + item.key() +
-                                           " phase in " + vertex);
-                }
-            }
-
-            for (const auto& child : objects_graph[vertex]) {
-                std::shared_ptr<GameObject> ptr =
-                    dfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize()));
-                object->AddChild(ptr, child.second);
-            }
-
-            return object;
-        };
 
     std::vector<std::shared_ptr<GameObject>> result;
     result.reserve(roots.size());
     for (const std::string& root_rag : roots) {
-        result.emplace_back(dfs(root_rag, sf::Rect<float>()));
+        result.emplace_back(DependencyDfs(root_rag, sf::Rect<float>(), objects_graph, data, tags));
     }
     return result;
 }

@@ -66,7 +66,7 @@ const std::string& GetAssetPrefix() {
     return prefix;
 }
 
-const sf::Texture& GetTextute(const std::string& texture_name) {
+const sf::Texture& GetTexture(const std::string& texture_name) {
     if (textures.contains(texture_name)) {
         return textures[texture_name];
     }

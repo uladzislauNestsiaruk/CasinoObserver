@@ -15,8 +15,7 @@ public:
 
     virtual ~IGambler() {}
 
-    virtual BlackjackAction BlackjackAction(const std::vector<Card>& dealer_hand,
-                                            const Hand&) = 0;
+    virtual BlackjackAction BlackjackAction(const std::vector<Card>& dealer_hand, const Hand&) = 0;
     virtual PokerMoveState PokerAction(size_t num_opponents, const std::vector<Card>& table_cards,
                                        const std::vector<Card>& hand, size_t current_bet,
                                        size_t min_bet, size_t min_raise, size_t num_raises) = 0;
@@ -33,6 +32,7 @@ public:
     virtual const std::string& GetPersonTag() const = 0;
 
     virtual size_t GetBalance() const = 0;
+    virtual size_t GetBalanceLevel() const = 0; // return a number in range [1..6]
     virtual bool PerformBet(size_t amount) = 0; // return true if Gambler can perform bet and
                                                 // substracts amount from his money
     virtual void GetMoney(size_t amount) = 0;   // literally our goal
@@ -55,7 +55,7 @@ public:
     void ChangeGameStatus() override { still_in_game_ ^= 1; }
 
     void GetCard(Card card) override { cards_.emplace_back(card); }
-    Card ReturnOneCard() override; 
+    Card ReturnOneCard() override;
     const std::vector<Card>& ShowCards() const override { return cards_; }
     std::vector<Card> ReturnAllCards() override;
 
@@ -63,9 +63,10 @@ public:
 
     const std::string& GetPersonTag() const override { return person_tag_; }
 
+    size_t GetBalanceLevel() const override;
     size_t GetBalance() const override { return money_; }
 
-    bool PerformBet(size_t amount) override; 
+    bool PerformBet(size_t amount) override;
 
     void GetMoney(size_t amount) override { money_ += amount; }
 

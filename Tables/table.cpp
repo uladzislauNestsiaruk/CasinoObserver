@@ -12,7 +12,7 @@ void AbstractTable::AddPlayer(std::shared_ptr<IGambler> player) {
                     {"tag", player->GetPersonTag()},
                     {"delay", 0}});
     AddRenderEvent({{"event", {{"type", "change_phase"}}},
-                    {"new_phase", "chips_6"},
+                    {"new_phase", "chips_" + std::to_string(player->GetBalanceLevel())},
                     {"tag", ExtractPersonPlace(player->GetPersonTag()) + "_chips"},
                     {"delay", 0}});
 }
@@ -23,7 +23,7 @@ void AbstractTable::RemovePlayer(size_t ind) {
                     {"tag", players_[ind]->GetPersonTag()},
                     {"delay", 0}});
     AddRenderEvent({{"event", {{"type", "change_phase"}}},
-                    {"new_phase", "empty"},
+                    {"new_phase", "chips_0"},
                     {"tag", ExtractPersonPlace(players_[ind]->GetPersonTag()) + "_chips"},
                     {"delay", 0}});
     occupied_places_[players_[ind]->GetTableSeatId()] = false;

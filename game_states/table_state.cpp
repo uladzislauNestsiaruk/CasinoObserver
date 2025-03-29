@@ -1,3 +1,4 @@
+#include <common.hpp>
 #include <constants.hpp>
 
 #include "event_wrapper.hpp"
@@ -120,6 +121,13 @@ void TableState::BanPlayers() {
 
         objects_manager_.FindObjectByTag(card_tag)->FinishPhase();
         table_->AddRenderEvent(render_event);
+    }
+
+    for (const auto& player : table_->GetPlayers()) {
+        table_->AddRenderEvent({{"event", {{"type", "change_phase"}}},
+                                {"new_phase", "chips_" + std::to_string(player->GetBalanceLevel())},
+                                {"tag", ExtractPersonPlace(player->GetPersonTag()) + "_chips"},
+                                {"delay", 0}});
     }
 }
 

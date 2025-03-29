@@ -172,7 +172,7 @@
         "scale": [0.5, 0.5]
     },
     "first_place_chips": {
-        "default_phase": "empty",
+        "default_phase": "chips_0",
         "parent": "root",
         "coords": [
             0.12,
@@ -204,14 +204,14 @@
                 "type": "image",
                 "source": "chips_6"
             },
-            "empty": {
+            "chips_0": {
                 "type": "image",
-                "source": "chips_empty_6"
+                "source": "chips_0"
             }
         }
     },
     "second_place_chips": {
-        "default_phase": "empty",
+        "default_phase": "chips_0",
         "parent": "root",
         "coords": [
             0.26,
@@ -243,14 +243,14 @@
                 "type": "image",
                 "source": "chips_6"
             },
-            "empty": {
+            "chips_0": {
                 "type": "image",
-                "source": "chips_empty_6"
+                "source": "chips_0"
             }
         }
     },
     "third_place_chips": {
-        "default_phase": "empty",
+        "default_phase": "chips_0",
         "parent": "root",
         "coords": [
             0.45,
@@ -282,14 +282,14 @@
                 "type": "image",
                 "source": "chips_6"
             },
-            "empty": {
+            "chips_0": {
                 "type": "image",
-                "source": "chips_empty_6"
+                "source": "chips_0"
             }
         }
     },
     "fourth_place_chips": {
-        "default_phase": "empty",
+        "default_phase": "chips_0",
         "parent": "root",
         "coords": [
             0.59,
@@ -321,14 +321,14 @@
                 "type": "image",
                 "source": "chips_6"
             },
-            "empty": {
+            "chips_0": {
                 "type": "image",
-                "source": "chips_empty_6"
+                "source": "chips_0"
             }
         }
     },
     "fivth_place_chips": {
-        "default_phase": "empty",
+        "default_phase": "chips_0",
         "parent": "root",
         "coords": [
             0.75,
@@ -360,14 +360,14 @@
                 "type": "image",
                 "source": "chips_6"
             },
-            "empty": {
+            "chips_0": {
                 "type": "image",
-                "source": "chips_empty_6"
+                "source": "chips_0"
             }
         }
     },
     "sixth_place_chips": {
-        "default_phase": "empty",
+        "default_phase": "chips_0",
         "parent": "root",
         "coords": [
             0.82,
@@ -399,9 +399,9 @@
                 "type": "image",
                 "source": "chips_6"
             },
-            "empty": {
+            "chips_0": {
                 "type": "image",
-                "source": "chips_empty_6"
+                "source": "chips_0"
             }
         }
     },

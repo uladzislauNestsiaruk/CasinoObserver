@@ -18,3 +18,11 @@ bool BaseGambler::PerformBet(size_t amount) {
     money_ -= amount;
     return true;
 }
+
+size_t BaseGambler::GetBalanceLevel() const {
+    if (money_ == 0) {
+        return 0;
+    }
+
+    return std::min(6ul, money_ / 300 + 1);
+}

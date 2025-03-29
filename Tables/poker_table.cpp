@@ -199,7 +199,16 @@ void PokerTable::ApplyBets() {
     for (size_t i = 0; i < players_.size(); ++i) {
         if (bets_[i].amount > 0) {
             rollback_logs_.push({{"player_id", i}, {"amount", bets_[i].amount}});
+            size_t balance_level_before = players_[i]->GetBalance();
             MakeBet(bets_[i].amount, i);
+            size_t balance_level_after = players_[i]->GetBalance();
+            if (balance_level_after < balance_level_before) {
+                AddRenderEvent(
+                    {{"event", {{"type", "change_phase"}}},
+                     {"new_phase", "chips_" + std::to_string(players_[i]->GetBalanceLevel())},
+                     {"tag", ExtractPersonPlace(players_[i]->GetPersonTag()) + "_chips"},
+                     {"delay", 0}});
+            }
         }
     }
 }
@@ -398,7 +407,17 @@ void PokerTable::SelectWinners() {
         }
     }
     for (size_t i = 0; i < num_winners; ++i) {
+        size_t balance_level_before = hand_rates[i].second->GetBalanceLevel();
         hand_rates[i].second->GetMoney(bank_ / num_winners);
+        size_t balance_level_after = hand_rates[i].second->GetBalanceLevel();
+        if (balance_level_after > balance_level_before) {
+            AddRenderEvent(
+                {{"event", {{"type", "change_phase"}}},
+                 {"new_phase", "chips_" + std::to_string(hand_rates[i].second->GetBalanceLevel())},
+                 {"tag", ExtractPersonPlace(hand_rates[i].second->GetPersonTag()) + "_chips"},
+                 {"delay", 0}});
+        }
+
         logs_.push({{"type", "game_end"}, {"result", "win"}, {"profit", bank_ / num_winners}});
         rollback_logs_.push({{"player_id", i}, {"amount", -bank_ / num_winners}});
     }
@@ -452,7 +471,7 @@ void PokerTable::GameIteration() {
             render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = phase + "_" + std::to_string(i);
             render_event["tag"] = "root";
-            render_event["delay"] = (i == 1 ? 100 : default_delay);
+            render_event["delay"] = (i == 1 ? 1000 : default_delay);
             AddRenderEvent(render_event);
         }
 
@@ -461,6 +480,7 @@ void PokerTable::GameIteration() {
         }
 
         BettingPhase();
+        ApplyBets();
     }
 
     SelectWinners();

@@ -4,7 +4,7 @@ from pathlib import Path
 def gen_empty(base_dir):
     base = f'assets/{base_dir}'
     for subdir in Path(base).iterdir():
-        if subdir.is_dir():
+        if subdir.is_dir() or subdir.name.startswith('.'):
             continue
 
         file = f'{base}/{subdir.name}'
@@ -16,4 +16,4 @@ def gen_empty(base_dir):
         new_image.save(new_file)
 
 if __name__ == '__main__':
-    gen_empty('chips')
+    gen_empty('poker_players_cards')

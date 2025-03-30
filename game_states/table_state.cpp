@@ -6,28 +6,6 @@
 #include "state_manager.hpp"
 #include "table_state.hpp"
 
-namespace {
-std::vector<std::string> GetTableCardObjectsTags(GameType game_type) {
-    std::vector<std::string> tags;
-    if (game_type == GameType::Poker) {
-        for (const std::string& card_id : {"first", "second", "third", "fourth", "fivth"}) {
-            tags.push_back(card_id + "_central_card");
-        }
-    } else {
-        for (size_t player_id = 1; player_id <= 6; ++player_id) {
-            for (size_t card_num = 1; card_num <= 2; ++card_num) {
-                tags.push_back("player_" + std::to_string(player_id) + "_" +
-                               std::to_string(card_num));
-            }
-        }
-
-        tags.push_back("dealer_1");
-    }
-
-    return tags;
-}
-} // namespace
-
 TableState::TableState(const std::string& objects_path, StateManager* manager,
                        table_creater_t table_creater)
     : AbstractGameState(objects_path), stop_game_thread_(false), run_game_(false),
@@ -104,6 +82,21 @@ void TableState::BanPlayers() {
     render_events_manager_.Clear();
     while (!logs_.empty()) {
         logs_.pop();
+    }
+
+    for (auto player : table_->GetPlayers()) {
+        if (player->GetGameStatus()) {
+            player->ChangeGameStatus();
+        }
+
+        json render_event;
+        render_event["event"]["type"] = "change_phase";
+        render_event["new_phase"] = "empty";
+        render_event["tag"] = ExtractPersonPlace(player->GetPersonTag()) + "_cards";
+        render_event["delay"] = default_delay;
+        table_->AddRenderEvent(render_event);
+        objects_manager_.FindObjectByTag(ExtractPersonPlace(player->GetPersonTag()) + "_cards")
+            ->FinishPhase();
     }
 
     for (const auto& person_tag : selected_players_) {

@@ -405,6 +405,120 @@
             }
         }
     },
+    "first_place_cards": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.20,
+            0.7
+        ],
+        "scale": [0.9, 0.9],
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "poker_players_cards_first_place"
+            },
+            "empty": {
+                "type": "image",
+                "source": "poker_players_cards_empty_first_place"
+            }
+        }
+    },
+    "second_place_cards": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.32,
+            0.75
+        ],
+        "scale": [0.9, 0.9],
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "poker_players_cards_second_place"
+            },
+            "empty": {
+                "type": "image",
+                "source": "poker_players_cards_empty_second_place"
+            }
+        }
+    },
+    "third_place_cards": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.45,
+            0.77
+        ],
+        "scale": [0.75, 0.75],
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "poker_players_cards_third_place"
+            },
+            "empty": {
+                "type": "image",
+                "source": "poker_players_cards_empty_third_place"
+            }
+        }
+    },
+    "fourth_place_cards": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.57,
+            0.77
+        ],
+        "scale": [0.75, 0.75],
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "poker_players_cards_fourth_place"
+            },
+            "empty": {
+                "type": "image",
+                "source": "poker_players_cards_empty_fourth_place"
+            }
+        }
+    },
+    "fivth_place_cards": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.69,
+            0.74
+        ],
+        "scale": [0.95, 0.95],
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "poker_players_cards_fivth_place"
+            },
+            "empty": {
+                "type": "image",
+                "source": "poker_players_cards_empty_fivth_place"
+            }
+        }
+    },
+    "sixth_place_cards": {
+        "default_phase": "empty",
+        "parent": "root",
+        "coords": [
+            0.76,
+            0.67
+        ],
+        "scale": [1.0, 1.0],
+        "phases": {
+            "afk": {
+                "type": "image",
+                "source": "poker_players_cards_sixth_place"
+            },
+            "empty": {
+                "type": "image",
+                "source": "poker_players_cards_empty_sixth_place"
+            }
+        }
+    },
     "__extend__": [
         "game_objects/utils/gamblers_phases.json"
     ]

@@ -239,19 +239,20 @@ void PokerTable::Dealing() {
             players_[i]->ChangeGameStatus();
             RemovePlayer(i);
             --i;
+        } else {
+            ++active_players_;
         }
+    }
+
+    // Not enough active players
+    if (active_players_ < 2) {
+        return;
     }
 
     size_t cnt = 0;
     for (int i = 0; i < players_.size(); ++i) {
         cnt += players_[i]->GetBalance();
         bets_[i] = {big_blind_, 0};
-        ++active_players_;
-    }
-
-    // Not enough active players
-    if (active_players_ < 2) {
-        return;
     }
 
     ApplyBets(std::nullopt);
@@ -310,6 +311,12 @@ PokerMoveState HumbleGambler::PokerAction(size_t num_opponents,
 void PokerTable::DistributionPhase(std::string_view phase) {
     if (phase == "preflop") {
         for (auto player : players_) {
+            json render_event;
+            render_event["event"]["type"] = "change_phase";
+            render_event["new_phase"] = "afk";
+            render_event["tag"] = ExtractPersonPlace(player->GetPersonTag()) + "_cards";
+            render_event["delay"] = default_delay;
+            AddRenderEvent(render_event);
             player->GetCard(deck_.GetTopCard());
             player->GetCard(deck_.GetTopCard());
         }
@@ -443,13 +450,35 @@ void PokerTable::Clean() {
     active_players_ = 0;
     all_in_players_ = 0;
 
+    for (const std::string& card_tag : GetTableCardObjectsTags(GetGameType())) {
+        json render_event;
+        render_event["event"]["type"] = "change_phase";
+        render_event["new_phase"] = "empty";
+        render_event["tag"] = card_tag;
+        render_event["delay"] = 0;
+        AddRenderEvent(render_event);
+    }
+
     for (auto player : players_) {
         if (player->GetGameStatus()) {
             player->ChangeGameStatus();
         }
 
+        json render_event;
+        render_event["event"]["type"] = "change_phase";
+        render_event["new_phase"] = "empty";
+        render_event["tag"] = ExtractPersonPlace(player->GetPersonTag()) + "_cards";
+        render_event["delay"] = default_delay;
+        AddRenderEvent(render_event);
         deck_.ReturnCards(player->ReturnAllCards());
     }
+
+    json render_event;
+    render_event["event"]["type"] = "change_phase";
+    render_event["new_phase"] = "afk";
+    render_event["tag"] = "root";
+    render_event["delay"] = default_delay;
+    AddRenderEvent(render_event);
 
     deck_.ReturnCards(table_cards_);
     table_cards_.clear();
@@ -461,7 +490,8 @@ void PokerTable::GameIteration() {
     Dealing();
     if (active_players_ < 2) {
         Clean();
-        GenPlayers(get_random_number(1, 6 - players_.size()), kGamblersPlaces - 1, GameType::Poker);
+        GenPlayers(get_random_number(6 - players_.size(), 6 - players_.size()), kGamblersPlaces - 1,
+                   GameType::Poker);
         return;
     }
 

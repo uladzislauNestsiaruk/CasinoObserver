@@ -1,8 +1,8 @@
 #include "poker_table.hpp"
+#include <animations_manager.hpp>
 #include <common.hpp>
 #include <constants.hpp>
 #include <cstdint>
-#include <iostream>
 
 namespace {
 constexpr uint32_t num_iterations = 400;
@@ -178,9 +178,10 @@ std::string GetPhaseByCard(Card card) {
 }
 } // namespace
 
-PokerTable::PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-    : AbstractTable(GameType::Poker, render_queue), min_bet_(100), min_raise_(50), small_blind_(50),
-      big_blind_(min_bet_), logs_(logs) {
+PokerTable::PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue,
+                       AnimationsManager& animations_manager)
+    : AbstractTable(GameType::Poker, render_queue, animations_manager), min_bet_(100),
+      min_raise_(50), small_blind_(50), big_blind_(min_bet_), logs_(logs) {
 
     occupied_places_.fill(false);
     GenPlayers(get_random_number(2, 6), kGamblersPlaces - 1, GameType::Poker);
@@ -195,7 +196,7 @@ void PokerTable::MakeBet(size_t amount, size_t player_ind) {
     throw std::runtime_error("[ERROR]: Bet is more than player bank");
 }
 
-void PokerTable::ApplyBets() {
+void PokerTable::ApplyBets(std::optional<uint64_t> after_animation_id) {
     for (size_t i = 0; i < players_.size(); ++i) {
         if (bets_[i].amount > 0) {
             rollback_logs_.push({{"player_id", i}, {"amount", bets_[i].amount}});
@@ -203,11 +204,16 @@ void PokerTable::ApplyBets() {
             MakeBet(bets_[i].amount, i);
             size_t balance_level_after = players_[i]->GetBalance();
             if (balance_level_after < balance_level_before) {
-                AddRenderEvent(
-                    {{"event", {{"type", "change_phase"}}},
-                     {"new_phase", "chips_" + std::to_string(players_[i]->GetBalanceLevel())},
-                     {"tag", ExtractPersonPlace(players_[i]->GetPersonTag()) + "_chips"},
-                     {"delay", 0}});
+                json event = {
+                    {"event", {{"type", "change_phase"}}},
+                    {"new_phase", "chips_" + std::to_string(players_[i]->GetBalanceLevel())},
+                    {"tag", ExtractPersonPlace(players_[i]->GetPersonTag()) + "_chips"},
+                    {"delay", 0}};
+                if (after_animation_id.has_value()) {
+                    event["after_animation_id"] = after_animation_id.value();
+                }
+
+                AddRenderEvent(event);
             }
         }
     }
@@ -228,14 +234,16 @@ void PokerTable::Dealing() {
 
     bets_.assign(players_.size(), {0, 0});
     deck_.ReshuffleDeck();
-    size_t cnt = 0;
     for (int i = 0; i < players_.size(); ++i) {
         if (players_[i]->GetBalance() < big_blind_) {
             players_[i]->ChangeGameStatus();
             RemovePlayer(i);
             --i;
-            continue;
         }
+    }
+
+    size_t cnt = 0;
+    for (int i = 0; i < players_.size(); ++i) {
         cnt += players_[i]->GetBalance();
         bets_[i] = {big_blind_, 0};
         ++active_players_;
@@ -246,7 +254,7 @@ void PokerTable::Dealing() {
         return;
     }
 
-    ApplyBets();
+    ApplyBets(std::nullopt);
 }
 
 PokerMoveState HumbleGambler::PokerAction(size_t num_opponents,
@@ -466,12 +474,17 @@ void PokerTable::GameIteration() {
         current_bet_ = 0;
         bets_.assign(players_.size(), {0, 0});
         DistributionPhase(phase);
+        uint64_t last_part_animation_id;
         for (size_t i = 1; i <= part; ++i) {
             json render_event;
             render_event["event"]["type"] = "change_phase";
             render_event["new_phase"] = phase + "_" + std::to_string(i);
             render_event["tag"] = "root";
             render_event["delay"] = (i == 1 ? 1000 : default_delay);
+            if (i == part) {
+                last_part_animation_id = animations_manager_.AddNGetAnimationId();
+                render_event["new_animation_id"] = last_part_animation_id;
+            }
             AddRenderEvent(render_event);
         }
 
@@ -480,7 +493,7 @@ void PokerTable::GameIteration() {
         }
 
         BettingPhase();
-        ApplyBets();
+        ApplyBets(last_part_animation_id);
     }
 
     SelectWinners();

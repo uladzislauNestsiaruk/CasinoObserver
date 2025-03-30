@@ -1,3 +1,4 @@
+#include <animations_manager.hpp>
 #include <iostream>
 #include <memory>
 #include <numeric>
@@ -155,9 +156,10 @@ void SplitIfDoubleAction(BlackjackTable* table, Hand& hand, json& log) {
     SplitAction(table, hand, log);
 }
 
-BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue)
-    : AbstractTable(GameType::Blackjack, render_queue), is_game_finished_(true), hands_(),
-      settings_{100, true}, logs_(logs), render_queue_(render_queue) {
+BlackjackTable::BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue,
+                               AnimationsManager& animations_manager)
+    : AbstractTable(GameType::Blackjack, render_queue, animations_manager), is_game_finished_(true),
+      hands_(), settings_{100, true}, logs_(logs), render_queue_(render_queue) {
     occupied_places_.fill(false);
     GenPlayers(kGamblersPlaces, kGamblersPlaces - 1, GameType::Blackjack);
 }

@@ -81,7 +81,8 @@ void BuildDependencyGraph(const nlohmann::json& data, dep_graph_t& objects_graph
 std::shared_ptr<GameObject>
 DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
               dep_graph_t& objects_graph, const nlohmann::json& data,
-              std::unordered_map<std::string, std::shared_ptr<GameObject>>& tags) {
+              std::unordered_map<std::string, std::shared_ptr<GameObject>>& tags,
+              AnimationsManager& animations_manager) {
     std::string default_phase = GetJsonValue<std::string>(data[vertex], "default_phase");
     std::array<float, 2> coords = GetJsonValue<std::array<float, 2>>(data[vertex], "coords");
     std::optional<std::array<float, 2>> scale =
@@ -92,7 +93,8 @@ DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
         return tags[vertex];
     }
 
-    std::shared_ptr<GameObject> object = std::make_shared<GameObject>(vertex, default_phase);
+    std::shared_ptr<GameObject> object =
+        std::make_shared<GameObject>(vertex, default_phase, animations_manager);
 
     sf::Vector2f pos = {parent_sprites_rect.getPosition().x + parent_sprites_rect.width * coords[0],
                         parent_sprites_rect.getPosition().y +
@@ -126,7 +128,7 @@ DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
     for (const auto& child : objects_graph[vertex]) {
         std::shared_ptr<GameObject> ptr =
             DependencyDfs(child.first, sf::Rect<float>(object->GetPosition(), object->GetSize()),
-                          objects_graph, data, tags);
+                          objects_graph, data, tags, animations_manager);
         object->AddChild(ptr, child.second);
     }
 
@@ -142,7 +144,8 @@ DependencyDfs(std::string vertex, const sf::Rect<float>& parent_sprites_rect,
     return object;
 }
 
-std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_objects_path) {
+std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_objects_path,
+                                                          AnimationsManager& animations_manager) {
     std::ifstream file(game_objects_path);
     if (!file.is_open()) {
         throw std::runtime_error("Can't open file " + std::string(game_objects_path));
@@ -171,7 +174,8 @@ std::vector<std::shared_ptr<GameObject>> ParseGameObjects(std::string_view game_
     std::vector<std::shared_ptr<GameObject>> result;
     result.reserve(roots.size());
     for (const std::string& root_rag : roots) {
-        result.emplace_back(DependencyDfs(root_rag, sf::Rect<float>(), objects_graph, data, tags));
+        result.emplace_back(DependencyDfs(root_rag, sf::Rect<float>(), objects_graph, data, tags,
+                                          animations_manager));
     }
     return result;
 }

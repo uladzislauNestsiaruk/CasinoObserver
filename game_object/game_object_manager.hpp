@@ -1,5 +1,6 @@
 #pragma once
 
+#include <animations_manager.hpp>
 #include <array>
 #include <iostream>
 #include <memory>
@@ -14,8 +15,9 @@ class GOManager {
     static constexpr size_t kMaxPriority = 16;
 
 public:
-    GOManager() : objects_(), order_() {}
-    explicit GOManager(std::string_view game_object_path);
+    GOManager(AnimationsManager& animations_manager)
+        : animations_manager_(animations_manager), objects_(), order_() {}
+    explicit GOManager(std::string_view game_object_path, AnimationsManager& animations_manager);
 
     GOManager(const GOManager& manager) = delete;
     GOManager& operator=(const GOManager& rhs) = delete;
@@ -33,6 +35,7 @@ public:
     void DrawAll(sf::RenderWindow* window);
 
 private:
+    AnimationsManager& animations_manager_;
     std::unordered_map<std::string, std::pair<std::shared_ptr<GameObject>, size_t>> objects_;
     std::array<std::vector<std::string>, kMaxPriority> order_;
 };

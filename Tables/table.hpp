@@ -1,5 +1,6 @@
 #pragma once
 
+#include <animations_manager.hpp>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -52,9 +53,9 @@ class AbstractTable : public ITable {
 
 public:
     explicit AbstractTable(GameType game_type, TSQueue<json>& render_queue,
-                           bool without_jokers = true)
-        : game_type_(game_type), deck_(without_jokers), whose_move_{0},
-          render_queue_(render_queue) {}
+                           AnimationsManager& animations_manager, bool without_jokers = true)
+        : game_type_(game_type), deck_(without_jokers), whose_move_{0}, render_queue_(render_queue),
+          animations_manager_(animations_manager) {}
 
     const std::vector<std::shared_ptr<IGambler>>& GetPlayers() const override { return players_; }
 
@@ -90,4 +91,5 @@ protected:
     std::array<bool, 6> occupied_places_;
     sf::Time elapsed_ = sf::Time::Zero;
     TSQueue<json>& render_queue_;
+    AnimationsManager& animations_manager_;
 };

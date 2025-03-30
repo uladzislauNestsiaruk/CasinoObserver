@@ -32,7 +32,7 @@ TableState::TableState(const std::string& objects_path, StateManager* manager,
                        table_creater_t table_creater)
     : AbstractGameState(objects_path), stop_game_thread_(false), run_game_(false),
       game_exec_thr_(([this] { GameExecutor(); })) {
-    table_ = table_creater(logs_, render_events_manager_.GetRenderQueue());
+    table_ = table_creater(logs_, render_events_manager_.GetRenderQueue(), animations_mananger_);
     std::shared_ptr<GameObject> root_game_object_ = objects_manager_.FindObjectByTag("root");
     root_game_object_->Resize(manager->GetWindowSize());
     for (const auto& place : kGamblersPlaces) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <animations_manager.hpp>
 #include <memory>
 #include <optional>
 #include <string>
@@ -30,11 +31,17 @@ public:
 
     GameObject() = delete;
 
-    GameObject(const std::string& tag, const std::string& default_phase)
-        : tag_(tag), scale_(1, 1), active_phase_(default_phase) {}
+    GameObject(const std::string& tag, const std::string& default_phase,
+               AnimationsManager& animations_manager,
+               std::optional<uint64_t> animation_id = std::nullopt)
+        : tag_(tag), scale_(1, 1), active_phase_(default_phase),
+          animations_manager_(animations_manager),
+          animation_id_(animation_id.value_or(animations_manager_.AddNGetAnimationId())) {}
 
-    GameObject(const std::string& tag, sf::Vector2f scale, const std::string& default_phase)
-        : GameObject(tag, default_phase) {
+    GameObject(const std::string& tag, sf::Vector2f scale, const std::string& default_phase,
+               AnimationsManager& animations_manager,
+               std::optional<uint64_t> animation_id = std::nullopt)
+        : GameObject(tag, default_phase, animations_manager, animation_id) {
         scale_ = scale;
     }
 
@@ -75,7 +82,9 @@ public:
 
     void Draw(sf::RenderWindow* window);
 
-    bool TryUpdatePhase(const std::string&, uint64_t delay);
+    bool TryUpdatePhase(const std::string& new_phase, uint64_t delay,
+                        std::optional<uint64_t> new_animation_id = std::nullopt,
+                        std::optional<uint64_t> after_animation_id = std::nullopt);
     void FinishPhase() { is_finished_current_phase_ = true; }
 
     virtual ~GameObject() {}
@@ -108,6 +117,9 @@ private:
     std::string active_phase_;
 
     sf::Clock clock_;
+
+    AnimationsManager& animations_manager_;
+    uint64_t animation_id_;
 
     bool Contains(sf::Vector2f point) noexcept;
 };

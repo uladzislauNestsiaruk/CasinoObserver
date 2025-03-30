@@ -1,5 +1,6 @@
 #pragma once
 
+#include <animations_manager.hpp>
 #include <string>
 
 #include <../game_object/game_object.hpp>
@@ -18,8 +19,9 @@ class WorkRoomState : public AbstractGameState {
 
     template <typename TableType>
         requires std::is_base_of_v<ITable, TableType>
-    static std::unique_ptr<ITable> CreateTable(TSQueue<json>& logs, TSQueue<json>& render_queue) {
-        return std::make_unique<TableType>(logs, render_queue);
+    static std::unique_ptr<ITable> CreateTable(TSQueue<json>& logs, TSQueue<json>& render_queue,
+                                               AnimationsManager& animations_manager) {
+        return std::make_unique<TableType>(logs, render_queue, animations_manager);
     }
 
 public:

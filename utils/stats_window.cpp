@@ -2,6 +2,7 @@
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Vector2.hpp"
 #include <../game_object/game_object.hpp>
+
 #include <optional>
 
 DEFINE_GOHANDLER(OnMouseMoveHandler);
@@ -11,8 +12,9 @@ DEFINE_GOHANDLER(OnMouseScrolledHandler);
 
 const std::string DefaultRow::kBackgroundSpriteTag = "stats_subwindow_row_background";
 
-StatsWindow::StatsWindow(const std::string& sprite_code, const std::string& qualifier)
-    : qualifier_(qualifier), GameObject(kTagPrefix + qualifier, "afk"), data_(),
+StatsWindow::StatsWindow(const std::string& sprite_code, const std::string& qualifier,
+                         AnimationsManager& animations_manager)
+    : qualifier_(qualifier), GameObject(kTagPrefix + qualifier, "afk", animations_manager), data_(),
       first_visible_row_(0), mouse_pressed_(false) {
     AddPhase(std::vector<sf::Sprite>(1, sf::Sprite(GetTexture(sprite_code))), "afk");
     AddHandler(sf::Event::MouseMoved, OnMouseMoveHandler, GetTag());

@@ -9,6 +9,7 @@
 #include "SFML/Window/Event.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
+#include "animations_manager.hpp"
 #include "event_wrapper.hpp"
 #include "utils/json.hpp"
 
@@ -28,11 +29,12 @@ int main(int argc, char** argv) {
     }
 
     Preload();
-    GOManager objects_manager;
-    std::shared_ptr<StatsWindow> stats_window =
-        std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", "1");
+    AnimationsManager animations_manager;
+    GOManager objects_manager(animations_manager);
+    std::shared_ptr<StatsWindow> stats_window = std::make_shared<StatsWindow>(
+        "stats_subwindow_subwindow_background", "1", animations_manager);
     for (size_t ind = 0; ind < 20; ind++) {
-        stats_window->AddRow(std::make_shared<DefaultRow>(ind + 1));
+        stats_window->AddRow(std::make_shared<DefaultRow>(ind + 1, animations_manager));
     }
     objects_manager.AddObject(stats_window);
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "preview",

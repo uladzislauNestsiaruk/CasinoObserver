@@ -74,9 +74,9 @@ DEFINE_GOHANDLER(CommonGOEventHandlers::DealButtonHandler) {
     TableState* table_state = static_cast<TableState*>(state);
     if (table_state->SizeSelectPlayer()) {
         table_state->SetIsSelectPressed(false);
-        select_button_object->TryUpdatePhase("afk", delay);
-        ban_button_object->TryUpdatePhase("empty", delay);
-        deal_button_object->TryUpdatePhase("empty", delay);
+        select_button_object->TryUpdatePhase("afk", delay, std::nullopt);
+        ban_button_object->TryUpdatePhase("empty", delay, std::nullopt);
+        deal_button_object->TryUpdatePhase("empty", delay, std::nullopt);
         table_state->DealPlayers(manager);
     }
 }
@@ -96,7 +96,8 @@ DEFINE_GOHANDLER(CommonGOEventHandlers::PlayerHandler) {
         return;
     } else {
         std::shared_ptr<StatsWindow> player_statistics =
-            std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", object->GetTag());
+            std::make_shared<StatsWindow>("stats_subwindow_subwindow_background", object->GetTag(),
+                                          table_state->GetAnimationsManager());
 
         if (table_state->FindGameObjectByTag(player_statistics->GetTag())) {
             return;
@@ -119,7 +120,15 @@ bool CommonREMEventHandlers::ChangePhaseHandler(RenderEventsManager<json>* rende
     }
     std::string new_phase = data["new_phase"].template get<std::string>();
     uint64_t delay = data["delay"].template get<uint64_t>();
-    return target_object->TryUpdatePhase(new_phase, delay);
+    std::optional<uint64_t> new_animation_id;
+    if (data.contains("new_animation_id")) {
+        new_animation_id = data["new_animation_id"].template get<uint64_t>();
+    }
+    std::optional<uint64_t> after_animation_id;
+    if (data.contains("after_animation_id")) {
+        after_animation_id = data["after_animation_id"].template get<uint64_t>();
+    }
+    return target_object->TryUpdatePhase(new_phase, delay, new_animation_id, after_animation_id);
 }
 
 DEFINE_GOHANDLER(CommonGOEventHandlers::ReturnHandler) {

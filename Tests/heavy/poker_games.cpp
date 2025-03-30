@@ -1,3 +1,4 @@
+#include <animations_manager.hpp>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
@@ -6,7 +7,8 @@
 TEST(PokerGame, TwoPlayers) {
     TSQueue<json> logs;
     TSQueue<json> render_queue;
-    PokerTable table(logs, render_queue);
+    AnimationsManager animations_manager_;
+    PokerTable table(logs, render_queue, animations_manager_);
     table.AddPlayer(
         std::make_shared<HumbleGambler>(0, 0, GameType::Poker, false, 1000, "dummy_tag"));
     table.AddPlayer(

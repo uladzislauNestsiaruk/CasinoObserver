@@ -1,5 +1,6 @@
 #pragma once
 
+#include <animations_manager.hpp>
 #include <memory>
 #include <thread>
 #include <unordered_set>
@@ -12,7 +13,8 @@
 
 class TableState : public AbstractGameState {
     using table_creater_t = std::unique_ptr<ITable> (*)(TSQueue<json>& logs,
-                                                        TSQueue<json>& render_queue);
+                                                        TSQueue<json>& render_queue,
+                                                        AnimationsManager& animations_manager);
 
 public:
     TableState() = delete;

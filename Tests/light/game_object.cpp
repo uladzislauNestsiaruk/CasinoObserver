@@ -1,6 +1,7 @@
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Err.hpp"
 #include "SFML/System/Vector2.hpp"
+#include <animations_manager.hpp>
 #include <game_object/game_object.hpp>
 #include <game_object/game_objects_loader.hpp>
 
@@ -23,9 +24,12 @@ protected:
 
     static void TearDownTestSuite() {}
 
-    void SetUp() override { test_object = ParseGameObjects(kTestGameObject)[0]; }
+    void SetUp() override {
+        test_object = ParseGameObjects(kTestGameObject, animations_manager_)[0];
+    }
 
 public:
+    AnimationsManager animations_manager_;
     object_ptr test_object;
 };
 
@@ -33,7 +37,8 @@ public:
  *   Constructots
  */
 TEST(GameObject, Spritless_constructors) {
-    GameObject test_object("test", "afk");
+    AnimationsManager animations_manager;
+    GameObject test_object("test", "afk", animations_manager);
 
     ASSERT_EQ(test_object.GetTag(), "test");
     ASSERT_EQ(test_object.GetActivePhase(), "afk");
@@ -51,7 +56,8 @@ TEST(GameObject, Spritless_constructors) {
  */
 
 TEST(GameObject, Move_operation_basics) {
-    GameObject test_object("test", "afk");
+    AnimationsManager animations_manager;
+    GameObject test_object("test", "afk", animations_manager);
 
     test_object.Move(sf::Vector2f(52, 52));
     ASSERT_EQ(test_object.GetPosition(), sf::Vector2f(52, 52));
@@ -110,8 +116,9 @@ TEST_F(
     GameObjectTestFixture,
     Add_children_in_runtime_to_all_phases_Should_fall_if_child_with_such_name_exists_and_add_to_appropriate_parent_otherwise) {
 
-    object_ptr child_c = std::make_shared<GameObject>("c", "afk");
-    object_ptr child_c_copy = std::make_shared<GameObject>("c", "afk");
+    AnimationsManager animations_manager;
+    object_ptr child_c = std::make_shared<GameObject>("c", "afk", animations_manager);
+    object_ptr child_c_copy = std::make_shared<GameObject>("c", "afk", animations_manager);
 
     ASSERT_NO_THROW(test_object->AddChild(child_c, std::nullopt));
     ASSERT_TRUE(test_object->FindGameObjectByTag("c"));
@@ -124,8 +131,9 @@ TEST_F(
 }
 
 TEST_F(GameObjectTestFixture, Remove_children_Shouldnt_fall_if_such_child_doesnt_exists) {
-    object_ptr child_c = std::make_shared<GameObject>("c", "afk");
-    object_ptr child_d = std::make_shared<GameObject>("d", "afk");
+    AnimationsManager animations_manager;
+    object_ptr child_c = std::make_shared<GameObject>("c", "afk", animations_manager);
+    object_ptr child_d = std::make_shared<GameObject>("d", "afk", animations_manager);
 
     test_object->FindGameObjectByTag("a")->AddChild(child_c, std::nullopt);
     test_object->AddChild(child_d, std::nullopt);
@@ -201,5 +209,3 @@ TEST_F(GameObjectTestFixture,
         ASSERT_EQ(initial_position, actual_position);
     }
 }
-
-

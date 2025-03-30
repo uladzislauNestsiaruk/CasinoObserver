@@ -1,22 +1,25 @@
 #pragma once
 
 #include "table.hpp"
+#include <animations_manager.hpp>
 #include <common.hpp>
 #include <constants.hpp>
 #include <deck.hpp>
 #include <json.hpp>
 #include <thread_safe_queue.hpp>
 
+#include <queue>
 #include <string_view>
 #include <vector>
-#include <queue>
 
 using json = nlohmann::json;
 
 class PokerTable : public AbstractTable {
     static constexpr size_t kGamblersPlaces = 6;
+
 public:
-    PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue);
+    PokerTable(TSQueue<json>& logs, TSQueue<json>& render_queue,
+               AnimationsManager& animations_manager);
 
     void GameIteration() override;
 
@@ -25,10 +28,9 @@ public:
     void Clean() override;
 
 private:
-
     void Dealing() override;
 
-    void ApplyBets();
+    void ApplyBets(std::optional<uint64_t> after_animation_id);
 
     void MakeBet(size_t amount, size_t player_ind);
 

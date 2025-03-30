@@ -78,6 +78,7 @@ void GameObject::Draw(sf::RenderWindow* window) {
     if (active_sprite_ == phases_[active_phase_].size() - 1 && !is_finished_current_phase_) {
         clock_.restart();
         is_finished_current_phase_ = true;
+        animations_manager_.FinishAnimationId(animation_id_);
     }
 
     for (auto child : children_[active_phase_]) {
@@ -246,12 +247,19 @@ sf::Vector2f GameObject::GetSize() const {
     return sf::Vector2f(active_sprite_size.x * scale_.x, active_sprite_size.y * scale_.y);
 }
 
-bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay) {
+bool GameObject::TryUpdatePhase(const std::string& new_phase, uint64_t delay,
+                                std::optional<uint64_t> new_animation_id,
+                                std::optional<uint64_t> after_animation_id) {
+    const bool passed_enough_time = clock_.getElapsedTime() >= sf::milliseconds(delay);
+    const bool not_blocked_by_other_animation =
+        !after_animation_id.has_value() ||
+        !animations_manager_.CheckActiveAnimationId(after_animation_id.value());
     if (active_phase_ == "empty" ||
-        (is_finished_current_phase_ && clock_.getElapsedTime() >= sf::milliseconds(delay))) {
+        (is_finished_current_phase_ && passed_enough_time && not_blocked_by_other_animation)) {
         active_phase_ = new_phase;
         active_sprite_ = 0;
         is_finished_current_phase_ = false;
+        animation_id_ = new_animation_id.value_or(animations_manager_.AddNGetAnimationId());
         clock_.restart();
         ResetUnactivePhaseAnimations();
         return true;

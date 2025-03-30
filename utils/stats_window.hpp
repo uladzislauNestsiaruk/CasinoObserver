@@ -1,11 +1,10 @@
 #pragma once
 
 #include <algorithm>
+#include <animations_manager.hpp>
 #include <cstdint>
 #include <cstdlib>
-#include <iostream>
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -17,8 +16,10 @@
 
 class BasicRow : public GameObject {
 public:
-    explicit BasicRow(const std::string& background_path, size_t row_id)
-        : GameObject(background_path + std::to_string(row_id), "afk"), cells_() {
+    explicit BasicRow(const std::string& background_path, size_t row_id,
+                      AnimationsManager& animations_manager)
+        : GameObject(background_path + std::to_string(row_id), "afk", animations_manager),
+          cells_() {
         AddPhase(std::vector<sf::Sprite>(1, sf::Sprite(GetTexture(background_path))), "afk");
     }
 
@@ -36,7 +37,8 @@ class DefaultRow : public BasicRow {
     static const std::string kBackgroundSpriteTag;
 
 public:
-    explicit DefaultRow(size_t row_id) : BasicRow(kBackgroundSpriteTag, row_id) {}
+    explicit DefaultRow(size_t row_id, AnimationsManager& animations_manager)
+        : BasicRow(kBackgroundSpriteTag, row_id, animations_manager) {}
 
     const std::string& BackgroundPath() override { return kBackgroundSpriteTag; }
 
@@ -56,7 +58,8 @@ class StatsWindow : public GameObject {
 public:
     StatsWindow() = delete;
 
-    StatsWindow(const std::string& sprite_code, const std::string& qualifier);
+    StatsWindow(const std::string& sprite_code, const std::string& qualifier,
+                AnimationsManager& animations_manager);
 
     void AddRow(std::shared_ptr<BasicRow> row);
 

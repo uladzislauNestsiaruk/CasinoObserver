@@ -30,7 +30,8 @@ class BlackjackTable : public AbstractTable {
     };
 
 public:
-    BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue);
+    BlackjackTable(TSQueue<json>& logs, TSQueue<json>& render_queue,
+                   AnimationsManager& animations_manager);
 
     void SetIsActiveGame(bool value) override {}
     bool IsGameFinished() const override;

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <animations_manager.hpp>
 #include <array>
 #include <memory>
 #include <optional>
@@ -13,12 +14,14 @@
 #include "game_objects_loader.hpp"
 #include "json.hpp"
 
-GOManager::GOManager(std::string_view game_objects_path) : GOManager() {
+GOManager::GOManager(std::string_view game_objects_path, AnimationsManager& animations_manager)
+    : GOManager(animations_manager) {
     AddObjects(game_objects_path, 0);
 }
 
 void GOManager::AddObjects(std::string_view game_objects_path, size_t shared_priority) {
-    std::vector<std::shared_ptr<GameObject>> objects = ParseGameObjects(game_objects_path);
+    std::vector<std::shared_ptr<GameObject>> objects =
+        ParseGameObjects(game_objects_path, animations_manager_);
 
     for (size_t object_ind = 0; object_ind < objects.size(); object_ind++) {
         AddObject(objects[object_ind], shared_priority);
@@ -26,7 +29,8 @@ void GOManager::AddObjects(std::string_view game_objects_path, size_t shared_pri
 }
 
 void GOManager::AddObjects(std::string_view game_objects_path, std::vector<size_t> priorities) {
-    std::vector<std::shared_ptr<GameObject>> objects = ParseGameObjects(game_objects_path);
+    std::vector<std::shared_ptr<GameObject>> objects =
+        ParseGameObjects(game_objects_path, animations_manager_);
     if (objects.size() != priorities.size()) {
         throw std::invalid_argument("amount of root objects and defined priorities is different");
     }

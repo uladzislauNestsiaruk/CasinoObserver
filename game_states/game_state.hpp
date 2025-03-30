@@ -4,6 +4,7 @@
 
 #include <../game_object/game_object_manager.hpp>
 #include <../game_object/game_objects_loader.hpp>
+#include <animations_manager.hpp>
 #include <json.hpp>
 #include <memory>
 #include <render_events_manager.hpp>
@@ -30,7 +31,8 @@ public:
 class AbstractGameState : public IGameState {
 public:
     AbstractGameState(std::string_view game_objects_path)
-        : objects_manager_(game_objects_path), render_events_manager_(this) {}
+        : animations_mananger_(), objects_manager_(game_objects_path, animations_mananger_),
+          render_events_manager_(this) {}
 
     virtual ~AbstractGameState() {}
 
@@ -38,7 +40,10 @@ public:
 
     std::shared_ptr<GameObject> FindGameObjectByTag(const std::string& tag) const;
 
+    AnimationsManager& GetAnimationsManager() { return animations_mananger_; }
+
 protected:
+    AnimationsManager animations_mananger_;
     GOManager objects_manager_;
     RenderEventsManager<json> render_events_manager_;
 };

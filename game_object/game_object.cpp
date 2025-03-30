@@ -79,10 +79,14 @@ void GameObject::Draw(sf::RenderWindow* window) {
         clock_.restart();
         is_finished_current_phase_ = true;
         animations_manager_.FinishAnimationId(animation_id_);
+        must_be_destroyed_ = destroy_after_expire_;
     }
 
     for (auto child : children_[active_phase_]) {
         child->Draw(window);
+        if (child->GetMustBeDestroyed()) {
+            RemoveChild(child->GetTag(), std::nullopt);
+        }
     }
 }
 

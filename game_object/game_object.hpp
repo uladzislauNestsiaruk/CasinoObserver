@@ -33,15 +33,18 @@ public:
 
     GameObject(const std::string& tag, const std::string& default_phase,
                AnimationsManager& animations_manager,
-               std::optional<uint64_t> animation_id = std::nullopt)
+               std::optional<uint64_t> animation_id = std::nullopt,
+               bool destroy_after_expire = false)
         : tag_(tag), scale_(1, 1), active_phase_(default_phase),
           animations_manager_(animations_manager),
-          animation_id_(animation_id.value_or(animations_manager_.AddNGetAnimationId())) {}
+          animation_id_(animation_id.value_or(animations_manager_.AddNGetAnimationId())),
+          destroy_after_expire_(destroy_after_expire) {}
 
     GameObject(const std::string& tag, sf::Vector2f scale, const std::string& default_phase,
                AnimationsManager& animations_manager,
-               std::optional<uint64_t> animation_id = std::nullopt)
-        : GameObject(tag, default_phase, animations_manager, animation_id) {
+               std::optional<uint64_t> animation_id = std::nullopt,
+               bool destroy_after_expire = false)
+        : GameObject(tag, default_phase, animations_manager, animation_id, destroy_after_expire) {
         scale_ = scale;
     }
 
@@ -87,6 +90,8 @@ public:
                         std::optional<uint64_t> after_animation_id = std::nullopt);
     void FinishPhase() { is_finished_current_phase_ = true; }
 
+    bool GetMustBeDestroyed() const { return must_be_destroyed_; }
+
     virtual ~GameObject() {}
 
 private:
@@ -120,6 +125,11 @@ private:
 
     AnimationsManager& animations_manager_;
     uint64_t animation_id_;
+
+    // Theese fields are needed for temporary game objects, which must be destroyed after drawing
+    // their animations
+    bool destroy_after_expire_ = false;
+    bool must_be_destroyed_ = false;
 
     bool Contains(sf::Vector2f point) noexcept;
 };
